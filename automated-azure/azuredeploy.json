@@ -901,9 +901,6 @@
           "rhsmmode" : {
             "value" : "[parameters('rhsmUsernamePasswordOrActivationKey')]"
           },
-          "openshiftsdn" : {
-            "value" : "[parameters('OpenShiftSDN')]"
-          },
           "metrics" : {
             "value" : "[parameters('metrics')]"
           },
