@@ -369,7 +369,7 @@
   "variables" : {
     "branch" : "master",
     "version" : "3.9",
-    "baseTemplateUrl" : "[concat('https://raw.githubusercontent.com/openshift/hybrid-openshift-contrib/',variables('branch'),'/reference-architecture/azure-ansible/',variables('version'),'/')]",
+    "baseTemplateUrl" : "[concat('https://raw.githubusercontent.com/openshift/openshift-windows/master/automated-azure/')]",
     "baseVMachineTemplateUriInfranode" : "[concat(variables('baseTemplateUrl'), 'infranode.json')]",
     "baseVMachineTemplateUriNode" : "[concat(variables('baseTemplateUrl'), 'node.json')]",
     "baseVMachineTemplateUriMaster" : "[concat(variables('baseTemplateUrl'), 'master.json')]",
