@@ -37,8 +37,8 @@ openshift_registry_selector='role=infra'
 
 # Select default nodes for projects
 ansible_become=yes
-ansible_ssh_user=glennswest
-remote_user=glennswest
+ansible_ssh_user=openshift
+remote_user=openshift
 
 openshift_master_default_subdomain=52.179.199.176.nip.io
 openshift_public_hostname=gwmon.eastus2.cloudapp.azure.com
