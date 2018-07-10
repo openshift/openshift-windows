@@ -1,0 +1,15 @@
+- hosts: winnode02
+  gather_facts: no
+  tasks:
+  - name: disable kubeovn
+    win_shell: Set-Service kubeovn -StartupType Disabled
+  - name: Stop kubeovn
+    win_shell: Stop-Service kubeovn
+  - name: Stop kubelet
+    win_shell: Set-Service kubelet -StartupType Disabled
+  - name: Stop kubelet
+    win_shell: Stop-Service kubelet 
+    
+
+
+

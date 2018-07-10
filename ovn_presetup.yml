@@ -1,0 +1,106 @@
+- hosts: localhost
+  become: yes
+  become_user: root
+  tasks:
+  - name: Install go
+    yum:
+      name: golang
+      enablerepo: rhel-7-server-optional-rpms
+  - name: Install openshift clients
+    yum:
+      name: atomic-openshift-clients
+  - name: Clear previous build if it exists
+    file: path=~/ovn-kubernetes state=absent
+  - name: Clone to ovn-kubernetes repo
+    shell: git clone https://github.com/openvswitch/ovn-kubernetes ~/ovn-kubernetes
+  - name: Create destination directory
+    file: path=/opt/cni/bin state=directory
+  - name: Create the ovn-kubernetes directory
+    file: path=~/ovn-kubernetes state=directory
+  - name: Build The Controller (Linux)
+    shell: cd ~/ovn-kubernetes;cd go-controller;make;make install
+  - name: Build The Controller (Windows)
+    shell: cd ~/ovn-kubernetes;cd go-controller;make clean;make windows
+  - name: Create directory for cni plugins
+    file: path=/tmp/cniplugin state=directory
+  - name: Get cni plugins
+    shell: wget -q https://github.com/containernetworking/plugins/releases/download/v0.7.1/cni-plugins-amd64-v0.7.1.tgz; tar xvzf cni-plugins-amd64-v0.7.1.tgz -C /tmp/cniplugin
+- hosts: nodes
+  become: yes
+  become_user: root
+  tasks:
+  - name: Create /opt/cni/bin
+    file: path=/opt/cni/bin state=directory
+  - name: Create openvswitch /etc directory
+    file: path=/etc/openvswitch state=directory
+  - name: Push the ovn-k8s-cni-overlay to all nodes
+    copy:
+      src: /opt/cni/bin/ovn-k8s-cni-overlay
+      dest: /opt/cni/bin/ovn-k8s-cni-overlay
+      mode: u+rwx
+  - name: Push the ovnkube to all nodes
+    copy:
+      src: /usr/bin/ovnkube
+      dest: /usr/bin/ovnkube
+      mode: u+rwx
+  - name: Push the cni loopback plugin to all nodes
+    copy:
+      src: /tmp/cniplugin/loopback
+      dest: /opt/cni/bin/loopback
+      mode: u+rwx
+  - name: Create destination directory
+    file: path=/etc/cni/net.d state=directory
+  - name: Create cni config
+    copy:
+      dest: /etc/cni/net.d/10-ovn-kubernetes.conf
+      content: |
+               {"name":"ovn-kubernetes", "type":"ovn-k8s-cni-overlay"}
+- hosts: nodes
+  become: yes
+  become_user: root
+  tasks:
+  - name: Remove openvswitch existing 
+    shell: yum -y remove openvswitch 
+  - name: Remove openvswitch existing - Common
+    shell: yum -y remove openvswitch-ovn-common 
+  - name: Remove openvswitch existing - Central
+    shell: yum -y remove openvswitch-ovn-central 
+  - name: Remove openvswitch existing - ovn-host
+    shell: yum -y remove openvswitch-ovn-host
+  - name: install upstream openvswitch 2.7
+    shell: rpm --replacepkgs -i http://cbs.centos.org/kojifiles/packages/openvswitch/2.7.0/1.el7/x86_64/openvswitch-2.7.0-1.el7.x86_64.rpm
+  - name: Install ovn common
+    shell: rpm -i http://cbs.centos.org/kojifiles/packages/openvswitch/2.7.0/1.el7/x86_64/openvswitch-ovn-common-2.7.0-1.el7.x86_64.rpm
+  - name: install ovn central
+    shell: rpm -i http://cbs.centos.org/kojifiles/packages/openvswitch/2.7.0/1.el7/x86_64/openvswitch-ovn-central-2.7.0-1.el7.x86_64.rpm
+  - name: Install ovn host
+    shell: rpm -i http://cbs.centos.org/kojifiles/packages/openvswitch/2.7.0/1.el7/x86_64/openvswitch-ovn-host-2.7.0-1.el7.x86_64.rpm
+  - name: Install python-openvswitch
+    shell: yum -y install python-openvswitch
+  - name: Install ovn docker
+    shell: rpm -i http://cbs.centos.org/kojifiles/packages/openvswitch/2.7.0/1.el7/x86_64/openvswitch-ovn-docker-2.7.0-1.el7.x86_64.rpm
+  - name: Install ovn vtep
+    shell: rpm -i http://cbs.centos.org/kojifiles/packages/openvswitch/2.7.0/1.el7/x86_64/openvswitch-ovn-vtep-2.7.0-1.el7.x86_64.rpm
+  - name: Install ovn devel
+    shell: rpm --replacepkgs -i http://cbs.centos.org/kojifiles/packages/openvswitch/2.7.0/1.el7/x86_64/openvswitch-devel-2.7.0-1.el7.x86_64.rpm
+  - name: Clear any previous ovn-kubernetes-master.sh
+    file: path=/usr/local/bin/ovn-kubernetes-master.sh state=absent
+  - name: open firewall 6641
+    shell: iptables -A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 6641 -j ACCEPT
+  - name: open firewall 6642
+    shell: iptables -A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 6642 -j ACCEPT
+  - name: open firewall 6081
+    shell: iptables -A OS_FIREWALL_ALLOW -p udp -m state --state NEW -m udp --dport 6081 -j ACCEPT
+  - name: Save iptables rules
+    shell: service iptables save
+- hosts: masters
+  become: yes
+  become_user: root
+  tasks:
+  - name: Create destination directory
+    file: path=/etc/cni/net.d state=directory
+  - name: Create cni config
+    copy:
+      dest: /etc/cni/net.d/10-ovn-kubernetes.conf
+      content: |
+               {"name":"ovn-kubernetes", "type":"ovn-k8s-cni-overlay"}

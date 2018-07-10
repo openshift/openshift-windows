@@ -1,0 +1,76 @@
+[OSEv3:children]
+masters
+nodes
+etcd
+new_nodes
+new_masters
+
+[OSEv3:vars]
+oreg_url=registry.access.redhat.com/openshift3/ose-${component}:${version}
+openshift_examples_modify_imagestreams=true
+openshift_clock_enabled=true
+openshift_enable_service_catalog=false
+debug_level=2
+console_port=8443
+docker_udev_workaround=True
+openshift_node_debug_level="{{ node_debug_level | default(debug_level, true) }}"
+openshift_master_debug_level="{{ master_debug_level | default(debug_level, true) }}"
+openshift_master_access_token_max_seconds=2419200
+openshift_hosted_router_replicas=3
+openshift_hosted_registry_replicas=1
+openshift_master_api_port="{{ console_port }}"
+openshift_master_console_port="{{ console_port }}"
+openshift_override_hostname_check=true
+osm_use_cockpit=false
+openshift_node_local_quota_per_fsgroup=512Mi
+openshift_install_examples=true
+deployment_type=openshift-enterprise
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]
+openshift_master_manage_htpasswd=false
+
+openshift_use_openshift_sdn=false
+os_sdn_network_plugin_name=cni
+
+# default selectors for router and registry services
+openshift_router_selector='role=infra'
+openshift_registry_selector='role=infra'
+
+# Select default nodes for projects
+ansible_become=yes
+ansible_ssh_user=glennswest
+remote_user=glennswest
+
+openshift_master_default_subdomain=52.179.199.176.nip.io
+openshift_public_hostname=gwmon.eastus2.cloudapp.azure.com
+
+openshift_master_cluster_method=native
+openshift_master_cluster_hostname=gwmon.eastus2.cloudapp.azure.com
+openshift_master_cluster_public_hostname=gwmon.eastus2.cloudapp.azure.com
+
+
+[masters]
+master1 openshift_hostname=master1 openshift_node_labels="{'role': 'master'}"
+master2 openshift_hostname=master2 openshift_node_labels="{'role': 'master'}"
+master3 openshift_hostname=master3 openshift_node_labels="{'role': 'master'}"
+
+[etcd]
+master1
+master2
+master3
+
+
+[new_nodes]
+[new_masters]
+
+[nodes]
+master1 openshift_hostname=master1 openshift_node_labels="{'role':'master','zone':'default','logging':'true'}" 
+master2 openshift_hostname=master2 openshift_node_labels="{'role':'master','zone':'default','logging':'true'}" 
+master3 openshift_hostname=master3 openshift_node_labels="{'role':'master','zone':'default','logging':'true'}" 
+infranode1 openshift_hostname=infranode1 openshift_node_labels="{'role': 'infra', 'zone': 'default','logging':'true'}"
+infranode2 openshift_hostname=infranode2 openshift_node_labels="{'role': 'infra', 'zone': 'default','logging':'true'}"
+infranode3 openshift_hostname=infranode3 openshift_node_labels="{'role': 'infra', 'zone': 'default','logging':'true'}"
+node01 openshift_hostname=node01 openshift_node_labels="{'role':'app','zone':'default','logging':'true'}"
+
+[windows]
+winnode01 openshift_hostname=winnode01 openshift_node_labels="{'role':'windows','zone':'default','logging':'true'}"
+winnode02 openshift_hostname=winnode02 openshift_node_labels="{'role':'windows','zone':'default','logging':'true'}"

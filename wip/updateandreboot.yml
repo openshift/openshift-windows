@@ -1,0 +1,11 @@
+- hosts: winnode01
+  gather_facts: no
+  tasks:
+  - name: So we can install the update module
+    win_shell: Powershell.exe -ExecutionPolicy Unrestricted
+  - name: Import the PS module
+    win_shell: Import-Module PSWindowsUpdate
+  - name: Install-Module PSWindowsUpdate
+    win_shell: Add-WUServiceManager -ServiceID 7971f918-a847-4430-9279-4a52d1efe18d -Confirm:$false
+  - name: Get the updates
+    win_shell: Get-WUInstall -MicrosoftUpdate -AcceptAll -AutoReboot
