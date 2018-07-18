@@ -1,0 +1,83 @@
+- hosts: localhost
+  become: yes
+  become_user: root
+  tasks:
+  - name: Install go
+    yum:
+      name: golang
+      enablerepo: rhel-7-server-optional-rpms
+  - name: Install openshift clients
+    yum:
+      name: atomic-openshift-clients
+  - name: Clear previous build if it exists
+    file: path=~/ovn-kubernetes state=absent
+  - name: Clone to ovn-kubernetes repo
+    shell: git clone https://github.com/openvswitch/ovn-kubernetes ~/ovn-kubernetes
+  - name: Create destination directory
+    file: path=/opt/cni/bin state=directory
+  - name: Create the ovn-kubernetes directory
+    file: path=~/ovn-kubernetes state=directory
+  - name: Build The Controller (Linux)
+    shell: cd ~/ovn-kubernetes;cd go-controller;make;make install
+  - name: Build The Controller (Windows)
+    shell: cd ~/ovn-kubernetes;cd go-controller;make clean;make windows
+  - name: Create directory for cni plugins
+    file: path=/tmp/cniplugin state=directory
+  - name: Get cni plugins
+    shell: wget -q https://github.com/containernetworking/plugins/releases/download/v0.7.1/cni-plugins-amd64-v0.7.1.tgz; tar xvzf cni-plugins-amd64-v0.7.1.tgz -C /tmp/cniplugin
+- hosts: nodes
+  become: yes
+  become_user: root
+  tasks:
+  - name: Create /opt/cni/bin
+    file: path=/opt/cni/bin state=directory
+  - name: Create openvswitch /etc directory
+    file: path=/etc/openvswitch state=directory
+  - name: Push the ovn-k8s-cni-overlay to all nodes
+    copy:
+      src: /opt/cni/bin/ovn-k8s-cni-overlay
+      dest: /opt/cni/bin/ovn-k8s-cni-overlay
+      mode: u+rwx
+  - name: Push the ovnkube to all nodes
+    copy:
+      src: /usr/bin/ovnkube
+      dest: /usr/bin/ovnkube
+      mode: u+rwx
+  - name: Push the cni loopback plugin to all nodes
+    copy:
+      src: /tmp/cniplugin/loopback
+      dest: /opt/cni/bin/loopback
+      mode: u+rwx
+- hosts: windows
+  gather_facts: no
+  tasks:
+  - name: copy ovn-k8s-cni-overlay.exe
+    win_copy:
+       src: /root/ovn-kubernetes/go-controller/_output/go/windows/ovn-k8s-cni-overlay.exe
+       dest: /bin/ovn-k8s-cni-overlay.exe
+       force: yes
+  - name: copy ovn ovnkube.exe
+    win_copy:
+       src: /root/ovn-kubernetes/go-controller/_output/go/windows/ovnkube.exe
+       dest: /bin/ovnkube.exe
+       force: yes
+  - name: Stop kubeovn
+    win_shell: Stop-Service kubeovn
+  - name: Start kubeovn
+    win_shell: Start-Service kubeovn
+- hosts: master1
+  become: yes
+  become_user: root
+  tasks:
+  - name: Start ovn-kubernetes-master
+    shell: systemctl restart ovn-kubernetes-master
+  - name: Start ovn-kubernetes-node
+    shell: systemctl restart ovn-kubernetes-node
+- hosts: nodes!master1
+  become: yes
+  become_user: root
+  tasks:
+  - name: Start ovn-kubernetes-node
+    shell: systemctl restart ovn-kubernetes-node
+
+

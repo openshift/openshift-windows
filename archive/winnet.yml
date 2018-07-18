@@ -1,0 +1,19 @@
+- hosts: windows
+  gather_facts: no
+  tasks:
+  - name: Copy ovn_k8s.conf to windows nodes
+    win_copy:
+       src: /tmp/ovn_k8s.conf
+       dest: C:\Program Files\Cloudbase Solutions\Open vSwitch\conf\ovn_k8s.conf
+       force: yes
+  - name: copy ovn-k8s-cni-overlay.exe
+    win_copy:
+       src: /root/ovn-kubernetes/go-controller/_output/go/windows/ovn-k8s-cni-overlay.exe
+       dest: /bin/ovn-k8s-cni-overlay.exe
+       force: yes
+  - name: copy ovn ovnkube.exe
+    win_copy:
+       src: /root/ovn-kubernetes/go-controller/_output/go/windows/ovn-k8s-cni-overlay.exe
+       dest: /bin/ovnkube.exe
+       force: yes
+

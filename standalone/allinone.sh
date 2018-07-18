@@ -81,8 +81,7 @@ deployment_type=openshift-enterprise
 openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]
 openshift_master_manage_htpasswd=false
 
-openshift_master_default_subdomain=openshift.ncc9.com
-osm_default_subdomain=app.ncc9.com
+openshift_master_default_subdomain=app.openshift.ncc9.com
 openshift_use_dnsmasq=true
 openshift_public_hostname=openshift.ncc9.com
 

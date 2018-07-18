@@ -7,23 +7,23 @@
      user: "{{lookup('env','USER')}}"
   tasks:
   - debug: msg="User is {{ user }}"
-  - name: Download epel
-    shell: wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-  - name: Enable epel
-    shell: yum -y install epel-release-latest-7.noarch.rpm
-    ignore_errors: yes
-  - name: Enable Pip
-    shell: yum-config-manager --enable epel --enable rhel-x86_64-server-extras-7 --enable rhel-7-server-optional-rpms
-  - name: Install PIP and Related
-    shell: yum install -y python2-pip
   - name: Install PIP and Related
     shell: yum install -y gcc libffi-devel python-devel krb5-devel krb5-libs krb5-workstation
-  - name: Install pywinrm
-    shell: pip install "pywinrm" --upgrade --force
-  - name: Install pywinrm keberos
-    shell: pip install pywinrm[kerberos]
+  - name: Add yumutils
+    shell: yum install -y yum-utils
+  - name: Enable Extras
+    shell: yum-config-manager --enable rhel-7-server-extras-rpms
+  - name: Enable EPEL
+    shell: yum install -y  https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm || true
+    ignore_errors: yes
+  - name: Install PIP and Related
+    shell: yum install -y python-pip
   - name: disable epel
-    shell: yum-config-manager --disable epel --disable rhel-x86_64-server-extras-7 --disable rhel-7-server-optional-rpms
+    shell: yum-config-manager --disable epel
+  - name: Install pywinrm
+    shell: pip install "pywinrm" --upgrade 
+  - name: Install pywinrm keberos
+    shell: pip install pywinrm[kerberos] --upgrade
 # Make sure basic components needed for Windows are Auto Installed and Updates Done
 - hosts: windows
   gather_facts: no
@@ -50,10 +50,15 @@
   - name: Restart Windows Nodes
     win_reboot:
         reboot_timeout: 3600
-  - name: Pull down windowsservercore 1803
-    win_shell: docker pull microsoft/windowsservercore:1803
+  - name: Sleep a while to make sure we are done with restart from update
+    pause:
+       minutes: 1
+  - name: Pull down windowsservercore 1709
+    win_shell: docker pull microsoft/windowsservercore:1709
+    async: 3600
+    poll: 5
   - name: Tag The image
-    win_shell: docker tag microsoft/windowsservercore:1803 microsoft/windowsservercore:latest
+    win_shell: docker tag microsoft/windowsservercore:1709 microsoft/windowsservercore:latest
 - hosts: windows
   gather_facts: no
   vars:
@@ -90,7 +95,7 @@
   - name: Install wget
     win_shell: choco install wget -y
   - name: Pull down hybrid directoy
-    win_shell: git clone https://github.com/openshift/openshift-windows.git c:\k\hybrid
+    win_shell: git clone https://github.com/glennswest/hybrid.git c:\k\hybrid
     ignore_errors: yes
   - name: Pull openvswitch
     win_shell: wget.exe https://cloudbase.it/downloads/openvswitch-hyperv-2.7.0-certified.msi -O openvswitch.msi
@@ -99,10 +104,10 @@
     ignore_errors: yes
   - name: Turn off Advfireall profiles
     win_shell: NetSh Advfirewall set allprofiles state off
-  - name: Start ovs service
-    win_shell: Start-Service ovs-vswitchd
   - name: Set up path for ovn
     win_shell: setx PATH "C:\Program Files\Cloudbase Solutions\Open vSwitch\bin;$env:path" -m
+  - name: Start ovs service
+    win_shell: Start-Service ovs-vswitchd
 # Setup the network on windows machines
 - hosts: windows
   gather_facts: no
@@ -162,17 +167,17 @@
     shell: ln -f -s -n /etc/origin/ openshift.local.config
     args:
        chdir: /etc/origin
-    delegate_to: masters[0]
+    delegate_to: "{{ groups.masters | first }}"
   - name: Create Config
     shell: oc adm create-node-config --hostnames={{inventory_hostname}} --node={{inventory_hostname}} --node-dir=/etc/origin/generated-configs/{{inventory_hostname}}
     args:
         chdir: /etc/origin/
-    delegate_to: masters[0]
+    delegate_to: "{{ groups.masters | first }}"
   - name: Create archives per host
     archive:
        path: /etc/origin/generated-configs/{{inventory_hostname}}/*
        dest: /etc/origin/generated-configs/{{inventory_hostname}}.tgz
-    delegate_to: masters[0]
+    delegate_to: "{{ groups.masters | first }}"
 - hosts: masters[0]
   become: yes
   become_user: root
@@ -206,19 +211,6 @@
   vars:
      user: "{{lookup('env','USER')}}"
   tasks:
-  - debug: msg="User is {{ user }}"
-  - name: Enable Pip
-    shell: yum-config-manager --enable epel
-  - name: Install PIP and Related
-    shell: yum install -y python-pip
-  - name: disable epel
-    shell: yum-config-manager --disable epel
-  - name: Install PIP and Related
-    shell: yum install -y gcc libffi-devel python-devel krb5-devel krb5-libs krb5-workstation
-  - name: Install pywinrm
-    shell: pip install "pywinrm" --upgrade --force
-  - name: Install pywinrm keberos
-    shell: pip install pywinrm[kerberos]
   - name: Setup local origin structure
     file:
           path: /etc/origin/generated-configs
@@ -232,47 +224,34 @@
       path: /etc/origin/generated-configs
       owner: "{{user}}"
       recurse: yes
-  - name: Create windows directory for master1node files
+  - name: Create windows directory for node files
     file:
-         path: /etc/origin/generated-configs/node-master1/windows
+         path: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows"
          state: directory
   - name: Fix system-node kubconfig
     copy:
-       src: /etc/origin/generated-configs/node-master1/system:node:master1.kubeconfig
-       dest: /etc/origin/generated-configs/node-master1/windows/system-node-master1.kubeconfig
+       src: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/system:node:{{ groups.masters | first }}.kubeconfig"
+       dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/system-node-{{ groups.masters | first }}.kubeconfig"
        force: yes
   - name: Fix system-node crt
     copy:
-       src: /etc/origin/generated-configs/node-master1/system:node:master1.crt
-       dest: /etc/origin/generated-configs/node-master1/windows/system-node-master1.crt
+       src: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/system:node:{{ groups.masters | first }}.crt"
+       dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/system-node-{{ groups.masters | first }}.crt"
        force: yes
   - name: Fix system-node key
     copy:
-       src: /etc/origin/generated-configs/node-master1/system:node:master1.key
-       dest: /etc/origin/generated-configs/node-master1/windows/system-node-master1.key
+       src: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/system:node:{{ groups.masters | first }}.key"
+       dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/system-node-{{ groups.masters | first }}.key"
        force: yes
+  - name: Flush arp cache
+    shell: ip -s -s neigh flush all
 - hosts: windows
   gather_facts: no
   vars:
      user: "{{lookup('env','USER')}}"
   tasks:
-  - name: Set up the GUID for openvswitch
-    win_shell: "$GUID = (New-Guid).Guid; Write-Output $GUID"
-    register: guid
-  - debug: msg="GUID is {{ guid.stdout }}"
-  - name: create a schedule task
-    win_scheduled_task:
-      name: ovnsetguid
-      description: Set OVN System Guid
-      executable: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
-      arguments: -ExecutionPolicy Unrestricted -NonInteractive ovs-vsctl set Open_vSwitch . external_ids:system-id="{{ guid.stdout | trim  }}"
-      frequency: once
-      enabled:   true
-      time:      "14:00:00"
-  - name: Run the schedule task
-    win_shell: Start-ScheduledTask -TaskName ovnsetguid
   - name: Pull the kubernetes client
-    win_shell: wget.exe --no-check-certificate https://dl.k8s.io/v1.9.8/kubernetes-node-windows-amd64.tar.gz -O C:\Windows\Temp\kubernetes.tar.gz
+    win_shell: wget.exe --no-check-certificate https://dl.k8s.io/v1.9.9/kubernetes-node-windows-amd64.tar.gz -O C:\Windows\Temp\kubernetes.tar.gz
   - name: Unzip kubernetes
     win_shell: 7z x -aoa C:\Windows\Temp\kubernetes.tar.gz -o\Windows\Temp
   - name: Untar kubernetes
@@ -284,7 +263,6 @@
        path: C:\k
        state: directory
        ignore_errors: yes
-
   - name: move the node files
     win_copy:
       src: /etc/origin/generated-configs/{{inventory_hostname}}.tgz
@@ -294,9 +272,9 @@
     win_shell: 7z x -aoa /k/{{inventory_hostname}}.tgz  -o\k\
   - name: Unarchvie the config files
     win_shell: 7z x -aoa /k/etc/origin/generated-configs/{{inventory_hostname}}.tgz -o/k
-  - name: Add the master1 cluster config file
+  - name: Add the master cluster config file
     win_copy:
-       src: /etc/origin/generated-configs/node-master1/windows/
+       src: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/"
        dest: /k/
        force: yes
   - name: Cleanup archive path
@@ -309,15 +287,15 @@
        dest: /k/config
        force: yes
   - name: Set kubeconfig
-    win_shell: "[System.Environment]::SetEnvironmentVariable('KUBECONFIG', 'c:/k/config;c:/k/system-node-master1.kubeconfig', [System.EnvironmentVariableTarget]::Machine)"
+    win_shell: "[System.Environment]::SetEnvironmentVariable('KUBECONFIG', 'c:/k/config;c:/k/system-node-1.masters | first }}.kubeconfig', [System.EnvironmentVariableTarget]::Machine)"
   - name: Set kubeconfig
-    win_shell: "[System.Environment]::SetEnvironmentVariable('KUBECONFIG', 'c:/k/config;c:/k/system-node-master1.kubeconfig')"
+    win_shell: "[System.Environment]::SetEnvironmentVariable('KUBECONFIG', 'c:/k/config;c:/k/system-node-{{ groups.masters | first }}.kubeconfig')"
   - name: Build the pause windows container
     win_shell: docker build . -t kubeletwin/pause
     args:
       chdir: c:\k\hybrid
 # Part 2
-- hosts: master1
+- hosts: masters[0]
   become: yes
   become_user: root
   tasks:
@@ -345,10 +323,10 @@
          cacert=/k/ca.crt
 
          [ovnnorth]
-         address="tcp://{{lookup('dig','master1')}}:6641" # this master machine's IP address
+         address="tcp://{{lookup('dig',groups.masters | first )}}:6641" # this master machine's IP address
 
          [ovnsouth]
-         address="tcp://{{lookup('dig','master1')}}:6642"
+         address="tcp://{{lookup('dig',groups.masters | first )}}:6642"
 
     delegate_to: localhost
 - hosts: windows
@@ -399,9 +377,25 @@
     win_shell: choco install nssm -y
     ignore_errors: yes
 # Part 2
-- hosts: winnode01
+- hosts: windows
   gather_facts: no
   tasks:
+  - name: Set up the GUID for openvswitch
+    win_shell: "$GUID = (New-Guid).Guid; Write-Output $GUID"
+    register: guid
+  - debug: msg="GUID is {{ guid.stdout }}"
+  - name: create a schedule task
+    win_scheduled_task:
+      name: ovnsetguid
+      description: Set OVN System Guid
+      executable: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+      arguments: -ExecutionPolicy Unrestricted -NonInteractive ovs-vsctl set Open_vSwitch . external_ids:system-id="{{ guid.stdout | trim  }}"
+      frequency: once
+      enabled:   true
+      user:      SYSTEM
+      time:      "14:00:00"
+  - name: Run the schedule task
+    win_shell: Start-ScheduledTask -TaskName ovnsetguid -AsJob
   - name: Setup Kubeovn Service
     win_shell: setup_kubeovn_service.ps1
     args:
@@ -419,7 +413,7 @@
   - name: Start kubelet
     win_shell: Start-Service kubelet
 #Part 3
-- hosts: winnode01
+- hosts: windows
   gather_facts: no
   tasks:
   - name: Setup Kubeovn Service
