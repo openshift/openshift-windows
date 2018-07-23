@@ -63,6 +63,8 @@
   gather_facts: no
   vars:
      user: "{{lookup('env','USER')}}"
+  vars_files:
+   - /etc/ansible/parameters.vars
   tasks:
   - name: Remove Old Bin if it exists
     win_file:
@@ -95,7 +97,7 @@
   - name: Install wget
     win_shell: choco install wget -y
   - name: Pull down hybrid directoy
-    win_shell: git clone https://github.com/glennswest/hybrid.git c:\k\hybrid
+    win_shell: git clone {{theRepo}}  c:\k\hybrid
     ignore_errors: yes
   - name: Pull openvswitch
     win_shell: wget.exe https://cloudbase.it/downloads/openvswitch-hyperv-2.7.0-certified.msi -O openvswitch.msi
@@ -142,9 +144,12 @@
       enabled:   true
       time:      "14:00:00"
       user:      SYSTEM
+  - name: Pause for preparation of sdn setup
+    pause:
+       minutes: 1
   - name: Execute the setup of the windows sdn
     win_shell: Start-ScheduledTask -TaskName setup-network
-  - name: Pause for sdn setup
+  - name: Pause for sdn setup completion
     pause:
        minutes: 1
 # Main Windows Setup
@@ -210,6 +215,8 @@
   gather_facts: no
   vars:
      user: "{{lookup('env','USER')}}"
+  vars_files:
+   - /etc/ansible/parameters.vars
   tasks:
   - name: Setup local origin structure
     file:
@@ -230,18 +237,18 @@
          state: directory
   - name: Fix system-node kubconfig
     copy:
-       src: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/system:node:{{ groups.masters | first }}.kubeconfig"
-       dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/system-node-{{ groups.masters | first }}.kubeconfig"
+       src: "/etc/origin/generated-configs/node-{{ groups.masters | first }}.{{InternalDomain}}/system:node:{{ groups.masters | first }}.{{InternalDomain}}.kubeconfig"
+       dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/system-node-{{ groups.masters | first }}.{{InternalDomain}}.kubeconfig"
        force: yes
   - name: Fix system-node crt
     copy:
-       src: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/system:node:{{ groups.masters | first }}.crt"
-       dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/system-node-{{ groups.masters | first }}.crt"
+       src: "/etc/origin/generated-configs/node-{{ groups.masters | first }}.{{InternalDomain}}/system:node:{{ groups.masters | first }}.{{InternalDomain}}.crt"
+       dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/system-node-{{ groups.masters | first }}.{{InternalDomain}}.crt"
        force: yes
   - name: Fix system-node key
     copy:
-       src: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/system:node:{{ groups.masters | first }}.key"
-       dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/system-node-{{ groups.masters | first }}.key"
+       src: "/etc/origin/generated-configs/node-{{ groups.masters | first }}.{{InternalDomain}}/system:node:{{ groups.masters | first }}.{{InternalDomain}}.key"
+       dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/system-node-{{ groups.masters | first }}.{InternalDomain}}.key"
        force: yes
   - name: Flush arp cache
     shell: ip -s -s neigh flush all

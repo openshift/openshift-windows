@@ -4,7 +4,7 @@
   tasks:
   - name: Wait for api
     uri: 
-       url: "http://{{inventory_hostname}}:8443/api"
+       url: "https://{{inventory_hostname}}:8443/api"
        validate_certs: False
     register: result
     until: ('status' in result) and (result.status == 200 or result.status == 401)
