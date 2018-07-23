@@ -1,9 +1,0 @@
-- hosts: nodes:!master1
-  become: yes
-  become_user: root
-  tasks:
-  - name: enable ovn-kubernetes-node.service
-    shell: systemctl enable ovn-kubernetes-node.service
-  - name: enable ovn-kubernetes-node.service
-    shell: systemctl start ovn-kubernetes-node.service
-
