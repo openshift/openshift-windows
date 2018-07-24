@@ -38,6 +38,9 @@
     pause:
        minutes: 1
 
+  - name: ensure docker is running
+    win_shell: Start-Service docker
+
   - name: Pull down windowsservercore 1709
     win_shell: docker pull microsoft/windowsservercore:1709
     async: 3600
