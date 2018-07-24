@@ -172,10 +172,10 @@
   gather_facts: no
   tasks:
   - name: Restart atomic-openshift-master-controllers.service
-    shell: systemctl restart atomic-openshift-master-controllers.service
+    shell: master-restart controllers 
 
   - name: Restart atomic-openshift-master-api.service
-    shell: systemctl restart atomic-openshift-master-api.service
+    shell: master-restart api
 
   - name: Wait for clean restart
     pause:
