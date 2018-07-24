@@ -490,7 +490,10 @@
   gather_facts: false
   tasks:
   - name: Recreate the router
-    shell: oc adm policy add-scc-to-user hostnetwork -z router;oc adm router
+    shell: oc adm policy add-scc-to-user hostnetwork -z router 
+
+  - name: recreate the router deployment 
+    shell: oc adm router
 
   - name: Recreate the registry
     shell: oc adm registry
