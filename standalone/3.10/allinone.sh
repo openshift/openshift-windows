@@ -62,9 +62,16 @@ git clone https://github.com/openshift/openshift-ansible.git /usr/share/ansible/
 cd /usr/share/ansible/openshift-ansible
 git checkout release-3.10
 cd ~
-git clone git@gitlab.cee.redhat.com:sysdeseng/cicd-files.git
-cp ~/cicd-files/310-repo/*.pem /var/lib/yum/
-cp ~/cicd-files/310-repo/aos-3.10.repo /etc/yum.repos.d/
+
+cat <<EOF > /etc/yum.repos.d/310.repo
+[aos-3.10]
+name=OCP 3.10
+baseurl=http://download-node-02.eng.bos.redhat.com/rcm-guest/puddles/RHAOS/AtomicOpenShift/3.10/latest/x86_64/os/
+failovermethod=priority
+enabled=1
+gpgcheck=0
+EOF
+
 
 #310
 
@@ -76,20 +83,6 @@ pip install "pywinrm>=0.2.2"
 pip install pywinrm[kerberos]
 
 
-
-cat <<EOF > /home/${USER}/.ansible.cfg
-[defaults]
-remote_tmp     = ~/.ansible/tmp
-local_tmp      = ~/.ansible/tmp
-host_key_checking = False
-forks=30
-gather_timeout=60
-timeout=240
-library = /usr/share/ansible:/usr/share/ansible/openshift-ansible/library
-[ssh_connection]
-control_path = ~/.ansible/cp/ssh%%h-%%p-%%r
-ssh_args = -o ControlMaster=auto -o ControlPersist=600s -o ControlPath=~/.ansible/cp-%h-%p-%r
-EOF
 
 cat <<EOF > /etc/ansible/hosts
 [OSEv3:children]
@@ -152,10 +145,10 @@ $LinuxHostName
 [new_masters]
 
 [nodes]
-$LinuxHostName
+$LinuxHostName openshift_node_group_name="node-config-master"
  
 [windows]
-$WindowsHostName
+$WindowsHostName openshift_node_group_name="node-config-compute"
 
 EOF
 
