@@ -117,6 +117,16 @@
   - name: Start ovs service
     win_shell: Start-Service ovs-vswitchd
 
+# Modify the docker-create file to reflect the defined adapter
+- hosts: localhost
+  gather_facts: false
+  tasks:
+   - name: replace nic adapter with correct
+     replace:
+       path: ./bin/docker-create.ps1
+       regexp: 'Ethernet0'
+       replace: "{{ windows_nic }}"
+
 # Setup the network on windows machines
 - hosts: windows
   gather_facts: no
@@ -126,6 +136,12 @@
     win_shell: expanddisk.ps1
     args:
       chdir: c:\k\hybrid\bin
+
+  - name: move the node files
+    win_copy:
+      src: ./bin/docker-create.ps1
+      dest: c:\k\hybrid\bin\docker-create.ps1
+      force: yes
 
   - name: Prepare to create docker network
     win_scheduled_task:
@@ -237,7 +253,7 @@
 
   - local_action: copy content={{ ovn_key.stdout }} dest=/root/ovn.token
 
-- hosts: 127.0.0.1
+- hosts: localhost 
   connection: local
   become: true 
   gather_facts: no
