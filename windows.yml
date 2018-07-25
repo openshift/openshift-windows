@@ -41,13 +41,13 @@
   - name: ensure docker is running
     win_shell: Start-Service docker
 
-  - name: Pull down windowsservercore 1709
-    win_shell: docker pull microsoft/windowsservercore:1709
-    async: 3600
-    poll: 5
+#  - name: Pull down windowsservercore 1709
+#    win_shell: docker pull microsoft/windowsservercore:1709
+#    async: 3600
+#    poll: 5
 
-  - name: Tag The image
-    win_shell: docker tag microsoft/windowsservercore:1709 microsoft/windowsservercore:latest
+#  - name: Tag The image
+#    win_shell: docker tag microsoft/windowsservercore:1709 microsoft/windowsservercore:latest
 
 - hosts: windows
   gather_facts: no
