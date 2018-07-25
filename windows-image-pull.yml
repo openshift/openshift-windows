@@ -1,0 +1,14 @@
+# Make sure basic components needed for Windows are Auto Installed and Updates Done
+- hosts: windows
+  gather_facts: no
+  vars:
+     user: "{{lookup('env','USER')}}"
+  tasks:
+  - name: Pull down windowsservercore 1709
+    win_shell: docker pull microsoft/windowsservercore:1709
+    async: 3600
+    poll: 5
+
+  - name: Tag The image
+    win_shell: docker tag microsoft/windowsservercore:1709 microsoft/windowsservercore:latest
+
