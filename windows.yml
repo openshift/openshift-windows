@@ -269,20 +269,20 @@
 
   - name: Fix system-node kubconfig
     copy:
-       src: "/etc/origin/generated-configs/node-{{ groups.masters | first }}.{{InternalDomain}}/system:node:{{ groups.masters | first }}.{{InternalDomain}}.kubeconfig"
+       src: "/etc/origin/node/node.kubeconfig"
        dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/system-node-{{ groups.masters | first }}.{{InternalDomain}}.kubeconfig"
        force: yes
 
-  - name: Fix system-node crt
+  - name: Fix client pem
     copy:
-       src: "/etc/origin/generated-configs/node-{{ groups.masters | first }}.{{InternalDomain}}/system:node:{{ groups.masters | first }}.{{InternalDomain}}.crt"
-       dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/system-node-{{ groups.masters | first }}.{{InternalDomain}}.crt"
+       src: "/etc/origin/node/kubelet-client-current.pem"
+       dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/kubelet-client-current.pem"
        force: yes
 
-  - name: Fix system-node key
+  - name: Fix server key
     copy:
-       src: "/etc/origin/generated-configs/node-{{ groups.masters | first }}.{{InternalDomain}}/system:node:{{ groups.masters | first }}.{{InternalDomain}}.key"
-       dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/system-node-{{ groups.masters | first }}.{InternalDomain}}.key"
+       src: "/etc/origin/node/kubelet-server-current.pem"
+       dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/kubelet-server-current.pem"
        force: yes
 
   - name: Flush arp cache
