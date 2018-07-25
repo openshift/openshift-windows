@@ -14,7 +14,7 @@ export thePassword=$7
 export auth_user=$8
 export auth_password=$9
 # 310
-export WindowsNicName=$10
+export WindowsNicName=${10}
 export theRepo="https://github.com/openshift/openshift-windows"
 export AUSERNAME=$theUserName
 export LinuxInternalIP=`nslookup $LinuxHostName | awk '/^Address: / { print $2 ; exit }'`

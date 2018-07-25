@@ -485,6 +485,9 @@
     - api
     - controllers
   
+  - name: Wait for services to become ready
+    pause:
+      secounds: 30
 
 - hosts: localhost
   gather_facts: false
