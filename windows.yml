@@ -294,7 +294,7 @@
      user: "{{lookup('env','USER')}}"
   tasks:
   - name: Pull the kubernetes client
-    win_shell: wget.exe --no-check-certificate https://dl.k8s.io/v1.9.9/kubernetes-node-windows-amd64.tar.gz -O C:\Windows\Temp\kubernetes.tar.gz
+    win_shell: wget.exe --no-check-certificate https://dl.k8s.io/v1.10.5/kubernetes-node-windows-amd64.tar.gz -O C:\Windows\Temp\kubernetes.tar.gz
 
   - name: Unzip kubernetes
     win_shell: 7z x -aoa C:\Windows\Temp\kubernetes.tar.gz -o\Windows\Temp

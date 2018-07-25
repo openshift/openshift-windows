@@ -127,7 +127,7 @@ openshift_master_console_port="{{ console_port }}"
 openshift_override_hostname_check=true
 osm_use_cockpit=false
 openshift_install_examples=true
-deployment_type=openshift-enterprise
+openshift_deployment_type=openshift-enterprise
 openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider'}]
 openshift_master_manage_htpasswd=false
 
