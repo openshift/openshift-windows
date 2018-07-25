@@ -275,13 +275,13 @@
 
   - name: Fix client pem
     copy:
-       src: "/etc/origin/node/kubelet-client-current.pem"
+       src: "/etc/origin/node/certificates/kubelet-client-current.pem"
        dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/kubelet-client-current.pem"
        force: yes
 
   - name: Fix server key
     copy:
-       src: "/etc/origin/node/kubelet-server-current.pem"
+       src: "/etc/origin/node/certificates/kubelet-server-current.pem"
        dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/kubelet-server-current.pem"
        force: yes
 
