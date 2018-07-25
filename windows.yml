@@ -4,6 +4,40 @@
   vars:
      user: "{{lookup('env','USER')}}"
   tasks:
+  - name: Install HyperV
+    win_shell: Install-WindowsFeature -Name Hyper-V, RSAT-Hyper-V-Tools
+    ignore_errors: yes
+
+  - name: Install the Nuget provider
+    win_shell: Find-PackageProvider -Name "Nuget" | Install-PackageProvider -Verbose -Force
+    ignore_errors: yes
+
+  - name: Install Package Manager Provider
+    win_shell: Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
+
+  - name: Install Docker Provider
+    win_shell: Install-Package -Name docker -ProviderName DockerMsftProvider -Confirm
+
+  - name: Install Docker
+    win_shell: Install-Package Docker -ProviderName DockerMsftProvider -Force
+
+  - name: Windows Update
+    win_shell: Install-Package PSWindowsUpdate -Force
+
+  - name: Enable Docker
+    win_shell: Set-Service docker -StartupType Automatic
+
+  - name: Do updates
+    win_shell: Get-WUInstall -AcceptAll
+
+  - name: Restart Windows Nodes
+    win_reboot:
+        reboot_timeout: 3600
+
+  - name: Sleep a while to make sure we are done with restart from update
+    pause:
+       minutes: 1
+
   - name: ensure docker is running
     win_shell: Start-Service docker
 
