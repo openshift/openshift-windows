@@ -1,6 +1,6 @@
 #!/bin/bash
-if [ $# -ne 10 ]
-   then echo;echo "allinone.sh ----- HELP ------";echo "allinone arguments required";echo "allinone.sh LinuxHostName WindowsHostName InternalDomain OpenShiftPublicURL AppPublicURL UserName Password repo_user reoi_token windows_interface";echo "allinone.sh openshift winnode01 ncc9.com openshift.ncc9.com apps.openshift.com glennswest SuperLamb1 person@redhat.com TOKEN Ethernet0";exit
+if [ $# -ne 9 ]
+   then echo;echo "allinone.sh ----- HELP ------";echo "allinone arguments required";echo "allinone.sh LinuxHostName WindowsHostName InternalDomain OpenShiftPublicURL AppPublicURL UserName Password repo_user reoi_token windows_interface";echo "allinone.sh openshift winnode01 ncc9.com openshift.ncc9.com apps.openshift.com glennswest SuperLamb1 person@redhat.com TOKEN";exit
 fi
 
 export LinuxHostName=$1
@@ -14,7 +14,6 @@ export thePassword=$7
 export auth_user=$8
 export auth_password=$9
 # 310
-export WindowsNicName=${10}
 export theRepo="https://github.com/openshift/openshift-windows"
 export AUSERNAME=$theUserName
 export LinuxInternalIP=`nslookup $LinuxHostName | awk '/^Address: / { print $2 ; exit }'`
@@ -133,9 +132,6 @@ openshift_master_manage_htpasswd=false
 openshift_master_default_subdomain=$AppPublicURL
 openshift_use_dnsmasq=true
 openshift_public_hostname=$OpenShiftPublicURL
-# define windows nic
-windows_nic=${WindowsNicName}
-
 
 [masters]
 $LinuxHostName openshift_host_name=$LinuxHostNam

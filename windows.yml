@@ -4,40 +4,6 @@
   vars:
      user: "{{lookup('env','USER')}}"
   tasks:
-  - name: Install HyperV
-    win_shell: Install-WindowsFeature -Name Hyper-V, RSAT-Hyper-V-Tools
-    ignore_errors: yes
-
-  - name: Install the Nuget provider
-    win_shell: Find-PackageProvider -Name "Nuget" | Install-PackageProvider -Verbose -Force
-    ignore_errors: yes
-
-  - name: Install Package Manager Provider
-    win_shell: Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
-
-  - name: Install Docker Provider
-    win_shell: Install-Package -Name docker -ProviderName DockerMsftProvider -Confirm
-
-  - name: Install Docker
-    win_shell: Install-Package Docker -ProviderName DockerMsftProvider -Force
-
-  - name: Windows Update
-    win_shell: Install-Package PSWindowsUpdate -Force
-
-  - name: Enable Docker
-    win_shell: Set-Service docker -StartupType Automatic
-
-  - name: Do updates
-    win_shell: Get-WUInstall -AcceptAll
-
-  - name: Restart Windows Nodes
-    win_reboot:
-        reboot_timeout: 3600
-
-  - name: Sleep a while to make sure we are done with restart from update
-    pause:
-       minutes: 1
-
   - name: ensure docker is running
     win_shell: Start-Service docker
 
@@ -117,16 +83,6 @@
   - name: Start ovs service
     win_shell: Start-Service ovs-vswitchd
 
-# Modify the docker-create file to reflect the defined adapter
-- hosts: localhost
-  gather_facts: false
-  tasks:
-   - name: replace nic adapter with correct
-     replace:
-       path: ./bin/docker-create.ps1
-       regexp: 'Ethernet0'
-       replace: "{{ windows_nic }}"
-
 # Setup the network on windows machines
 - hosts: windows
   gather_facts: no
@@ -136,12 +92,6 @@
     win_shell: expanddisk.ps1
     args:
       chdir: c:\k\hybrid\bin
-
-  - name: move the node files
-    win_copy:
-      src: ./bin/docker-create.ps1
-      dest: c:\k\hybrid\bin\docker-create.ps1
-      force: yes
 
   - name: Prepare to create docker network
     win_scheduled_task:
