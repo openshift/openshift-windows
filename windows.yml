@@ -9,7 +9,7 @@
     ignore_errors: yes
 
   - name: Install the Nuget provider
-    win_shell: Install-PackageProvider -Name NuGet -Force
+    win_shell: Find-PackageProvider -Name "Nuget" | Install-PackageProvider -Verbose -Force
     ignore_errors: yes
 
   - name: Install Package Manager Provider
