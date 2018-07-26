@@ -4,6 +4,13 @@
   vars:
      user: "{{lookup('env','USER')}}"
   tasks:
+  - name: Enable ping
+    win_shell:  netsh advfirewall firewall add rule name="Allow incoming ping requests IPv4" dir=in action=allow protocol=icmpv4
+
+  - name: Disable IPv6
+    win_shell: Get-NetAdapterBinding -ComponentID 'ms_tcpip6' | disable-NetAdapterBinding -ComponentID ms_tcpip6 -PassThru
+    ignore_errors: yes
+
   - name: Install HyperV
     win_shell: Install-WindowsFeature -Name Hyper-V, RSAT-Hyper-V-Tools
     ignore_errors: yes
