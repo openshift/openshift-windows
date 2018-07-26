@@ -1,50 +1,110 @@
-# openshift-windows
-Windows Nodes in OpenShift
+# OpenShift and Windows
 
-This current is tested on Vmware, with two machines, one running OpenShift 3.9 on RHEL 7.5.
-A full openshift subscription is required.
+## TODO on this README
+* Change links to OCP 3.10 when it's out
+* Remove need to switch branches when 3.10 goes out
+* Remove static hostnames referenced everywhere
+* Ensure allinone.sh command is correct
 
-The Windows Node is Windows Server Core 1709.
-The Windows node requires it to be enabled for Ansible.
-bin/winansible.ps1 set's up the windows node for ansible.
+## Tested Configurations
 
-How to Use:
+This has been tested on the following platforms:
+* Vmware
+* RHV
+* KVM
 
-##Repos for Openshift Windows:
+The following versions of softare were tested:
+* OpenShift 3.10
+* RHEL 7.5
+* Windows Server Core 1709
+* Windows Kubelet 1.10.5
+* Ansible 2.4.6
 
-Supported
-http:/github.com/glennswest/openshift-windows
-Upstream:
-http://github.com/glennswest/hybrid
+The following node count was tested:
+* One OpenShift Master node
+* One Microsoft Windows node
 
-Requirements:
-1. Linux node with host name set, and static ip, and a proper search domain
-2. Windows node with a hostname set, and dhcp that returns same ip all the time, matching hostname.
-3. The windows node must have the correct host name, make sure you rename it.
+The following repo is used here:
 
-Overview:
-1. Install two nodes, one with RHEL 7.5 and one with Windows 1703.
-2. Setup DNS for both nodes, and search domain so the hosts can be found by both there short name, and there fully qualified name.
-3. Make sure the windows node can use DHCP to find its IP address.
-4. Make sure the Mac address is unique for the windows node in the first 5 bytes.
-5. Login to root, and install git
-6. git clone repo
-7. cd repo (Either hybrid or opepnshift-windows)
-8. Run allinone.sh
+* https://github.com/openshift/openshift-windows
+
+## Requirements
+
+We have attempted to automate many of the tasks required to implement this integration. However, there are some steps and requirements that must be fulfilled manually. These are listed below.
+
+* OpenShift subscription
+* One node provisioned with RHEL 7.5
+* One node provisioned with Windows Server Core 1709
+* Linux node with host name set, and static ip, and a proper search domain
+* Windows node should be configured to use DHCP, which provides a static IP and hostname
+* Make sure the Mac address is unique for the windows node in the first 5 bytes.
+* The RHEL 7.5 system must be subscribed to the proper repositories, as listed in the [OpenShift Documentation](https://access.redhat.com/documentation/en-us/openshift_container_platform/3.9/html/installation_and_configuration/installing-a-cluster#host-registration).
+* The RHEL 7.5 system must have a valid SSH key, as listed in the [OpenShift Documentation](https://access.redhat.com/documentation/en-us/openshift_container_platform/3.9/html/installation_and_configuration/installing-a-cluster#ensuring-host-access)
+* You must have full DNS resolution for both nodes. You can refere to the [OpenShift Documentation](https://access.redhat.com/documentation/en-us/openshift_container_platform/3.9/html/installation_and_configuration/installing-a-cluster#envirornment-requirements). In addition, you *must* ensure that your short, local hostname and public hostname match.
+* Your hostname must not exceed 32 characters
 
 
-./allinone.sh LinuxHostName WindowsHostName InternalDomain OpenShiftPublicURL AppPublicURL UserName Password
+## Installation Instructions 
 
-Arguments Examples:
+### Pre-Requisites
 
-Linux Host Name - node01 or openshift or linuxnode
-Windows Host Name: winnode01 or windows 
-Internal Domain: ncc9.com
-Openshift Public URL: openshift.ncc9.com
-App Public URL: example: app.openshift.ncc9.com
-Username:  example: openshift
-Password:  SuperSecret
+Log into the RHEL 7.5 host, update and reboot
 
+```
+yum -y update; reboot
+```
+
+Confirm DNS is working properly
+
+```
+# nslookup <hostname>
+# nslookup <fqdn>
+```
+
+### Install OpenShift
+
+We will first acquire the scripts to automate simple Linux/Windows clusters.  Then we will install OpenShift via the allinone.sh script.
+
+```
+# cd ~; mkdir ovn; cd ovn
+# yum -y install git ansible bash-completion
+# git clone https://github.com/openshift/openshift-windows.git
+# git checkout origin/3.10
+# cd openshift-windows
+# standalone/3.10/allinone.sh LinuxHostName WindowsHostName InternalDomain OpenShiftPublicURL AppPublicURL UserName Password
+```
+
+Example list of arguments for the `allinone.sh` script
+* Linux Host Name - node01 or openshift or linuxnode
+* Windows Host Name: winnode01 or windows 
+* Internal Domain: ncc9.com
+* Openshift Public URL: openshift.ncc9.com
+* App Public URL: example: app.openshift.ncc9.com
+* Username:  example: openshift
+* Password:  SuperSecret
+
+
+
+
+### Install the OVN Network
+
+We need to give OpenShift an overlay network. Windows Containers will not work with OVS.  OpenShift is moving to OVN in the first quarter of next year. Install the OVN network binaries and software.
+
+```
+# ansible-playbook ovn_presetup.yml
+```
+
+Tell OpenShift to use the OVN network.
+
+```
+# ansible-playbook ovn_postsetup.yml
+```
+
+### Prepare the Windows Node
+
+TBD
+
+## Legacy Steps that need to be cleaned up once it's all figured out.
 
 9. cd ..
 10. Run ansible-playbook ovn-presetup.yml
