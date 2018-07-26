@@ -48,10 +48,31 @@
   - name: ensure docker is running
     win_shell: Start-Service docker
 
-  - name: Pull down windowsservercore 1709
+  - name: Pull down external windowsservercore 1709
     win_shell: docker pull microsoft/windowsservercore:1709
     async: 3600
     poll: 5
+    when: lab is not defined
+
+  - name: add insecure registry
+    win_copy: 
+      src: daemon.json
+      dest: C:\ProgramData\docker\config\daemon.json
+    when: lab is defined
+
+  - name: ensure docker is running
+    win_shell: Stop-Service docker
+    when: lab is defined
+
+  - name: ensure docker is running
+    win_shell: Start-Service docker
+    when: lab is defined
+
+  - name: Pull down internal windowsservercore 1709
+    win_shell: docker pull docker-registry.engineering.redhat.com/windows/windowsservercore:1709
+    async: 3600
+    poll: 5
+    when: lab is defined
 
   - name: Tag The image
     win_shell: docker tag microsoft/windowsservercore:1709 microsoft/windowsservercore:latest
