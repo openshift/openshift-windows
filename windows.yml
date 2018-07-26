@@ -76,6 +76,11 @@
 
   - name: Tag The image
     win_shell: docker tag microsoft/windowsservercore:1709 microsoft/windowsservercore:latest
+    when: lab is not defined
+
+  - name: Tag The image
+    win_shell: docker tag docker-registry.engineering.redhat.com/windows/windowsservercore:1709 microsoft/windowsservercore:latest
+    when: lab is defined
 
 - hosts: windows
   gather_facts: no
