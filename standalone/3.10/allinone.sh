@@ -49,8 +49,8 @@ swapoff -a
 subscription-manager repos --disable="*"
 subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-fast-datapath-rpms" --enable="rhel-7-server-ansible-2.4-rpms"
 yum -y update
-yum -y install gcc wget git net-tools git net-tools bind-utils iptables-services bridge-utils bash-completion httpd-tools nodejs qemu-img kexec-tools sos psacct docker-1.13.1 ansible
-yum -y install docker-1.13.1
+yum -y install --disablerepo="epel" gcc wget git net-tools git net-tools bind-utils iptables-services bridge-utils bash-completion httpd-tools nodejs qemu-img kexec-tools sos psacct docker-1.13.1 ansible
+yum -y install --disablerepo="epel" docker-1.13.1
 yum -y install PyYAML
 rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum -y install --enablerepo="epel" jq
