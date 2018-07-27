@@ -7,10 +7,6 @@
   - name: Enable HyperV
     win_shell: Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All -NoRestart
 
-  - name: Restart Windows Nodes
-    win_reboot:
-        reboot_timeout: 3600
-
   - name: Enable ping
     win_shell:  netsh advfirewall firewall add rule name="Allow incoming ping requests IPv4" dir=in action=allow protocol=icmpv4
 
@@ -50,7 +46,7 @@
 
   - name: Sleep a while to make sure we are done with restart from update
     pause:
-       minutes: 1
+       minutes: 3
 
   - name: ensure docker is running
     win_shell: Start-Service docker
