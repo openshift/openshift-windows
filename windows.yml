@@ -46,7 +46,7 @@
 
   - name: Sleep a while to make sure we are done with restart from update
     pause:
-       minutes: 3
+       minutes: 4
 
   - name: ensure docker is running
     win_shell: Start-Service docker
