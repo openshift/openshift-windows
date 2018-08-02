@@ -1,0 +1,431 @@
+- hosts: masters[0]
+  become: yes
+  become_user: root
+  tasks:
+  - name: Wait for api
+    uri: 
+       url: "https://{{inventory_hostname}}:8443/api"
+       validate_certs: False
+    register: result
+    until: ('status' in result) and (result.status == 200 or result.status == 401)
+    retries: 60000
+    delay: 10
+    changed_when: false
+- hosts: localhost
+  become: yes
+  become_user: root
+  tasks:
+  - name: Get server url
+    shell: "oc whoami --show-server"
+    register: api_url
+  - local_action: copy content="{{ api_url.stdout }}" dest="{{playbook_dir}}/api_host.txt"
+- hosts: masters[0]
+  become: yes
+  become_user: root
+  tasks:
+  - name: Create the ovn scc account
+    shell: oc create serviceaccount ovn
+    ignore_errors: yes
+  - name: Add the cluster role
+    shell: oc adm policy add-cluster-role-to-user cluster-admin -z ovn
+  - name: Add the anyid field
+    shell:  oc adm policy add-scc-to-user anyuid -z ovn
+  - name: Save the token for later usage
+    shell: oc sa get-token ovn
+    register: ovn_key
+  - local_action: copy content={{ ovn_key.stdout }} dest="{{playbook_dir}}/ovn.token"
+- hosts: masters[0]
+  become: yes
+  become_user: root
+  tasks:
+  - name: Get the /etc/origin/master/ca.crt
+    fetch:
+          src: /etc/origin/master/ca.crt
+          dest: "{{playbook_dir}}/"
+          flat: yes
+- hosts: nodes
+  become: yes
+  become_user: root
+  tasks:
+  - name: Create the master directory 
+    file: path=/etc/origin/master state=directory
+  - name: Place Crt 
+    copy:
+       src: "{{playbook_dir}}/ca.crt"
+       dest: /etc/origin/master
+       mode: u+rw
+  - name: Remove old network setup
+    shell: cd /etc/origin/node;sed -i.bak '/networkConfig:/,/nodeName:/{//!d}' node-config.yaml
+  - name: Add new network setup
+    blockinfile:
+       dest: /etc/origin/node/node-config.yaml
+       insertafter: "networkConfig:"
+       create: no
+       block: |
+                 #
+                    mtu: 1450
+                    networkPluginName: cni
+- hosts: nodes
+  become: yes
+  become_user: root
+  serial: 1
+  vars:
+     user: "{{lookup('env','USER')}}"
+     config_dir: "/etc/origin/master"
+     apihost: "{{ lookup('file', '{{playbook_dir}}/api_host.txt') }}"
+  tasks:
+  - debug: msg="User is {{ user }}"
+  - name: Copy token to all masters
+    copy: 
+       src: "{{playbook_dir}}/ovn.token"
+       dest: "{{ config_dir }}/ovn.token"
+  - name: Create systemd file for ovn-kubernetes node
+    blockinfile:
+      dest: /etc/systemd/system/ovn-kubernetes-node.service
+      create: yes
+      block: |
+        [Unit]
+        Description=Setup for ovn-kubernetes Node
+
+        [Service]
+        Type=simple
+        ExecStart=/bin/bash /usr/local/bin/ovn-kubernetes-node.sh
+
+        [Install]
+        WantedBy=multi-user.target
+
+  - name: Create systemd file for ovn-kubernetes master
+    blockinfile:
+      dest: /etc/systemd/system/ovn-kubernetes-master.service
+      create: yes
+      block: |
+        [Unit]
+        Description=Setup for ovn-kubernetes master
+
+        [Service]
+        Type=simple
+        ExecStart=/bin/bash /usr/local/bin/ovn-kubernetes-master.sh
+
+        [Install]
+        WantedBy=multi-user.target
+        #WantedBy=openshift-master.service
+        #WantedBy=ovn-kubernetes-master-setup.service
+
+  - name: Clear any previous ovn-kubernetes-master.sh
+    file: path=/usr/local/bin/ovn-kubernetes-master.sh state=absent
+  - name: Create ovn-kubernetes-master.sh 
+    blockinfile:
+      dest: /usr/local/bin/ovn-kubernetes-master.sh
+      create: yes
+      mode: u+rwx
+      block: |
+
+         set -o errexit
+         set -o nounset
+         set -o pipefail
+
+         function ovn-kubernetes-master() {
+            local config_dir=$1
+            token=$(cat ${config_dir}/ovn.token)
+
+            local master_config="${config_dir}/master-config.yaml"
+            cluster_cidr="10.128.0.0/14"
+            apiserver="{{lookup('file', '{{playbook_dir}}/api_host.txt')}}" 
+
+            echo "Enabling and start ovn-kubernetes master services"
+            /usr/bin/ovnkube \
+                 --k8s-apiserver "${apiserver}" \
+                 --k8s-cacert "${config_dir}/ca.crt" \
+                 --k8s-token "${token}" \
+                 --cluster-subnet "${cluster_cidr}" \
+                 --nb-address "tcp://{{lookup('dig',inventory_hostname)}}:6641" \
+                  -sb-address "tcp://{{lookup('dig',inventory_hostname)}}:6642" \
+                  --init-master `hostname` \
+                  --service-cluster-ip-range=172.30.0.0/16 \
+                  --net-controller
+         }
+         ovn-kubernetes-master "{{ config_dir }}"
+  - name: Create ovn-kubernetes-node.sh 
+    blockinfile:
+      dest: /usr/local/bin/ovn-kubernetes-node.sh
+      create: yes
+      mode: u+rwx
+      block: |
+
+         set -o errexit
+         set -o nounset
+         set -o pipefail
+
+         function ovn-kubernetes-node() {
+            local config_dir=$1
+            token=$(cat ${config_dir}/ovn.token)
+
+            apiserver="{{lookup('file', '{{playbook_dir}}/api_host.txt')}}" 
+            cluster_cidr="10.128.0.0/14"
+
+            echo "Enabling and start ovn-kubernetes node services"
+            /usr/bin/ovnkube \
+                 --k8s-apiserver "${apiserver}" \
+                 --k8s-cacert "${config_dir}/ca.crt" \
+                 --k8s-token "${token}" \
+                 --cluster-subnet "${cluster_cidr}" \
+                 --nb-address "tcp://{{lookup('dig',inventory_hostname)}}:6641" \
+                 --sb-address "tcp://{{lookup('dig',inventory_hostname)}}:6642" \
+                 --init-gateways \
+                 --service-cluster-ip-range=172.30.0.0/16 \
+                 --init-node `hostname`  \
+                 --gateway-localnet
+         }
+         ovn-kubernetes-node "{{ config_dir }}"
+
+  - name: Clear old config file
+    file: path=/etc/openvswitch/ovn_k8s.conf state=absent
+  - name: Create openvswitch /etc directory
+    file: path=/etc/openvswitch state=directory
+  - name: Create /etc/openvswitch/ovn_k8s.conf
+    blockinfile:
+      dest: /etc/openvswitch/ovn_k8s.conf
+      create: yes
+      block: |
+         [logging]
+         #loglevel=5
+         #logfile=/var/log/ovnkube.log
+         #https://gswmon.southcentralus.cloudapp.azure.com:8443
+         [kubernetes]
+         apiserver="{{lookup('file', '{{playbook_dir}}/api_host.txt')}}"  # kubernetes api server, or the load balanced address for the multiple api server case
+         token="{{lookup('file', '{{playbook_dir}}/ovn.token')}}"
+         cacert=/etc/origin/master/ca.crt
+
+         [ovnnorth]
+         address="tcp://{{lookup('dig',inventory_hostname)}}:6641" # this master machine's IP address
+
+         [ovnsouth]
+         address="tcp://{{lookup('dig',inventory_hostname)}}:6642"
+  - name: open firewall 6641
+    shell: iptables -A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 6641 -j ACCEPT
+  - name: open firewall 6642
+    shell: iptables -A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 6642 -j ACCEPT
+  - name: open firewall 6081
+    shell: iptables -A OS_FIREWALL_ALLOW -p udp -m state --state NEW -m udp --dport 6081 -j ACCEPT
+  - name: Save iptables rules
+    shell: service iptables save
+  - name: enable ovsdb-server
+    service:
+        name: ovsdb-server
+        state: started
+        enabled: yes
+  - name: enable ovn-northd
+    service:
+        name: ovn-northd
+        state: started
+        enabled: yes
+  - name: Start openvswitch
+    service:
+        name: openvswitch
+        state: started
+        enabled: yes
+  - name: Start ovn-controller
+    service:
+        name: ovn-controller
+        state: started
+        enabled: yes
+  - name: enable ovn-kubernetes-master.service
+    service:
+        name: ovn-kubernetes-master.service
+        state: stopped
+        enabled: no
+  - name: enable ovn-kubernetes-node.service
+    service:
+        name: ovn-kubernetes-node.service
+        state: stopped
+        enabled: no
+- hosts: masters
+  become: yes
+  become_user: root
+  tasks:
+  - name: Create destination directory
+    file: path=/etc/cni/net.d state=directory
+  - name: Create cni config
+    copy:
+      dest: /etc/cni/net.d/10-ovn-kubernetes.conf
+      content: |
+               {"name":"ovn-kubernetes", "type":"ovn-k8s-cni-overlay"}
+  - name: Remove old network setup
+    shell: cd /etc/origin/master;sed -i.bak '/networkConfig:/,/oauthConfig:/{//!d}' master-config.yaml
+  - name: Add new network setup
+    blockinfile:
+       dest: /etc/origin/master/master-config.yaml
+       insertafter: "networkConfig:"
+       create: no
+       block: |
+                 #
+                   clusterNetworkCIDR: 10.128.0.0/14
+                   clusterNetworks:
+                   - cidr: 10.128.0.0/14
+                     hostSubnetLength: 9
+                   externalIPNetworkCIDRs: null
+                   hostSubnetLength: 9
+                   ingressIPNetworkCIDR: 172.29.0.0/16
+                   networkPluginName: cni
+                   serviceNetworkCIDR: 172.30.0.0/16
+  - name: restart atomic-openshift-master-controllers
+    shell: systemctl restart atomic-openshift-master-controllers
+  - name: restart atomic-openshift-master-api
+    shell: systemctl restart atomic-openshift-master-api
+- hosts: nodes
+  become: yes
+  become_user: root
+  tasks:
+  - name: add --disable proxy to sysconfig/atomic-openshift-node file
+    lineinfile:
+       path: /etc/systemd/system/atomic-openshift-node.service
+       regexp: '^ExecStart='
+       line: 'ExecStart=/usr/bin/openshift start node --disable proxy --config=${CONFIG_FILE} $OPTIONS'
+       backup: yes
+  - name: Reload the atomic-openshift-node service file
+    shell: systemctl daemon-reload
+  - name: Clear old rules
+    shell: iptables -t nat -F
+  - name: restart atomic-openshift-node
+    shell: systemctl restart  atomic-openshift-node
+- hosts: nodes[0]
+  tasks:
+  - name: Grab /etc/openvswitch/ovn_k8s.conf
+    fetch: 
+      src:  /etc/openvswitch/ovn_k8s.conf
+      dest: /tmp/ovn_k8s.conf
+      flat: yes
+- hosts: nodes:!masters[0]
+  become: yes
+  become_user: root
+  tasks:
+  - name: enable ovn-kubernetes-node.service
+    service:
+        name: ovn-kubernetes-node.service
+        enabled: yes
+  - name: Start ovn-kubernetes-node
+    shell: systemctl start ovn-kubernetes-node
+- hosts: masters[0]
+  become: yes
+  become_user: root
+  tasks:
+  - name: enable ovn-kubernetes-master.service
+    service:
+        name: ovn-kubernetes-master.service
+        state: started
+        enabled: yes
+  - name: enable ovn-kubernetes-node.service
+    service:
+        name: ovn-kubernetes-node.service
+        state: started
+        enabled: yes
+  - name: Start ovn-kubernetes-master
+    shell: systemctl start ovn-kubernetes-master
+  - name: pause so ovn-kube master can start up
+    pause:
+       minutes: 1
+  - name: Start ovn-kubernetes-node
+    shell: systemctl start ovn-kubernetes-node
+  - name: Let the network setup and become stable
+    pause:
+       minutes: 2
+- hosts: localhost
+  become: yes
+  become_user: root
+  vars:
+     user: "{{lookup('env','USER')}}"
+  tasks:
+  - name: Get server url
+    shell: "oc whoami --show-server"
+    register: api_url
+  - local_action: copy content="{{ api_url.stdout }}" dest=/tmp/api_host.txt
+# Recreate the openshift router and registry
+- hosts: localhost
+  gather_facts: no
+  tasks:
+  - name: delete the docker-registry
+    shell: oc delete dc/docker-registry
+    ignore_errors: yes
+  - name: delete the po/docker-registry-1-deploy 
+    shell: oc delete po/docker-registry-1-deploy 
+    ignore_errors: yes
+  - name: delete the router
+    shell: oc delete dc/router
+    ignore_errors: yes
+  - name: delete svc router
+    shell: oc delete svc/router
+    ignore_errors: yes
+  - name: delete router service account
+    shell: oc delete sa router
+    ignore_errors: yes
+  - name: delete registry service account
+    shell: oc delete sa registry
+    ignore_errors: yes
+  - name: delete the cluster role for router
+    shell: oc delete clusterrolebindings router-router-role
+    ignore_errors: yes
+  - name: delete the cluster role for registry
+    shell: oc delete clusterrolebindings registry-registry-role
+    ignore_errors: yes
+  - name: delete svc docker-registry
+    shell: oc delete svc/docker-registry
+    ignore_errors: yes
+  - name: Wait for cleanup
+    pause:
+       minutes: 4
+  - name: Restart ovn_kubernetes_node
+    shell: systemctl restart ovn-kubernetes-node
+  - name: Wait for cleanup
+    pause:
+       minutes: 2
+# Sometimes after delete we loose a ovn-kube process
+- hosts: nodes
+  become: yes
+  become_user: root
+  serial: 1
+  tasks:
+  - name: Start ovn-kubernetes-node
+    shell: systemctl restart ovn-kubernetes-node
+- hosts: localhost
+  gather_facts: no
+  tasks:
+  - name: Recreate the router
+    shell: oc adm policy add-scc-to-user hostnetwork -z router;oc adm router --selector='region=infra'
+  - name: Recreate the registry
+    shell: oc adm registry
+  - name: Recreate the webconsole
+    shell: oc login -u system:admin;oc create namespace openshift-web-console;oc process -f console-template.yaml -p "API_SERVER_CONFIG=$(cat console-config.yaml)" | oc apply -n openshift-web-console -f -
+# Recreate the openshift-web-console
+- hosts: localhost
+  become: yes
+  become_user: root
+  vars:
+     user: "{{lookup('env','USER')}}"
+     config_dir: "/etc/origin/master"
+     apihost: "{{ lookup('file', '/tmp/api_host.txt') }}"
+  tasks:
+  - name: fix PublicConsoleUrl
+    lineinfile:
+       path: "{{playbook_dir}}/console-config.yaml"
+       regexp: '^  consolePublicURL:'
+       line: '  consolePublicURL: {{apihost}}/console/'
+       backup: yes
+  - name: fix MasterPublicURL
+    lineinfile:
+       path: "{{playbook_dir}}/console-config.yaml"
+       regexp: '^  masterPublicURL:'
+       line: '  masterPublicURL: {{apihost}}'
+       backup: yes
+  - name: Login to Openshift
+    shell: oc login -u system:admin
+  - name: Delete Existing openshift-web-console
+    shell: oc delete project openshift-web-console
+  - name: Wait for delete to finish
+    pause:
+      minutes: 3
+  - name: Create New Project and Make sure the selector is empty
+    shell: oc adm new-project openshift-web-console --node-selector=''
+  - name: Create the New OpenShift Web Console
+    shell: oc process -f console-template.yaml -p "API_SERVER_CONFIG=$(cat console-config.yaml)" | oc apply -n openshift-web-console -f -
+
+
