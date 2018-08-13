@@ -10,7 +10,7 @@ export OpenShiftPublicURL=$4
 export AppPublicURL=$5
 export theUserName=$6
 export thePassword=$7
-export theRepo="https://github.com/glennswest/hybrid"
+export theRepo="https://github.com/openshift/openshift-windows"
 export AUSERNAME=$theUserName
 export LinuxInternalIP=`nslookup $LinuxHostName | awk '/^Address: / { print $2 ; exit }'`
 export WindowsInternalIP=`nslookup $WindowsHostName | awk '/^Address: / { print $2 ; exit }'`
@@ -46,10 +46,12 @@ swapoff -a
 subscription-manager repos --disable="*"
 subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-fast-datapath-rpms" --enable="rhel-7-server-ose-3.9-rpms" --enable="rhel-7-server-ansible-2.4-rpms"
 yum -y update
-yum -y install wget git net-tools atomic-openshift-utils git net-tools bind-utils iptables-services bridge-utils bash-completion httpd-tools nodejs qemu-img kexec-tools sos psacct docker-1.13.1 ansible
+yum -y install gcc wget git net-tools atomic-openshift-utils git net-tools bind-utils iptables-services bridge-utils bash-completion httpd-tools nodejs qemu-img kexec-tools sos psacct docker-1.13.1 ansible libffi-devel yum-utils
 yum install -y atomic-openshift-utils
 yum -y install docker-1.13.1
 yum -y install PyYAML
+yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum-config-manager --disable epel
 yum -y install --enablerepo="epel" jq
 systemctl enable docker
 systemctl start docker
