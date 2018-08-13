@@ -32,6 +32,7 @@ Overview:
 7. cd repo (Either hybrid or opepnshift-windows)
 8. Run allinone.sh
 
+Important Note: The Windows Node must run on a physical box, or a environment that supports nested virt, with passthru configured on the VM. 
 
 ./allinone.sh LinuxHostName WindowsHostName InternalDomain OpenShiftPublicURL AppPublicURL UserName Password
 
@@ -61,3 +62,6 @@ Password:  SuperSecret
 13. copy the group_vars/windows.example to group_vars/windows
 14. Add a user name and password to group_vars/windows
 15. ansible-playbook windows.yml
+
+## Known Issues:
+1. After installation, restart of ovn-kubernnets-master may be required
