@@ -652,7 +652,7 @@
       "properties" : {
         "securityRules" : [
           {
-            "name" : "default-allow-openshift-router-https",
+            "name" : "openshift-router-https",
             "properties" : {
               "protocol" : "Tcp",
               "sourcePortRange" : "*",
@@ -665,7 +665,7 @@
             }
           },
           {
-            "name" : "default-allow-openshift-router-http\n",
+            "name" : "openshift-router-http\n",
             "properties" : {
               "protocol" : "Tcp",
               "sourcePortRange" : "*",
