@@ -665,7 +665,7 @@
             }
           },
           {
-            "name" : "openshift-router-http\n",
+            "name" : "openshift-router-http",
             "properties" : {
               "protocol" : "Tcp",
               "sourcePortRange" : "*",
