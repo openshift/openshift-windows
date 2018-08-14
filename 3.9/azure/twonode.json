@@ -193,6 +193,7 @@
     "branch" : "master",
     "version" : "3.7",
     "baseTemplateUrl" : "[concat('https://raw.githubusercontent.com/',variables('gituser'),'/openshift-windows/',variables('branch'),'/azure/',variables('version'),'/')]",
+    "baseVMachineTemplateUriWinNode" : "[concat(variables('baseTemplateUrl'), 'nodewin.json')]",
     "location" : "[resourceGroup().location]",
     "virtualNetworkName" : "openshiftVnet",
     "addressPrefix" : "10.0.0.0/16",
