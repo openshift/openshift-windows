@@ -732,7 +732,7 @@
       "apiVersion" : "2015-01-01",
       "dependsOn" : [
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-        "[concat('Microsoft.Storage/storageAccounts/', variables('nodeStorageName'))]"
+        "[concat('Microsoft.Storage/storageAccounts/', variables('StorageAccountName'))]"
       ],
       "properties" : {
         "templateLink" : {
@@ -744,7 +744,7 @@
             "value" : "winnode01\n"
           },
           "sa" : {
-            "value" : "[variables('nodeStorageName')]"
+            "value" : "[variables('StorageAccountName')]"
           },
           "subnetRef" : {
             "value" : "[variables('nodeSubnetRef')]"
