@@ -178,7 +178,7 @@
     "gituser" : "openshift",
     "branch" : "master",
     "version" : "3.7",
-    "baseTemplateUrl" : "[concat('https://raw.githubusercontent.com/',variables('gituser'),'/openshift-ansible-contrib/',variables('branch'),'/reference-architecture/azure-ansible/',variables('version'),'/')]",
+    "baseTemplateUrl" : "[concat('https://raw.githubusercontent.com/',variables('gituser'),'/openshift-windows/',variables('branch'),'/azure/',variables('version'),'/')]",
     "location" : "[resourceGroup().location]",
     "virtualNetworkName" : "openshiftVnet",
     "addressPrefix" : "10.0.0.0/16",
@@ -637,7 +637,7 @@
           ]
         },
         "protectedSettings" : {
-          "commandToExecute" : "[ concat('bash allinone.sh ', resourceGroup().name, ' ', resourceGroup().name, ' ',  parameters('adminUsername'), ' ', parameters('adminPassword'), ' ', reference(variables('publicIPAddressName')).dnsSettings.fqdn, ' ', '0', ' ', reference('onevmPublicIP').ipAddress, ' ', parameters('RHNUserName'), ' ', parameters('RHNPassword'),' ', parameters('SubscriptionPoolId'), ' ',  variables('sQuote'),  parameters('sshPrivateData'), variables('sQuote'),  ' ', variables('sQuote'), parameters('sshKeyData'), variables('sQuote'),' ',variables('registryStorageName'),' ',listKeys(resourceId('Microsoft.Storage/storageAccounts',variables('registryStorageName')),'2015-06-15').key1,' ',variables('location'),' ',variables('subscriptionid'),' ',variables('tenantid'),' ',parameters('aadclientid'),' ',parameters('aadclientsecret'),' ', variables('rhsmmode'),' ',parameters('metrics'),' ',parameters('logging'),' ',parameters('opslogging'))]"
+          "commandToExecute" : "[ concat('bash twonode.sh ', resourceGroup().name, ' ', resourceGroup().name, ' ',  parameters('adminUsername'), ' ', parameters('adminPassword'), ' ', reference(variables('publicIPAddressName')).dnsSettings.fqdn, ' ', '0', ' ', reference('onevmPublicIP').ipAddress, ' ', parameters('RHNUserName'), ' ', parameters('RHNPassword'),' ', parameters('SubscriptionPoolId'), ' ',  variables('sQuote'),  parameters('sshPrivateData'), variables('sQuote'),  ' ', variables('sQuote'), parameters('sshKeyData'), variables('sQuote'),' ',variables('registryStorageName'),' ',listKeys(resourceId('Microsoft.Storage/storageAccounts',variables('registryStorageName')),'2015-06-15').key1,' ',variables('location'),' ',variables('subscriptionid'),' ',variables('tenantid'),' ',parameters('aadclientid'),' ',parameters('aadclientsecret'),' ', variables('rhsmmode'),' ',parameters('metrics'),' ',parameters('logging'),' ',parameters('opslogging'))]"
         }
       }
     },
