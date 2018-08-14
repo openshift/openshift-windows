@@ -33,8 +33,9 @@
     },
     "vmSize" : {
       "type" : "string",
-      "defaultValue" : "Standard_DS4_v2",
+      "defaultValue" : "Standard_B8ms",
       "allowedValues" : [
+        "Standard_B8ms",
         "Standard_A2",
         "Standard_A3",
         "Standard_A4",
