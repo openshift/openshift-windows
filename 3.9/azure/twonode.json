@@ -176,8 +176,9 @@
     },
     "winVMSize" : {
       "type" : "string",
-      "defaultValue" : "Standard_DS4_v2",
+      "defaultValue" : "Standard_B8ms",
       "allowedValues" : [
+        "Standard_B8ms",
         "Standard_D8_v3",
         "Standard_D4_v3",
         "Standard_D16_v3",
@@ -208,6 +209,9 @@
     },
     "baseVMachineTemplateUriOneVm" : "[concat(variables('baseTemplateUrl'), 'onevm.json')]",
     "vmSizesMap" : {
+      "Standard_B8ms" : {
+        "storageAccountType" : "Standard_LRS"
+      },
       "Standard_A2" : {
         "storageAccountType" : "Standard_LRS"
       },
