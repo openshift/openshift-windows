@@ -207,7 +207,7 @@
       "sku" : "7-RAW",
       "version" : "latest"
     },
-    "baseVMachineTemplateUriOneVm" : "[concat(variables('baseTemplateUrl'), 'onevm.json')]",
+    "baseVMachineTemplateUriOneVm" : "[concat(variables('baseTemplateUrl'), 'twonode.json')]",
     "vmSizesMap" : {
       "Standard_B8ms" : {
         "storageAccountType" : "Standard_LRS"
@@ -659,7 +659,7 @@
         "autoUpgradeMinorVersion" : true,
         "settings" : {
           "fileUris" : [
-            "[concat(variables('baseTemplateUrl'), 'allinone.sh')]"
+            "[concat(variables('baseTemplateUrl'), 'twonode.sh')]"
           ]
         },
         "protectedSettings" : {
