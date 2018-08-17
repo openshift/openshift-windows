@@ -33,7 +33,7 @@
     },
     "vmSize" : {
       "type" : "string",
-      "defaultValue" : "Standard_B8ms",
+      "defaultValue" : "Standard_B4ms",
       "allowedValues" : [
         "Standard_B8ms",
         "Standard_A2",
@@ -97,7 +97,8 @@
         "Standard_GS2",
         "Standard_GS3",
         "Standard_GS4",
-        "Standard_GS5"
+        "Standard_GS5",
+        "Standard_B4ms"
       ],
       "metadata" : {
         "description" : "The size of the each Node Virtual Machine."
