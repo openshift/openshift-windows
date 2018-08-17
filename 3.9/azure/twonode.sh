@@ -159,3 +159,4 @@ else
    subscription-manager register --org="${RHNUSERNAME}" --activationkey="${RHNPASSWORD}"
 fi
 subscription-manager attach --pool=$RHNPOOLID
+exit 0
