@@ -427,7 +427,7 @@
     "apiVersionStorage" : "2015-06-15",
     "apiVersionLinkTemplate" : "2015-01-01",
     "StorageAccountName" : "[concat('samas', resourceGroup().name)]",
-    "nicName" : "OneVmNic",
+    "nicName" : "OpenShiftNic",
     "publicIPAddressName" : "onevmPublicIP",
     "publicIPAddressType" : "Dynamic",
     "subnetRef" : "[concat(variables('vnetID'),'/subnets/',variables('virtualNetworkName'))]",
@@ -440,7 +440,8 @@
       "offer" : "WindowsServerSemiAnnual",
       "sku" : "Datacenter-Core-1709-with-Containers-smalldisk",
       "version" : "latest"
-    }
+    },
+    "WinnicName" : "WindowsNic"
   },
   "resources" : [
     {
@@ -733,45 +734,100 @@
       }
     },
     {
-      "name" : "[concat(resourceGroup().name,'win')]",
-      "type" : "Microsoft.Resources/deployments",
-      "apiVersion" : "2015-01-01",
+      "apiVersion" : "2017-04-01",
+      "type" : "Microsoft.Network/networkInterfaces",
+      "name" : "[variables('WinnicName')]",
+      "location" : "[resourceGroup().location]",
       "dependsOn" : [
-        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-        "[concat('Microsoft.Storage/storageAccounts/', variables('StorageAccountName'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
       ],
       "properties" : {
-        "templateLink" : {
-          "uri" : "[variables('baseVMachineTemplateUriWinNode')]",
-          "contentVersion" : "1.0.0.0"
+        "ipConfigurations" : [
+          {
+            "name" : "ipconfig1",
+            "properties" : {
+              "privateIPAllocationMethod" : "Dynamic",
+              "subnet" : {
+                "id" : "[variables('subnetRef')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion" : "2017-03-30",
+      "type" : "Microsoft.Compute/virtualMachines",
+      "name" : "[resourceGroup().name]",
+      "location" : "[resourceGroup().location]",
+      "dependsOn" : [
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('StorageAccountName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces/', variables('WinnicName'))]"
+      ],
+      "properties" : {
+        "hardwareProfile" : {
+          "vmSize" : "[parameters('winVMSize')]"
         },
-        "parameters" : {
-          "vmName" : {
-            "value" : "winnode01"
+        "osProfile" : {
+          "computerName" : "[resourceGroup().name]",
+          "adminUsername" : "[parameters('adminUsername')]",
+          "adminPassword" : "[parameters('adminPassword')]"
+        },
+        "storageProfile" : {
+          "imageReference" : "[variables('windows')]",
+          "osDisk" : {
+            "caching" : "ReadWrite",
+            "vhd" : {
+              "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, '.vhd')]"
+            },
+            "name" : "osdisk",
+            "createOption" : "FromImage",
+            "diskSizeGB" : "192"
           },
-          "sa" : {
-            "value" : "[variables('StorageAccountName')]"
-          },
-          "subnetRef" : {
-            "value" : "[variables('subnetRef')]"
-          },
-          "vmSize" : {
-            "value" : "[parameters('winVMSize')]"
-          },
-          "adminUsername" : {
-            "value" : "[parameters('adminUsername')]"
-          },
-          "adminPassword" : {
-            "value" : "[parameters('adminPassword')]"
-          },
-          "sshKeyData" : {
-            "value" : "[parameters('sshKeyData')]"
-          },
-          "baseTemplateUrl" : {
-            "value" : "[variables('baseTemplateUrl')]"
-          },
-          "imageReference" : {
-            "value" : "[variables('windows')]"
+          "dataDisks" : [
+            {
+              "caching" : "None",
+              "createOption" : "Empty",
+              "diskSizeGB" : "128",
+              "lun" : 0,
+              "name" : "datadisk0",
+              "vhd" : {
+                "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, '_datadisk0.vhd')]"
+              }
+            },
+            {
+              "caching" : "None",
+              "createOption" : "Empty",
+              "diskSizeGB" : "128",
+              "lun" : 1,
+              "name" : "datadisk1",
+              "vhd" : {
+                "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, '_datadisk1.vhd')]"
+              }
+            },
+            {
+              "caching" : "None",
+              "createOption" : "Empty",
+              "diskSizeGB" : "512",
+              "lun" : 2,
+              "name" : "datadisk2",
+              "vhd" : {
+                "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, '_datadisk2.vhd')]"
+              }
+            }
+          ]
+        },
+        "networkProfile" : {
+          "networkInterfaces" : [
+            {
+              "id" : "[resourceId('Microsoft.Network/networkInterfaces',variables('WinnicName'))]"
+            }
+          ]
+        },
+        "diagnosticsProfile" : {
+          "bootDiagnostics" : {
+            "enabled" : "false",
+            "storageUri" : "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2016-01-01').primaryEndpoints.blob)]"
           }
         }
       }
