@@ -747,7 +747,7 @@
         },
         "parameters" : {
           "vmName" : {
-            "value" : "winnode01\n"
+            "value" : "winnode01"
           },
           "sa" : {
             "value" : "[variables('StorageAccountName')]"
