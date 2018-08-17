@@ -46,13 +46,10 @@
       "type" : "Microsoft.Network/networkInterfaces",
       "name" : "[concat(parameters('vmName'), 'nic')]",
       "location" : "[resourceGroup().location]",
-      "tags" : {
-        "displayName" : "NetworkInterface"
-      },
       "properties" : {
         "ipConfigurations" : [
           {
-            "name" : "ipconfig1",
+            "name" : "ipconfigwin",
             "properties" : {
               "privateIPAllocationMethod" : "Dynamic",
               "subnet" : {
@@ -68,9 +65,6 @@
       "type" : "Microsoft.Compute/virtualMachines",
       "name" : "[parameters('vmName')]",
       "location" : "[resourceGroup().location]",
-      "tags" : {
-        "displayName" : "VirtualMachine"
-      },
       "dependsOn" : [
         "[concat('Microsoft.Network/networkInterfaces/', concat(parameters('vmName'), 'nic'))]"
       ],
@@ -131,9 +125,6 @@
       "name" : "[concat(parameters('vmName'),'/installcustomscript')]",
       "apiVersion" : "2015-06-15",
       "location" : "[resourceGroup().location]",
-      "tags" : {
-        "displayName" : "VirtualMachineCustomScriptExtension"
-      },
       "dependsOn" : [
         "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
       ],
