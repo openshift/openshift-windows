@@ -783,7 +783,7 @@
           "osDisk" : {
             "caching" : "ReadWrite",
             "vhd" : {
-              "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, '.vhd')]"
+              "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, 'win.vhd')]"
             },
             "name" : "osdisk",
             "createOption" : "FromImage",
@@ -795,9 +795,9 @@
               "createOption" : "Empty",
               "diskSizeGB" : "128",
               "lun" : 0,
-              "name" : "datadisk0",
+              "name" : "datadiskwin0",
               "vhd" : {
-                "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, '_datadisk0.vhd')]"
+                "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, '_datadisk0win.vhd')]"
               }
             },
             {
@@ -805,9 +805,9 @@
               "createOption" : "Empty",
               "diskSizeGB" : "128",
               "lun" : 1,
-              "name" : "datadisk1",
+              "name" : "datadiskwin1",
               "vhd" : {
-                "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, '_datadisk1.vhd')]"
+                "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, '_datadisk1win.vhd')]"
               }
             },
             {
@@ -815,9 +815,9 @@
               "createOption" : "Empty",
               "diskSizeGB" : "512",
               "lun" : 2,
-              "name" : "datadisk2",
+              "name" : "datadiskwin2",
               "vhd" : {
-                "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, '_datadisk2.vhd')]"
+                "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, '_datadisk2win.vhd')]"
               }
             }
           ]
