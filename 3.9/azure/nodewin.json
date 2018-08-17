@@ -42,7 +42,7 @@
   },
   "resources" : [
     {
-      "apiVersion" : "[variables('apiVersion')]",
+      "apiVersion" : "2017-04-01",
       "type" : "Microsoft.Network/networkInterfaces",
       "name" : "[concat(parameters('vmName'), 'nic')]",
       "location" : "[resourceGroup().location]",
