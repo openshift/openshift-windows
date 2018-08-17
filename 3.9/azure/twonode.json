@@ -758,7 +758,7 @@
     {
       "apiVersion" : "2017-03-30",
       "type" : "Microsoft.Compute/virtualMachines",
-      "name" : "[resourceGroup().name]",
+      "name" : "[concat(resourceGroup().name,'win')]",
       "location" : "[resourceGroup().location]",
       "dependsOn" : [
         "[resourceId('Microsoft.Storage/storageAccounts/', variables('StorageAccountName'))]",
