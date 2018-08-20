@@ -749,7 +749,7 @@
       "properties" : {
         "ipConfigurations" : [
           {
-            "name" : "ipconfig1",
+            "name" : "ipconfig2",
             "properties" : {
               "privateIPAllocationMethod" : "Dynamic",
               "subnet" : {
@@ -774,7 +774,7 @@
           "vmSize" : "[parameters('winVMSize')]"
         },
         "osProfile" : {
-          "computerName" : "[resourceGroup().name]",
+          "computerName" : "[concat(resourceGroup().name,'win')]",
           "adminUsername" : "[parameters('adminUsername')]",
           "adminPassword" : "[parameters('adminPassword')]"
         },
