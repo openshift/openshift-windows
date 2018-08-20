@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if mkdir ~/allinone.lock; then
+if mkdir ~/twonode.lock; then
   echo "Locking succeeded" >&2
 else
   echo "Lock failed - exit" >&2
@@ -60,7 +60,7 @@ echo $AADCLIENTSECRET
 
 domain=$(grep search /etc/resolv.conf | awk '{print $2}')
 
-ps -ef | grep allinone.sh > cmdline.out
+ps -ef | grep twonode.sh > cmdline.out
 
 systemctl enable dnsmasq.service
 systemctl start dnsmasq.service
@@ -162,11 +162,26 @@ subscription-manager attach --pool=$RHNPOOLID
 yum -y install git
 cd /home/${AUSERNAME}
 git clone https://github.com/glennswest/openshift-windows
+
+cat <<EOF >> /home/${AUSERNAME}/openshift_windows/3.9/group_vars/windows.yml
+ansible_user: ${AUSERNAME}
+ansible_password: ${PASSWORD}
+ansible_port: 5985
+ansible_connection: winrm
+# The following is necessary for Python 2.7.9+ (or any older Python that has backported SSLContext, eg, Python 2.7.5 on RHEL7) when using default WinRM self-signed certificates:
+ansible_winrm_server_cert_validation: ignore
+EOF
+
 cat <<EOF > /home/${AUSERNAME}/install.sh
 cd /home/${AUSERNAME}/openshift-windows
 cd 3.9
 cd standalone
 ./allinone.sh ${RESOURCEGROUP} ${RESOURCEGROUP}win ${FULLDOMAIN} ${WILDCARDFQDN} ${WILDCARDNIP} ${AUSERNAME} ${PASSWORD} 
+cd ..
+ansible-playbook ovn_presetup.yml
+ansible-playbook ovn_postsetup.yml
+ansible-playbook windows.yml
 EOF
 chmod +x /home/${AUSERNAME}/install.sh
+/home/${AUSERNAME}/install.sh &> /home/${AUSERNAME}/install.out &
 exit 0
