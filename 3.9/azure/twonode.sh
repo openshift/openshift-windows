@@ -159,4 +159,14 @@ else
    subscription-manager register --org="${RHNUSERNAME}" --activationkey="${RHNPASSWORD}"
 fi
 subscription-manager attach --pool=$RHNPOOLID
+yum -y install git
+cd /home/${AUSERNAME}
+git clone https://github.com/glennswest/openshift-windows
+cat <<EOF > /home/${AUSERNAME}/install.sh
+cd /home/${AUSERNAME}/openshift-windows
+cd 3.9
+cd standalone
+./allinone.sh ${RESOURCEGROUP} ${RESOURCEGROUP}win ${FULLDOMAIN} ${WILDCARDFQDN} ${WILDCARDNIP} ${AUSERNAME} ${PASSWORD} 
+EOF
+chmod +x /home/${AUSERNAME}/install.sh
 exit 0
