@@ -173,6 +173,35 @@ ansible_connection: winrm
 ansible_winrm_server_cert_validation: ignore
 EOF
 
+cat <<EOF > /home/${AUSERNAME}/.ansible.cfg
+[defaults]
+remote_tmp     = ~/.ansible/tmp
+local_tmp      = ~/.ansible/tmp
+host_key_checking = False
+forks=30
+gather_timeout=60
+timeout=240
+library = /usr/share/ansible:/usr/share/ansible/openshift-ansible/library
+[ssh_connection]
+control_path = ~/.ansible/cp/ssh%%h-%%p-%%r
+ssh_args = -o ControlMaster=auto -o ControlPersist=600s -o ControlPath=~/.ansible/cp-%h-%p-%r
+EOF
+chown ${AUSERNAME} /home/${AUSERNAME}/.ansible.cfg
+
+cat <<EOF > /root/.ansible.cfg
+[defaults]
+remote_tmp     = ~/.ansible/tmp
+local_tmp      = ~/.ansible/tmp
+host_key_checking = False
+forks=30
+gather_timeout=60
+timeout=240
+library = /usr/share/ansible:/usr/share/ansible/openshift-ansible/library
+[ssh_connection]
+control_path = ~/.ansible/cp/ssh%%h-%%p-%%r
+ssh_args = -o ControlMaster=auto -o ControlPersist=600s -o ControlPath=~/.ansible/cp-%h-%p-%r
+EOF
+
 cat <<EOF > /home/${AUSERNAME}/install.sh
 cd /home/${AUSERNAME}/openshift-windows
 cd 3.9
@@ -184,5 +213,8 @@ ansible-playbook ovn_postsetup.yml
 ansible-playbook windows.yml
 EOF
 chmod +x /home/${AUSERNAME}/install.sh
-/home/${AUSERNAME}/install.sh &> /home/${AUSERNAME}/install.out &
+chown ${AUSERNAME} /home/${AUSERNAME}/.ansible.cfg
+chown ${AUSERNAME} /home/${AUSERNAME}/install.sh
+chown -R ${AUSERNAME} /home/${AUSERNAME}/openshift-windows
+sudo ${AUSERNAME} /home/${AUSERNAME}/install.sh &> /home/${AUSERNAME}/install.out &
 exit 0
