@@ -159,6 +159,7 @@ else
    subscription-manager register --org="${RHNUSERNAME}" --activationkey="${RHNPASSWORD}"
 fi
 subscription-manager attach --pool=$RHNPOOLID
+yum-config-manager --disable rhel-7-server-htb-rpms || true 
 yum -y install git
 cd /home/${AUSERNAME}
 git clone https://github.com/glennswest/openshift-windows
