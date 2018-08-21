@@ -206,7 +206,7 @@ cat <<EOF > /home/${AUSERNAME}/install.sh
 cd /home/${AUSERNAME}/openshift-windows
 cd 3.9
 cd standalone
-ssh -o StrictHostKeyChecking=no root@{RESOURCEGROUP} ls 
+ssh -o StrictHostKeyChecking=no root@${RESOURCEGROUP} ls 
 ./allinone.sh ${RESOURCEGROUP} ${RESOURCEGROUP}win ${FULLDOMAIN} ${WILDCARDFQDN} ${WILDCARDNIP} ${AUSERNAME} ${PASSWORD} 
 cd ..
 ansible-playbook ovn_presetup.yml
