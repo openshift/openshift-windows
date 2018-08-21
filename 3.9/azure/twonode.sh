@@ -164,7 +164,7 @@ yum -y install git
 cd /home/${AUSERNAME}
 git clone https://github.com/glennswest/openshift-windows
 
-cat <<EOF > /home/${AUSERNAME}/openshift_windows/3.9/group_vars/windows.yml
+cat <<EOF > /home/${AUSERNAME}/openshift-windows/3.9/group_vars/windows.yml
 ansible_user: ${AUSERNAME}
 ansible_password: ${PASSWORD}
 ansible_port: 5985
