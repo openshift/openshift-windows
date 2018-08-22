@@ -855,7 +855,7 @@
         "autoUpgradeMinorVersion" : true,
         "settings" : {
           "fileUris" : [
-            "[concat(parameters('baseTemplateUrl'), 'nodewin.ps1')]"
+            "[concat(variables('baseTemplateUrl'), 'nodewin.ps1')]"
           ]
         },
         "protectedSettings" : {
