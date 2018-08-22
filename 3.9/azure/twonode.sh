@@ -169,7 +169,7 @@ ansible_user: ${AUSERNAME}
 ansible_password: ${PASSWORD}
 ansible_port: 5985
 ansible_connection: winrm
-ansible_winrm_read_timeout_sec: 95
+ansible_winrm_read_timeout_sec: 600
 # The following is necessary for Python 2.7.9+ (or any older Python that has backported SSLContext, eg, Python 2.7.5 on RHEL7) when using default WinRM self-signed certificates:
 ansible_winrm_server_cert_validation: ignore
 EOF
