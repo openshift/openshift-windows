@@ -177,7 +177,7 @@
     },
     "winVMSize" : {
       "type" : "string",
-      "defaultValue" : "Standard_B4ms",
+      "defaultValue" : "Standard_D4_v3",
       "allowedValues" : [
         "Standard_D4_v3",
         "Standard_B8ms",
