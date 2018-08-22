@@ -210,6 +210,9 @@ cd 3.9
 cd standalone
 ssh -o StrictHostKeyChecking=no root@${RESOURCEGROUP} ls 
 ./allinone.sh ${RESOURCEGROUP} ${RESOURCEGROUP}win ${LOCAL_DOMAIN} ${WILDCARDFQDN} ${WILDCARDNIP} ${AUSERNAME} ${PASSWORD} 
+mkdir /home/${AUSERNAME}/.kube
+cp /root/.kube/config /home/${AUSERNAME}/.kube/config
+chown -R ${AUSERNAME} /home/.kube
 cd ..
 ansible-playbook ovn_presetup.yml
 ansible-playbook ovn_postsetup.yml
