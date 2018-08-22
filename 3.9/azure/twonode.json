@@ -179,7 +179,7 @@
       "type" : "string",
       "defaultValue" : "Standard_B4ms",
       "allowedValues" : [
-        "Standard_B4ms",
+        "Standard_D4_v3",
         "Standard_B8ms",
         "Standard_D8_v3",
         "Standard_D4_v3",
