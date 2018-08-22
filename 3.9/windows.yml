@@ -241,6 +241,7 @@
       path: /etc/origin/generated-configs
       owner: "{{user}}"
       recurse: yes
+    ignore_errors: yes
   - name: Create windows directory for node files
     file:
          path: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows"
