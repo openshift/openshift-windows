@@ -846,7 +846,7 @@
         "displayName" : "VirtualMachineCustomScriptExtension"
       },
       "dependsOn" : [
-        "[concat('Microsoft.Compute/virtualMachines/', resourceGroup(),'win'))]"
+        "[concat('Microsoft.Compute/virtualMachines/', resourceGroup(),'win')]"
       ],
       "properties" : {
         "publisher" : "Microsoft.Compute",
