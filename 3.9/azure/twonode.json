@@ -836,6 +836,32 @@
           }
         }
       }
+    },
+    {
+      "type" : "Microsoft.Compute/virtualMachines/extensions",
+      "name" : "[concat(resourceGroup().name,'win','/installcustomscript')]",
+      "apiVersion" : "2015-06-15",
+      "location" : "[resourceGroup().location]",
+      "tags" : {
+        "displayName" : "VirtualMachineCustomScriptExtension"
+      },
+      "dependsOn" : [
+        "[concat('Microsoft.Compute/virtualMachines/', resourceGroup(),'win'))]"
+      ],
+      "properties" : {
+        "publisher" : "Microsoft.Compute",
+        "type" : "CustomScriptExtension",
+        "typeHandlerVersion" : "1.9",
+        "autoUpgradeMinorVersion" : true,
+        "settings" : {
+          "fileUris" : [
+            "[concat(parameters('baseTemplateUrl'), 'nodewin.ps1')]"
+          ]
+        },
+        "protectedSettings" : {
+          "commandToExecute" : "powershell -ExecutionPolicy Unrestricted -File nodewin.ps1"
+        }
+      }
     }
   ],
   "outputs" : {
