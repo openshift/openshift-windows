@@ -33,7 +33,7 @@ echo "thePassword: " $thePassword >> ./parameters.vars
 echo "theRepo: " $theRepo >> ./parameters.vars
 echo "WindowsNicName: " $WindowsNicName >> ./parameters.vars
 
-mkdir /etc/ansible
+mkdir -p /etc/ansible
 cp -f ./parameters.vars /etc/ansible
 
 yum install -y dnsmasq
