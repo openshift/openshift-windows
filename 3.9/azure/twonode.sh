@@ -216,7 +216,7 @@ chown -R ${AUSERNAME} /home/${AUSERNAME}/.kube
 cd ..
 ansible-playbook ovn_presetup.yml
 ansible-playbook ovn_postsetup.yml
-ansible-playbook windows.yml
+#ansible-playbook windows.yml
 EOF
 chmod +x /home/${AUSERNAME}/install.sh
 chown ${AUSERNAME} /home/${AUSERNAME}/.ansible.cfg
