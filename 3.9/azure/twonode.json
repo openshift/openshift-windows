@@ -445,7 +445,7 @@
       "publisher" : "MicrosoftWindowsServer",
       "offer" : "WindowsServerSemiAnnual",
       "sku" : "Datacenter-Core-1709-with-Containers-smalldisk",
-      "version" : "latest"
+      "version" : "1709.0.20180613"
     },
     "WinnicName" : "WindowsNic"
   },
