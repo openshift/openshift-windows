@@ -215,6 +215,7 @@ cp /root/.kube/config /home/${AUSERNAME}/.kube/config
 chown -R ${AUSERNAME} /home/${AUSERNAME}/.kube
 cd ..
 ansible-playbook ovn_presetup.yml
+sleep 45s
 ansible-playbook ovn_postsetup.yml
 #ansible-playbook windows.yml
 EOF
