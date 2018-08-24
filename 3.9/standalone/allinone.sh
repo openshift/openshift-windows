@@ -165,4 +165,4 @@ EOF
 
 chmod +x ~/openshift-install.sh
 ~/openshift-install.sh | tee openshift-install.out
-
+oc adm policy add-cluster-role-to-user cluster-admin ${theUserName}
