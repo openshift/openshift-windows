@@ -160,9 +160,9 @@ ansible-playbook  /usr/share/ansible/openshift-ansible/playbooks/deploy_cluster.
 ansible-playbook  ~/postinstall.yml
 
 yum -y install atomic-openshift-clients
+oc adm policy add-cluster-role-to-user cluster-admin ${theUserName}
 EOF
 
 
 chmod +x ~/openshift-install.sh
 ~/openshift-install.sh | tee openshift-install.out
-oc adm policy add-cluster-role-to-user cluster-admin ${theUserName}

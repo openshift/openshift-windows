@@ -33,8 +33,10 @@
     },
     "vmSize" : {
       "type" : "string",
-      "defaultValue" : "Standard_DS4_v2",
+      "defaultValue" : "Standard_E2_v3",
       "allowedValues" : [
+        "Standard_E2_v3",
+        "Standard_B8ms",
         "Standard_A2",
         "Standard_A3",
         "Standard_A4",
@@ -96,7 +98,8 @@
         "Standard_GS2",
         "Standard_GS3",
         "Standard_GS4",
-        "Standard_GS5"
+        "Standard_GS5",
+        "Standard_B4ms"
       ],
       "metadata" : {
         "description" : "The size of the each Node Virtual Machine."
@@ -172,13 +175,30 @@
       "metadata" : {
         "description" : "Enable OCP aggregated logging for ops"
       }
+    },
+    "winVMSize" : {
+      "type" : "string",
+      "defaultValue" : "Standard_DS4_v2",
+      "allowedValues" : [
+        "Standard_E2_v3",
+        "Standard_B8ms",
+        "Standard_D8_v3",
+        "Standard_D4_v3",
+        "Standard_D16_v3",
+        "Standard_E16_v3",
+        "Standard_DS4_v2"
+      ],
+      "metadata" : {
+        "description" : "The size of the each Node Virtual Machine."
+      }
     }
   },
   "variables" : {
     "gituser" : "openshift",
     "branch" : "master",
-    "version" : "3.7",
-    "baseTemplateUrl" : "[concat('https://raw.githubusercontent.com/',variables('gituser'),'/openshift-ansible-contrib/',variables('branch'),'/reference-architecture/azure-ansible/',variables('version'),'/')]",
+    "version" : "3.9",
+    "baseTemplateUrl" : "[concat('https://raw.githubusercontent.com/',variables('gituser'),'/openshift-windows/',variables('branch'),'/',variables('version'),'/azure/')]",
+    "baseVMachineTemplateUriWinNode" : "[concat(variables('baseTemplateUrl'), 'nodewin.json')]",
     "location" : "[resourceGroup().location]",
     "virtualNetworkName" : "openshiftVnet",
     "addressPrefix" : "10.0.0.0/16",
@@ -190,8 +210,11 @@
       "sku" : "7-RAW",
       "version" : "latest"
     },
-    "baseVMachineTemplateUriOneVm" : "[concat(variables('baseTemplateUrl'), 'onevm.json')]",
+    "baseVMachineTemplateUriOneVm" : "[concat(variables('baseTemplateUrl'), 'twonode.json')]",
     "vmSizesMap" : {
+      "Standard_B8ms" : {
+        "storageAccountType" : "Standard_LRS"
+      },
       "Standard_A2" : {
         "storageAccountType" : "Standard_LRS"
       },
@@ -392,6 +415,9 @@
       },
       "Standard_GS5" : {
         "storageAccountType" : "Premium_LRS"
+      },
+      "Standard_B4ms" : {
+        "storageAccountType" : "Standard_LRS"
       }
     },
     "tenantId" : "[subscription().tenantId]",
@@ -407,14 +433,21 @@
     "apiVersionStorage" : "2015-06-15",
     "apiVersionLinkTemplate" : "2015-01-01",
     "StorageAccountName" : "[concat('samas', resourceGroup().name)]",
-    "nicName" : "OneVmNic",
+    "nicName" : "OpenShiftNic",
     "publicIPAddressName" : "onevmPublicIP",
     "publicIPAddressType" : "Dynamic",
     "subnetRef" : "[concat(variables('vnetID'),'/subnets/',variables('virtualNetworkName'))]",
     "sshKeyPath" : "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
     "publicIpRef" : "[concat('Microsoft.Network/publicIPAddresses/',variables('publicIPAddressName'))]",
     "sQuote" : "\"",
-    "rhsmmode" : "[parameters('rhsmUsernamePasswordOrActivationKey')]"
+    "rhsmmode" : "[parameters('rhsmUsernamePasswordOrActivationKey')]",
+    "windows" : {
+      "publisher" : "MicrosoftWindowsServer",
+      "offer" : "WindowsServerSemiAnnual",
+      "sku" : "Datacenter-Core-1709-with-Containers-smalldisk",
+      "version" : "1709.0.20180613"
+    },
+    "WinnicName" : "WindowsNic"
   },
   "resources" : [
     {
@@ -633,11 +666,11 @@
         "autoUpgradeMinorVersion" : true,
         "settings" : {
           "fileUris" : [
-            "[concat(variables('baseTemplateUrl'), 'allinone.sh')]"
+            "[concat(variables('baseTemplateUrl'), 'twonode.sh')]"
           ]
         },
         "protectedSettings" : {
-          "commandToExecute" : "[ concat('bash allinone.sh ', resourceGroup().name, ' ', resourceGroup().name, ' ',  parameters('adminUsername'), ' ', parameters('adminPassword'), ' ', reference(variables('publicIPAddressName')).dnsSettings.fqdn, ' ', '0', ' ', reference('onevmPublicIP').ipAddress, ' ', parameters('RHNUserName'), ' ', parameters('RHNPassword'),' ', parameters('SubscriptionPoolId'), ' ',  variables('sQuote'),  parameters('sshPrivateData'), variables('sQuote'),  ' ', variables('sQuote'), parameters('sshKeyData'), variables('sQuote'),' ',variables('registryStorageName'),' ',listKeys(resourceId('Microsoft.Storage/storageAccounts',variables('registryStorageName')),'2015-06-15').key1,' ',variables('location'),' ',variables('subscriptionid'),' ',variables('tenantid'),' ',parameters('aadclientid'),' ',parameters('aadclientsecret'),' ', variables('rhsmmode'),' ',parameters('metrics'),' ',parameters('logging'),' ',parameters('opslogging'))]"
+          "commandToExecute" : "[ concat('bash twonode.sh ', resourceGroup().name, ' ', resourceGroup().name, ' ',  parameters('adminUsername'), ' ', parameters('adminPassword'), ' ', reference(variables('publicIPAddressName')).dnsSettings.fqdn, ' ', '0', ' ', reference('onevmPublicIP').ipAddress, ' ', parameters('RHNUserName'), ' ', parameters('RHNPassword'),' ', parameters('SubscriptionPoolId'), ' ',  variables('sQuote'),  parameters('sshPrivateData'), variables('sQuote'),  ' ', variables('sQuote'), parameters('sshKeyData'), variables('sQuote'),' ',variables('registryStorageName'),' ',listKeys(resourceId('Microsoft.Storage/storageAccounts',variables('registryStorageName')),'2015-06-15').key1,' ',variables('location'),' ',variables('subscriptionid'),' ',variables('tenantid'),' ',parameters('aadclientid'),' ',parameters('aadclientsecret'),' ', variables('rhsmmode'),' ',parameters('metrics'),' ',parameters('logging'),' ',parameters('opslogging'))]"
         }
       }
     },
@@ -652,7 +685,7 @@
       "properties" : {
         "securityRules" : [
           {
-            "name" : "default-allow-openshift-router-https",
+            "name" : "openshift-router-https",
             "properties" : {
               "protocol" : "Tcp",
               "sourcePortRange" : "*",
@@ -665,7 +698,7 @@
             }
           },
           {
-            "name" : "default-allow-openshift-router-http\n",
+            "name" : "openshift-router-http",
             "properties" : {
               "protocol" : "Tcp",
               "sourcePortRange" : "*",
@@ -707,40 +740,51 @@
       }
     },
     {
+      "apiVersion" : "2017-04-01",
+      "type" : "Microsoft.Network/networkInterfaces",
+      "name" : "[variables('WinnicName')]",
+      "location" : "[resourceGroup().location]",
+      "dependsOn" : [
+        "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+      ],
+      "properties" : {
+        "ipConfigurations" : [
+          {
+            "name" : "ipconfig2",
+            "properties" : {
+              "privateIPAllocationMethod" : "Dynamic",
+              "subnet" : {
+                "id" : "[variables('subnetRef')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
       "apiVersion" : "2017-03-30",
       "type" : "Microsoft.Compute/virtualMachines",
       "name" : "[concat(resourceGroup().name,'win')]",
       "location" : "[resourceGroup().location]",
       "dependsOn" : [
         "[resourceId('Microsoft.Storage/storageAccounts/', variables('StorageAccountName'))]",
-        "[resourceId('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+        "[resourceId('Microsoft.Network/networkInterfaces/', variables('WinnicName'))]"
       ],
       "properties" : {
         "hardwareProfile" : {
-          "vmSize" : "[parameters('vmSize')]"
+          "vmSize" : "[parameters('winVMSize')]"
         },
         "osProfile" : {
-          "computerName" : "[resourceGroup().name]",
+          "computerName" : "[concat(resourceGroup().name,'win')]",
           "adminUsername" : "[parameters('adminUsername')]",
-          "adminPassword" : "[parameters('adminPassword')]",
-          "linuxConfiguration" : {
-            "disablePasswordAuthentication" : "true",
-            "ssh" : {
-              "publicKeys" : [
-                {
-                  "path" : "[variables('sshKeyPath')]",
-                  "keyData" : "[parameters('sshKeyData')]"
-                }
-              ]
-            }
-          }
+          "adminPassword" : "[parameters('adminPassword')]"
         },
         "storageProfile" : {
-          "imageReference" : "[variables('rhel')]",
+          "imageReference" : "[variables('windows')]",
           "osDisk" : {
             "caching" : "ReadWrite",
             "vhd" : {
-              "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, '.vhd')]"
+              "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, 'win.vhd')]"
             },
             "name" : "osdisk",
             "createOption" : "FromImage",
@@ -752,9 +796,9 @@
               "createOption" : "Empty",
               "diskSizeGB" : "128",
               "lun" : 0,
-              "name" : "datadisk0",
+              "name" : "datadiskwin0",
               "vhd" : {
-                "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, '_datadisk0.vhd')]"
+                "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, '_datadisk0win.vhd')]"
               }
             },
             {
@@ -762,9 +806,9 @@
               "createOption" : "Empty",
               "diskSizeGB" : "128",
               "lun" : 1,
-              "name" : "datadisk1",
+              "name" : "datadiskwin1",
               "vhd" : {
-                "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, '_datadisk1.vhd')]"
+                "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, '_datadisk1win.vhd')]"
               }
             },
             {
@@ -772,9 +816,9 @@
               "createOption" : "Empty",
               "diskSizeGB" : "512",
               "lun" : 2,
-              "name" : "datadisk2",
+              "name" : "datadiskwin2",
               "vhd" : {
-                "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, '_datadisk2.vhd')]"
+                "uri" : "[concat('http://', variables('StorageAccountName'), '.blob.core.windows.net/openshiftvmachines/', resourceGroup().name, '_datadisk2win.vhd')]"
               }
             }
           ]
@@ -782,15 +826,41 @@
         "networkProfile" : {
           "networkInterfaces" : [
             {
-              "id" : "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+              "id" : "[resourceId('Microsoft.Network/networkInterfaces',variables('WinnicName'))]"
             }
           ]
         },
         "diagnosticsProfile" : {
           "bootDiagnostics" : {
-            "enabled" : "false",
+            "enabled" : "true",
             "storageUri" : "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2016-01-01').primaryEndpoints.blob)]"
           }
+        }
+      }
+    },
+    {
+      "type" : "Microsoft.Compute/virtualMachines/extensions",
+      "name" : "[concat(resourceGroup().name, 'win' ,'/installcustomscript')]",
+      "apiVersion" : "2015-06-15",
+      "location" : "[resourceGroup().location]",
+      "tags" : {
+        "displayName" : "VirtualMachineCustomScriptExtension"
+      },
+      "dependsOn" : [
+        "[concat('Microsoft.Compute/virtualMachines/', resourceGroup().name,'win')]"
+      ],
+      "properties" : {
+        "publisher" : "Microsoft.Compute",
+        "type" : "CustomScriptExtension",
+        "typeHandlerVersion" : "1.9",
+        "autoUpgradeMinorVersion" : true,
+        "settings" : {
+          "fileUris" : [
+            "[concat(variables('baseTemplateUrl'), 'nodewin.ps1')]"
+          ]
+        },
+        "protectedSettings" : {
+          "commandToExecute" : "powershell -ExecutionPolicy Unrestricted -File nodewin.ps1"
         }
       }
     }
