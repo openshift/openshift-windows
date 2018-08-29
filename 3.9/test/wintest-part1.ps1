@@ -1,3 +1,4 @@
+mkdir \k
 Install-WindowsFeature -Name Hyper-V, RSAT-Hyper-V-Tools
 Find-PackageProvider -Name "Nuget" | Install-PackageProvider -Verbose -Force
 Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
