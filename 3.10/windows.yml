@@ -310,9 +310,9 @@
     win_shell: "[System.Environment]::SetEnvironmentVariable('KUBECONFIG', 'c:/k/config;c:/k/system-node-1.masters | first }}.kubeconfig', [System.EnvironmentVariableTarget]::Machine)"
   - name: Set kubeconfig
     win_shell: "[System.Environment]::SetEnvironmentVariable('KUBECONFIG', 'c:/k/config;c:/k/system-node-{{ groups.masters | first }}.kubeconfig')"
-  - name: Pull down windowsservercore 1803
+  - name: Pull down windowsservercore 1803 (Note this may take a long time)
     win_shell: docker pull microsoft/windowsservercore:1803
-    async: 3600
+    async: 30000
     poll: 5
   - name: Tag The image
     win_shell: docker tag microsoft/windowsservercore:1803 microsoft/windowsservercore:latest
