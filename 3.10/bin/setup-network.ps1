@@ -18,7 +18,7 @@ ovs-vsctl --no-wait add-port br-ex "$INTERFACE_ALIAS"
 Get-VMSwitch -SwitchType External | Enable-VMSwitchExtension "Cloudbase Open vSwitch Extension"; sleep 2; Restart-Service ovs-vswitchd
 # Clone the MAC Address of $INTERFACE_ALIAS on br-ex
 $MAC_ADDRESS=$(Get-NetAdapter "$INTERFACE_ALIAS").MacAddress
-$FAKE_MAC_ADDRESS=$MAC_ADDRESS.Substring(0,15)+"99"
+$FAKE_MAC_ADDRESS=$MAC_ADDRESS.Substring(0,15)+"90"
 Set-NetAdapter -Name "$INTERFACE_ALIAS" -MacAddress $FAKE_MAC_ADDRESS -Confirm:$false
 Set-NetAdapter -Name br-ex -MacAddress $MAC_ADDRESS -Confirm:$false
 # br-ex will get all the interface details from the DHCP server now
