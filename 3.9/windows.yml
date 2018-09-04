@@ -218,7 +218,7 @@
   - name: Save the token for later usage
     shell: oc sa get-token ovn
     register: ovn_key
-  - local_action: copy content={{ ovn_key.stdout }} dest=/root/ovn.token
+  - local_action: copy content={{ ovn_key.stdout }} dest="{{playbook_dir}}/ovn.token"
 - hosts: 127.0.0.1
   connection: local
   sudo: yes
