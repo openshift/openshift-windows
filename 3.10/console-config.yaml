@@ -1,10 +1,10 @@
 apiVersion: webconsole.config.openshift.io/v1
 kind: WebConsoleConfiguration
 clusterInfo:
-  consolePublicURL: https://openshift.star.k.e2e.bos.redhat.com:8443/console/
+  consolePublicURL: https://openshift.blue.k.e2e.bos.redhat.com:8443/console/
   loggingPublicURL: ""
   logoutPublicURL: ""
-  masterPublicURL: https://openshift.star.k.e2e.bos.redhat.com:8443
+  masterPublicURL: https://openshift.blue.k.e2e.bos.redhat.com:8443
   metricsPublicURL: ""
 extensions:
   scriptURLs: []
