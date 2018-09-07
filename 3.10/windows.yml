@@ -435,7 +435,7 @@
   - name: Start kubeovn
     win_shell: Start-Service kubeovn
   - name: Enable kubelet
-    win_shell: Set-Service kubelet -StartupType Automatic
+    win_shell: Set-Service ocpkubelet -StartupType Automatic
   - name: Start kubelet
     win_shell: Start-Service kubelet
 #Part 3
