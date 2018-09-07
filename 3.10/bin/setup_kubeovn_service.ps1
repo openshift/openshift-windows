@@ -1,5 +1,5 @@
 $powershell = (Get-Command powershell).Source
-$scriptPath = 'C:\k\hybrid\3.9\bin\start_kubeovn.ps1'
+$scriptPath = 'C:\k\hybrid\3.10\bin\start_kubeovn.ps1'
 $arguments = '-ExecutionPolicy Bypass -NoProfile -File "{0}"' -f $scriptPath
 $serviceName = "kubeovn"
 nssm install $serviceName $powershell $arguments
