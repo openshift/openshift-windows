@@ -1,7 +1,7 @@
 $powershell = (Get-Command powershell).Source
 $scriptPath = "C:\k\hybrid\3.10\bin\start_kubelet.ps1"
 $arguments = '-ExecutionPolicy Bypass -NoProfile -File "{0}"' -f $scriptPath
-$serviceName = "kubelet"
+$serviceName = "OcpKubelet"
 nssm install $serviceName $powershell $arguments
 nssm set kubelet DisplayName OcpKubelet
 nssm set kubelet Description Kubelet For OpenShift
