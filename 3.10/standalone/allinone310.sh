@@ -122,6 +122,11 @@ openshift_master_default_subdomain=$AppPublicURL
 openshift_use_dnsmasq=true
 openshift_public_hostname=$OpenShiftPublicURL
 
+[all:vars]
+openshift_master_bootstrap_auto_approve=true
+openshift_master_bootstrap_auto_approver_node_selector={"node-role.kubernetes.io/master":"true"}
+osm_default_node_selector="node-role.kubernetes.io/compute=true"
+
 [masters]
 $LinuxHostName
 
