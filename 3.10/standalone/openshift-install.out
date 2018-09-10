@@ -1,0 +1,3431 @@
+
+PLAY [Initialization Checkpoint Start] *****************************************
+
+TASK [Set install initialization 'In Progress'] ********************************
+ok: [winnode01]
+
+PLAY [Populate config host groups] *********************************************
+
+TASK [Load group name mapping variables] ***************************************
+ok: [localhost]
+
+TASK [Evaluate groups - g_etcd_hosts or g_new_etcd_hosts required] *************
+skipping: [localhost]
+
+TASK [Evaluate groups - g_master_hosts or g_new_master_hosts required] *********
+skipping: [localhost]
+
+TASK [Evaluate groups - g_node_hosts or g_new_node_hosts required] *************
+skipping: [localhost]
+
+TASK [Evaluate groups - g_lb_hosts required] ***********************************
+skipping: [localhost]
+
+TASK [Evaluate groups - g_nfs_hosts required] **********************************
+skipping: [localhost]
+
+TASK [Evaluate groups - g_nfs_hosts is single host] ****************************
+skipping: [localhost]
+
+TASK [Evaluate groups - g_glusterfs_hosts required] ****************************
+skipping: [localhost]
+
+TASK [Evaluate oo_all_hosts] ***************************************************
+ok: [localhost] => (item=openshift)
+
+TASK [Evaluate oo_masters] *****************************************************
+ok: [localhost] => (item=openshift)
+
+TASK [Evaluate oo_first_master] ************************************************
+ok: [localhost]
+
+TASK [Evaluate oo_new_etcd_to_config] ******************************************
+
+TASK [Evaluate oo_masters_to_config] *******************************************
+ok: [localhost] => (item=openshift)
+
+TASK [Evaluate oo_etcd_to_config] **********************************************
+ok: [localhost] => (item=openshift)
+
+TASK [Evaluate oo_first_etcd] **************************************************
+ok: [localhost]
+
+TASK [Evaluate oo_etcd_hosts_to_upgrade] ***************************************
+ok: [localhost] => (item=openshift)
+
+TASK [Evaluate oo_etcd_hosts_to_backup] ****************************************
+ok: [localhost] => (item=openshift)
+
+TASK [Evaluate oo_nodes_to_config] *********************************************
+ok: [localhost] => (item=openshift)
+
+TASK [Evaluate oo_lb_to_config] ************************************************
+
+TASK [Evaluate oo_nfs_to_config] ***********************************************
+
+TASK [Evaluate oo_glusterfs_to_config] *****************************************
+
+TASK [Evaluate oo_etcd_to_migrate] *********************************************
+ok: [localhost] => (item=openshift)
+
+PLAY [Ensure that all non-node hosts are accessible] ***************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+PLAY [Initialize basic host facts] *********************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [openshift_sanitize_inventory : include_tasks] ****************************
+included: /usr/share/ansible/openshift-ansible/roles/openshift_sanitize_inventory/tasks/deprecations.yml for openshift
+
+TASK [openshift_sanitize_inventory : Check for usage of deprecated variables] ***
+ok: [openshift]
+
+TASK [openshift_sanitize_inventory : debug] ************************************
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : set_stats] ********************************
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Assign deprecated variables to correct counterparts] ***
+included: /usr/share/ansible/openshift-ansible/roles/openshift_sanitize_inventory/tasks/__deprecations_logging.yml for openshift
+included: /usr/share/ansible/openshift-ansible/roles/openshift_sanitize_inventory/tasks/__deprecations_metrics.yml for openshift
+
+TASK [openshift_sanitize_inventory : conditional_set_fact] *********************
+ok: [openshift]
+
+TASK [openshift_sanitize_inventory : set_fact] *********************************
+ok: [openshift]
+
+TASK [openshift_sanitize_inventory : conditional_set_fact] *********************
+ok: [openshift]
+
+TASK [openshift_sanitize_inventory : Standardize on latest variable names] *****
+ok: [openshift]
+
+TASK [openshift_sanitize_inventory : Normalize openshift_release] **************
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Abort when openshift_release is invalid] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : include_tasks] ****************************
+included: /usr/share/ansible/openshift-ansible/roles/openshift_sanitize_inventory/tasks/unsupported.yml for openshift
+
+TASK [openshift_sanitize_inventory : Ensure that openshift_use_dnsmasq is true] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Ensure that openshift_node_dnsmasq_install_network_manager_hook is true] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : set_fact] *********************************
+
+TASK [openshift_sanitize_inventory : Ensure that dynamic provisioning is set if using dynamic storage] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Ensure the hosted registry's GlusterFS storage is configured correctly] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Ensure the hosted registry's GlusterFS storage is configured correctly] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Ensure clusterid is set along with the cloudprovider] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Ensure ansible_service_broker_remove and ansible_service_broker_install are mutually exclusive] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Ensure template_service_broker_remove and template_service_broker_install are mutually exclusive] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Ensure that all requires vsphere configuration variables are set] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : ensure provider configuration variables are defined] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Ensure removed web console extension variables are not set] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Ensure that web console port matches API server port] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : At least one master is schedulable] *******
+skipping: [openshift]
+
+TASK [Detecting Operating System from ostree_booted] ***************************
+ok: [openshift]
+
+TASK [set openshift_deployment_type if unset] **********************************
+ok: [openshift]
+
+TASK [check for node already bootstrapped] *************************************
+ok: [openshift]
+
+TASK [initialize_facts set fact openshift_is_bootstrapped] *********************
+ok: [openshift]
+
+TASK [initialize_facts set fact openshift_is_atomic and openshift_is_containerized] ***
+ok: [openshift]
+
+TASK [Determine Atomic Host Docker Version] ************************************
+skipping: [openshift]
+
+TASK [assert atomic host docker version is 1.12 or later] **********************
+skipping: [openshift]
+
+PLAY [Retrieve existing master configs and validate] ***************************
+
+TASK [openshift_control_plane : stat] ******************************************
+ok: [openshift]
+
+TASK [openshift_control_plane : slurp] *****************************************
+ok: [openshift]
+
+TASK [openshift_control_plane : set_fact] **************************************
+ok: [openshift]
+
+TASK [openshift_control_plane : Check for file paths outside of /etc/origin/master in master's config] ***
+ok: [openshift]
+
+TASK [openshift_control_plane : set_fact] **************************************
+ok: [openshift]
+
+TASK [set_fact] ****************************************************************
+ok: [openshift]
+
+TASK [set_fact] ****************************************************************
+ok: [openshift]
+
+TASK [set_fact] ****************************************************************
+skipping: [openshift]
+
+PLAY [Initialize special first-master variables] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [set_fact] ****************************************************************
+ok: [openshift]
+
+TASK [set_fact] ****************************************************************
+ok: [openshift]
+
+PLAY [Disable web console if required] *****************************************
+
+TASK [set_fact] ****************************************************************
+skipping: [openshift]
+
+PLAY [Setup yum repositories for all hosts] ************************************
+
+TASK [rhel_subscribe : fail] ***************************************************
+skipping: [openshift]
+
+TASK [rhel_subscribe : Install Red Hat Subscription manager] *******************
+skipping: [openshift]
+
+TASK [rhel_subscribe : Is host already registered?] ****************************
+skipping: [openshift]
+
+TASK [rhel_subscribe : Register host using user/password] **********************
+skipping: [openshift]
+
+TASK [rhel_subscribe : Register host using activation key] *********************
+skipping: [openshift]
+
+TASK [rhel_subscribe : fail] ***************************************************
+skipping: [openshift]
+
+TASK [rhel_subscribe : Determine if OpenShift Pool Already Attached] ***********
+skipping: [openshift]
+
+TASK [rhel_subscribe : Attach to OpenShift Pool] *******************************
+skipping: [openshift]
+
+TASK [rhel_subscribe : Satellite preparation] **********************************
+skipping: [openshift]
+
+TASK [openshift_repos : openshift_repos detect ostree] *************************
+ok: [openshift]
+
+TASK [openshift_repos : Ensure libselinux-python is installed] *****************
+ok: [openshift]
+
+TASK [openshift_repos : Remove openshift_additional.repo file] *****************
+ok: [openshift]
+
+TASK [openshift_repos : Create any additional repos that are defined] **********
+
+TASK [openshift_repos : include_tasks] *****************************************
+skipping: [openshift]
+
+TASK [openshift_repos : include_tasks] *****************************************
+skipping: [openshift]
+
+TASK [openshift_repos : Ensure clean repo cache in the event repos have been changed manually] ***
+changed: [openshift] => {
+    "msg": "First run of openshift_repos"
+}
+
+TASK [openshift_repos : Record that openshift_repos already ran] ***************
+ok: [openshift]
+
+RUNNING HANDLER [openshift_repos : refresh cache] ******************************
+changed: [openshift]
+
+PLAY [Install packages necessary for installer] ********************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [Determine if chrony is installed] ****************************************
+changed: [openshift]
+
+TASK [Install ntp package] *****************************************************
+ok: [openshift]
+
+TASK [Start and enable ntpd/chronyd] *******************************************
+changed: [openshift]
+
+TASK [Ensure openshift-ansible installer package deps are installed] ***********
+ok: [openshift] => (item=iproute)
+ok: [openshift] => (item=dbus-python)
+ok: [openshift] => (item=PyYAML)
+ok: [openshift] => (item=python-ipaddress)
+ok: [openshift] => (item=libsemanage-python)
+ok: [openshift] => (item=yum-utils)
+ok: [openshift] => (item=python-docker)
+
+PLAY [Initialize cluster facts] ************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [get openshift_current_version] *******************************************
+ok: [openshift]
+
+TASK [set_fact openshift_portal_net if present on masters] *********************
+ok: [openshift]
+
+TASK [Gather Cluster facts] ****************************************************
+changed: [openshift]
+
+TASK [Set fact of no_proxy_internal_hostnames] *********************************
+skipping: [openshift]
+
+TASK [Initialize openshift.node.sdn_mtu] ***************************************
+ok: [openshift]
+
+PLAY [Initialize etcd host variables] ******************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [set_fact] ****************************************************************
+ok: [openshift]
+
+TASK [set_fact] ****************************************************************
+ok: [openshift]
+
+PLAY [Determine openshift_version to configure on first master] ****************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [include_role] ************************************************************
+
+TASK [openshift_version : Use openshift_current_version fact as version to configure if already installed] ***
+ok: [openshift]
+
+TASK [openshift_version : Set openshift_version to openshift_release if undefined] ***
+skipping: [openshift]
+
+TASK [openshift_version : debug] ***********************************************
+ok: [openshift] => {
+    "msg": "openshift_pkg_version was not defined. Falling back to -3.10.34"
+}
+
+TASK [openshift_version : set_fact] ********************************************
+ok: [openshift]
+
+TASK [openshift_version : debug] ***********************************************
+ok: [openshift] => {
+    "msg": "openshift_image_tag was not defined. Falling back to v3.10.34"
+}
+
+TASK [openshift_version : set_fact] ********************************************
+ok: [openshift]
+
+TASK [openshift_version : assert openshift_release in openshift_image_tag] *****
+ok: [openshift] => {
+    "changed": false, 
+    "failed": false, 
+    "msg": "All assertions passed"
+}
+
+TASK [openshift_version : assert openshift_release in openshift_pkg_version] ***
+ok: [openshift] => {
+    "changed": false, 
+    "failed": false, 
+    "msg": "All assertions passed"
+}
+
+TASK [openshift_version : debug] ***********************************************
+ok: [openshift] => {
+    "openshift_release": "3.10"
+}
+
+TASK [openshift_version : debug] ***********************************************
+ok: [openshift] => {
+    "openshift_image_tag": "v3.10.34"
+}
+
+TASK [openshift_version : debug] ***********************************************
+ok: [openshift] => {
+    "openshift_pkg_version": "-3.10.34*"
+}
+
+TASK [openshift_version : debug] ***********************************************
+ok: [openshift] => {
+    "openshift_version": "3.10.34"
+}
+
+TASK [set openshift_version booleans (first master)] ***************************
+ok: [openshift]
+
+PLAY [Set openshift_version for etcd, node, and master hosts] ******************
+skipping: no hosts matched
+
+PLAY [Verify Requirements] *****************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [Run variable sanity checks] **********************************************
+ok: [openshift]
+
+TASK [Validate openshift_node_groups and openshift_node_group_name] ************
+ok: [openshift]
+
+PLAY [Initialization Checkpoint End] *******************************************
+
+TASK [Set install initialization 'Complete'] ***********************************
+ok: [winnode01]
+
+PLAY [Validate node hostnames] *************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [Query DNS for IP address of openshift.green.k.e2e.bos.redhat.com] ********
+ok: [openshift]
+
+TASK [Validate openshift_hostname when defined] ********************************
+skipping: [openshift]
+
+TASK [Validate openshift_ip exists on node when defined] ***********************
+skipping: [openshift]
+
+PLAY [Configure os_firewall] ***************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [os_firewall : Detecting Atomic Host Operating System] ********************
+ok: [openshift]
+
+TASK [os_firewall : Set fact r_os_firewall_is_atomic] **************************
+ok: [openshift]
+
+TASK [os_firewall : Fail - Firewalld is not supported on Atomic Host] **********
+skipping: [openshift]
+
+TASK [os_firewall : Install firewalld packages] ********************************
+skipping: [openshift]
+
+TASK [os_firewall : Ensure iptables services are not enabled] ******************
+skipping: [openshift] => (item=iptables) 
+skipping: [openshift] => (item=ip6tables) 
+
+TASK [os_firewall : Wait 10 seconds after disabling iptables] ******************
+skipping: [openshift]
+
+TASK [os_firewall : Start and enable firewalld service] ************************
+skipping: [openshift]
+
+TASK [os_firewall : need to pause here, otherwise the firewalld service starting can sometimes cause ssh to fail] ***
+skipping: [openshift]
+
+TASK [os_firewall : Restart polkitd] *******************************************
+skipping: [openshift]
+
+TASK [os_firewall : Wait for polkit action to have been created] ***************
+skipping: [openshift]
+
+TASK [os_firewall : Ensure firewalld service is not enabled] *******************
+ok: [openshift]
+
+TASK [os_firewall : Wait 10 seconds after disabling firewalld] *****************
+skipping: [openshift]
+
+TASK [os_firewall : Install iptables packages] *********************************
+ok: [openshift] => (item=iptables)
+ok: [openshift] => (item=iptables-services)
+
+TASK [os_firewall : Start and enable iptables service] *************************
+ok: [openshift -> openshift] => (item=openshift)
+
+TASK [os_firewall : need to pause here, otherwise the iptables service starting can sometimes cause ssh to fail] ***
+skipping: [openshift]
+
+PLAY [oo_nodes_to_config:oo_hosts_containerized_managed_true] ******************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [container_runtime : Setup the docker-storage for overlay] ****************
+skipping: [openshift]
+
+TASK [container_runtime : Create file system on extra volume device] ***********
+
+TASK [container_runtime : Create mount entry for extra volume] *****************
+
+PLAY [oo_nodes_to_config] ******************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [openshift_excluder : Install docker excluder - yum] **********************
+ok: [openshift]
+
+TASK [openshift_excluder : Install docker excluder - dnf] **********************
+skipping: [openshift]
+
+TASK [openshift_excluder : Install openshift excluder - yum] *******************
+skipping: [openshift]
+
+TASK [openshift_excluder : Install openshift excluder - dnf] *******************
+skipping: [openshift]
+
+TASK [openshift_excluder : set_fact] *******************************************
+ok: [openshift]
+
+TASK [openshift_excluder : Check for docker-excluder] **************************
+ok: [openshift]
+
+TASK [openshift_excluder : Enable docker excluder] *****************************
+changed: [openshift]
+
+TASK [openshift_excluder : Check for openshift excluder] ***********************
+ok: [openshift]
+
+TASK [openshift_excluder : Enable openshift excluder] **************************
+skipping: [openshift]
+
+TASK [container_runtime : Getting current systemd-udevd exec command] **********
+ok: [openshift]
+
+TASK [container_runtime : Assure systemd-udevd.service.d directory exists] *****
+ok: [openshift]
+
+TASK [container_runtime : Create systemd-udevd override file] ******************
+ok: [openshift]
+
+TASK [container_runtime : Add enterprise registry, if necessary] ***************
+ok: [openshift]
+
+TASK [container_runtime : Add http_proxy to /etc/atomic.conf] ******************
+skipping: [openshift]
+
+TASK [container_runtime : Add https_proxy to /etc/atomic.conf] *****************
+skipping: [openshift]
+
+TASK [container_runtime : Add no_proxy to /etc/atomic.conf] ********************
+skipping: [openshift]
+
+TASK [container_runtime : Get current installed Docker version] ****************
+ok: [openshift]
+
+TASK [container_runtime : Error out if Docker pre-installed but too old] *******
+skipping: [openshift]
+
+TASK [container_runtime : Error out if requested Docker is too old] ************
+skipping: [openshift]
+
+TASK [container_runtime : Install Docker] **************************************
+skipping: [openshift]
+
+TASK [container_runtime : Ensure docker.service.d directory exists] ************
+ok: [openshift]
+
+TASK [container_runtime : Configure Docker service unit file] ******************
+ok: [openshift]
+
+TASK [container_runtime : stat] ************************************************
+ok: [openshift]
+
+TASK [container_runtime : Set registry params] *********************************
+ok: [openshift] => (item={u'reg_conf_var': u'ADD_REGISTRY', u'reg_flag': u'--add-registry', u'reg_fact_val': [u'registry.access.redhat.com']})
+skipping: [openshift] => (item={u'reg_conf_var': u'BLOCK_REGISTRY', u'reg_flag': u'--block-registry', u'reg_fact_val': []}) 
+skipping: [openshift] => (item={u'reg_conf_var': u'INSECURE_REGISTRY', u'reg_flag': u'--insecure-registry', u'reg_fact_val': []}) 
+
+TASK [container_runtime : Place additional/blocked/insecure registries in /etc/containers/registries.conf] ***
+skipping: [openshift]
+
+TASK [container_runtime : Set Proxy Settings] **********************************
+skipping: [openshift] => (item={u'reg_conf_var': u'HTTP_PROXY', u'reg_fact_val': u''}) 
+skipping: [openshift] => (item={u'reg_conf_var': u'HTTPS_PROXY', u'reg_fact_val': u''}) 
+skipping: [openshift] => (item={u'reg_conf_var': u'NO_PROXY', u'reg_fact_val': u''}) 
+
+TASK [container_runtime : Set various Docker options] **************************
+ok: [openshift]
+
+TASK [container_runtime : stat] ************************************************
+ok: [openshift]
+
+TASK [container_runtime : Configure Docker Network OPTIONS] ********************
+ok: [openshift]
+
+TASK [container_runtime : Detect if docker is already started] *****************
+ok: [openshift]
+
+TASK [container_runtime : Start the Docker service] ****************************
+ok: [openshift]
+
+TASK [container_runtime : set_fact] ********************************************
+ok: [openshift]
+
+TASK [container_runtime : Check for docker_storage_path/overlay2] **************
+ok: [openshift]
+
+TASK [container_runtime : Fixup SELinux permissions for docker] ****************
+changed: [openshift]
+
+TASK [container_runtime : Ensure /var/lib/containers exists] *******************
+ok: [openshift]
+
+TASK [container_runtime : Fix SELinux Permissions on /var/lib/containers] ******
+ok: [openshift]
+
+TASK [container_runtime : Check for credentials file for registry auth] ********
+skipping: [openshift]
+
+TASK [container_runtime : Create credentials for docker cli registry auth] *****
+skipping: [openshift]
+
+TASK [container_runtime : Create credentials for docker cli registry auth (alternative)] ***
+skipping: [openshift]
+
+TASK [container_runtime : stat the docker data dir] ****************************
+ok: [openshift]
+
+TASK [container_runtime : stop the current running docker] *********************
+skipping: [openshift]
+
+TASK [container_runtime : copy "/var/lib/docker" to "/var/lib/containers/docker"] ***
+skipping: [openshift]
+
+TASK [container_runtime : ensure the unmount of top level mount point] *********
+skipping: [openshift]
+
+TASK [container_runtime : Set the selinux context on /var/lib/containers/docker] ***
+skipping: [openshift]
+
+TASK [container_runtime : restorecon the /var/lib/containers/docker] ***********
+skipping: [openshift]
+
+TASK [container_runtime : Remove the old docker location] **********************
+skipping: [openshift]
+
+TASK [container_runtime : Setup the link] **************************************
+skipping: [openshift]
+
+TASK [container_runtime : start docker] ****************************************
+skipping: [openshift]
+
+TASK [container_runtime : Fail if Atomic Host since this is an rpm request] ****
+skipping: [openshift]
+
+TASK [container_runtime : Getting current systemd-udevd exec command] **********
+skipping: [openshift]
+
+TASK [container_runtime : Assure systemd-udevd.service.d directory exists] *****
+skipping: [openshift]
+
+TASK [container_runtime : Create systemd-udevd override file] ******************
+skipping: [openshift]
+
+TASK [container_runtime : Add enterprise registry, if necessary] ***************
+skipping: [openshift]
+
+TASK [container_runtime : Check that overlay is in the kernel] *****************
+skipping: [openshift]
+
+TASK [container_runtime : Add overlay to modprobe.d] ***************************
+skipping: [openshift]
+
+TASK [container_runtime : Manually modprobe overlay into the kernel] ***********
+skipping: [openshift]
+
+TASK [container_runtime : Enable and start systemd-modules-load] ***************
+skipping: [openshift]
+
+TASK [container_runtime : Install cri-o] ***************************************
+skipping: [openshift]
+
+TASK [container_runtime : Remove CRI-O default configuration files] ************
+skipping: [openshift] => (item=/etc/cni/net.d/200-loopback.conf) 
+skipping: [openshift] => (item=/etc/cni/net.d/100-crio-bridge.conf) 
+
+TASK [container_runtime : Create the CRI-O configuration] **********************
+skipping: [openshift]
+
+TASK [container_runtime : Ensure CNI configuration directory exists] ***********
+skipping: [openshift]
+
+TASK [container_runtime : Add iptables allow rules] ****************************
+skipping: [openshift] => (item={u'port': u'10010/tcp', u'service': u'crio'}) 
+
+TASK [container_runtime : Remove iptables rules] *******************************
+
+TASK [container_runtime : Add firewalld allow rules] ***************************
+skipping: [openshift] => (item={u'port': u'10010/tcp', u'service': u'crio'}) 
+
+TASK [container_runtime : Remove firewalld allow rules] ************************
+
+TASK [container_runtime : Configure the CNI network] ***************************
+skipping: [openshift]
+
+TASK [container_runtime : Create /etc/sysconfig/crio-network] ******************
+skipping: [openshift]
+
+TASK [container_runtime : Start the CRI-O service] *****************************
+skipping: [openshift]
+
+TASK [container_runtime : Ensure /var/lib/containers exists] *******************
+skipping: [openshift]
+
+TASK [container_runtime : Fix SELinux Permissions on /var/lib/containers] ******
+skipping: [openshift]
+
+TASK [container_runtime : Check for credentials file for registry auth] ********
+skipping: [openshift]
+
+TASK [container_runtime : Create credentials for docker cli registry auth] *****
+skipping: [openshift]
+
+TASK [container_runtime : Create credentials for docker cli registry auth (alternative)] ***
+skipping: [openshift]
+
+TASK [container_runtime : stat the docker data dir] ****************************
+skipping: [openshift]
+
+TASK [container_runtime : stop the current running docker] *********************
+skipping: [openshift]
+
+TASK [container_runtime : copy "/var/lib/docker" to "/var/lib/containers/docker"] ***
+skipping: [openshift]
+
+TASK [container_runtime : ensure the unmount of top level mount point] *********
+skipping: [openshift]
+
+TASK [container_runtime : Set the selinux context on /var/lib/containers/docker] ***
+skipping: [openshift]
+
+TASK [container_runtime : restorecon the /var/lib/containers/docker] ***********
+skipping: [openshift]
+
+TASK [container_runtime : Remove the old docker location] **********************
+skipping: [openshift]
+
+TASK [container_runtime : Setup the link] **************************************
+skipping: [openshift]
+
+TASK [container_runtime : start docker] ****************************************
+skipping: [openshift]
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=11   changed=0    unreachable=0    failed=0   
+openshift                  : ok=96   changed=7    unreachable=0    failed=0   
+winnode01                  : ok=2    changed=0    unreachable=0    failed=0   
+
+
+INSTALLER STATUS ***************************************************************
+Initialization  : Complete (0:03:01)
+
+PLAY [Initialization Checkpoint Start] *****************************************
+
+TASK [Set install initialization 'In Progress'] ********************************
+ok: [winnode01]
+
+PLAY [Populate config host groups] *********************************************
+
+TASK [Load group name mapping variables] ***************************************
+ok: [localhost]
+
+TASK [Evaluate groups - g_etcd_hosts or g_new_etcd_hosts required] *************
+skipping: [localhost]
+
+TASK [Evaluate groups - g_master_hosts or g_new_master_hosts required] *********
+skipping: [localhost]
+
+TASK [Evaluate groups - g_node_hosts or g_new_node_hosts required] *************
+skipping: [localhost]
+
+TASK [Evaluate groups - g_lb_hosts required] ***********************************
+skipping: [localhost]
+
+TASK [Evaluate groups - g_nfs_hosts required] **********************************
+skipping: [localhost]
+
+TASK [Evaluate groups - g_nfs_hosts is single host] ****************************
+skipping: [localhost]
+
+TASK [Evaluate groups - g_glusterfs_hosts required] ****************************
+skipping: [localhost]
+
+TASK [Evaluate oo_all_hosts] ***************************************************
+ok: [localhost] => (item=openshift)
+
+TASK [Evaluate oo_masters] *****************************************************
+ok: [localhost] => (item=openshift)
+
+TASK [Evaluate oo_first_master] ************************************************
+ok: [localhost]
+
+TASK [Evaluate oo_new_etcd_to_config] ******************************************
+
+TASK [Evaluate oo_masters_to_config] *******************************************
+ok: [localhost] => (item=openshift)
+
+TASK [Evaluate oo_etcd_to_config] **********************************************
+ok: [localhost] => (item=openshift)
+
+TASK [Evaluate oo_first_etcd] **************************************************
+ok: [localhost]
+
+TASK [Evaluate oo_etcd_hosts_to_upgrade] ***************************************
+ok: [localhost] => (item=openshift)
+
+TASK [Evaluate oo_etcd_hosts_to_backup] ****************************************
+ok: [localhost] => (item=openshift)
+
+TASK [Evaluate oo_nodes_to_config] *********************************************
+ok: [localhost] => (item=openshift)
+
+TASK [Evaluate oo_lb_to_config] ************************************************
+
+TASK [Evaluate oo_nfs_to_config] ***********************************************
+
+TASK [Evaluate oo_glusterfs_to_config] *****************************************
+
+TASK [Evaluate oo_etcd_to_migrate] *********************************************
+ok: [localhost] => (item=openshift)
+
+PLAY [Ensure that all non-node hosts are accessible] ***************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+PLAY [Initialize basic host facts] *********************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [openshift_sanitize_inventory : include_tasks] ****************************
+included: /usr/share/ansible/openshift-ansible/roles/openshift_sanitize_inventory/tasks/deprecations.yml for openshift
+
+TASK [openshift_sanitize_inventory : Check for usage of deprecated variables] ***
+ok: [openshift]
+
+TASK [openshift_sanitize_inventory : debug] ************************************
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : set_stats] ********************************
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Assign deprecated variables to correct counterparts] ***
+included: /usr/share/ansible/openshift-ansible/roles/openshift_sanitize_inventory/tasks/__deprecations_logging.yml for openshift
+included: /usr/share/ansible/openshift-ansible/roles/openshift_sanitize_inventory/tasks/__deprecations_metrics.yml for openshift
+
+TASK [openshift_sanitize_inventory : conditional_set_fact] *********************
+ok: [openshift]
+
+TASK [openshift_sanitize_inventory : set_fact] *********************************
+ok: [openshift]
+
+TASK [openshift_sanitize_inventory : conditional_set_fact] *********************
+ok: [openshift]
+
+TASK [openshift_sanitize_inventory : Standardize on latest variable names] *****
+ok: [openshift]
+
+TASK [openshift_sanitize_inventory : Normalize openshift_release] **************
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Abort when openshift_release is invalid] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : include_tasks] ****************************
+included: /usr/share/ansible/openshift-ansible/roles/openshift_sanitize_inventory/tasks/unsupported.yml for openshift
+
+TASK [openshift_sanitize_inventory : Ensure that openshift_use_dnsmasq is true] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Ensure that openshift_node_dnsmasq_install_network_manager_hook is true] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : set_fact] *********************************
+
+TASK [openshift_sanitize_inventory : Ensure that dynamic provisioning is set if using dynamic storage] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Ensure the hosted registry's GlusterFS storage is configured correctly] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Ensure the hosted registry's GlusterFS storage is configured correctly] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Ensure clusterid is set along with the cloudprovider] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Ensure ansible_service_broker_remove and ansible_service_broker_install are mutually exclusive] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Ensure template_service_broker_remove and template_service_broker_install are mutually exclusive] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Ensure that all requires vsphere configuration variables are set] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : ensure provider configuration variables are defined] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Ensure removed web console extension variables are not set] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : Ensure that web console port matches API server port] ***
+skipping: [openshift]
+
+TASK [openshift_sanitize_inventory : At least one master is schedulable] *******
+skipping: [openshift]
+
+TASK [Detecting Operating System from ostree_booted] ***************************
+ok: [openshift]
+
+TASK [set openshift_deployment_type if unset] **********************************
+ok: [openshift]
+
+TASK [check for node already bootstrapped] *************************************
+ok: [openshift]
+
+TASK [initialize_facts set fact openshift_is_bootstrapped] *********************
+ok: [openshift]
+
+TASK [initialize_facts set fact openshift_is_atomic and openshift_is_containerized] ***
+ok: [openshift]
+
+TASK [Determine Atomic Host Docker Version] ************************************
+skipping: [openshift]
+
+TASK [assert atomic host docker version is 1.12 or later] **********************
+skipping: [openshift]
+
+PLAY [Retrieve existing master configs and validate] ***************************
+
+TASK [openshift_control_plane : stat] ******************************************
+ok: [openshift]
+
+TASK [openshift_control_plane : slurp] *****************************************
+ok: [openshift]
+
+TASK [openshift_control_plane : set_fact] **************************************
+ok: [openshift]
+
+TASK [openshift_control_plane : Check for file paths outside of /etc/origin/master in master's config] ***
+ok: [openshift]
+
+TASK [openshift_control_plane : set_fact] **************************************
+ok: [openshift]
+
+TASK [set_fact] ****************************************************************
+ok: [openshift]
+
+TASK [set_fact] ****************************************************************
+ok: [openshift]
+
+TASK [set_fact] ****************************************************************
+skipping: [openshift]
+
+PLAY [Initialize special first-master variables] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [set_fact] ****************************************************************
+ok: [openshift]
+
+TASK [set_fact] ****************************************************************
+ok: [openshift]
+
+PLAY [Disable web console if required] *****************************************
+
+TASK [set_fact] ****************************************************************
+skipping: [openshift]
+
+PLAY [Setup yum repositories for all hosts] ************************************
+skipping: no hosts matched
+
+PLAY [Install packages necessary for installer] ********************************
+
+TASK [Gathering Facts] *********************************************************
+skipping: [openshift]
+
+TASK [Determine if chrony is installed] ****************************************
+skipping: [openshift]
+
+TASK [Install ntp package] *****************************************************
+skipping: [openshift]
+
+TASK [Start and enable ntpd/chronyd] *******************************************
+skipping: [openshift]
+
+TASK [Ensure openshift-ansible installer package deps are installed] ***********
+skipping: [openshift] => (item=iproute) 
+skipping: [openshift] => (item=dbus-python) 
+skipping: [openshift] => (item=PyYAML) 
+skipping: [openshift] => (item=python-ipaddress) 
+skipping: [openshift] => (item=libsemanage-python) 
+skipping: [openshift] => (item=yum-utils) 
+skipping: [openshift] => (item=python-docker) 
+
+PLAY [Initialize cluster facts] ************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [get openshift_current_version] *******************************************
+ok: [openshift]
+
+TASK [set_fact openshift_portal_net if present on masters] *********************
+ok: [openshift]
+
+TASK [Gather Cluster facts] ****************************************************
+ok: [openshift]
+
+TASK [Set fact of no_proxy_internal_hostnames] *********************************
+skipping: [openshift]
+
+TASK [Initialize openshift.node.sdn_mtu] ***************************************
+ok: [openshift]
+
+PLAY [Initialize etcd host variables] ******************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [set_fact] ****************************************************************
+ok: [openshift]
+
+TASK [set_fact] ****************************************************************
+ok: [openshift]
+
+PLAY [Determine openshift_version to configure on first master] ****************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [include_role] ************************************************************
+
+TASK [openshift_version : Use openshift_current_version fact as version to configure if already installed] ***
+ok: [openshift]
+
+TASK [openshift_version : Set openshift_version to openshift_release if undefined] ***
+skipping: [openshift]
+
+TASK [openshift_version : debug] ***********************************************
+ok: [openshift] => {
+    "msg": "openshift_pkg_version was not defined. Falling back to -3.10.34"
+}
+
+TASK [openshift_version : set_fact] ********************************************
+ok: [openshift]
+
+TASK [openshift_version : debug] ***********************************************
+ok: [openshift] => {
+    "msg": "openshift_image_tag was not defined. Falling back to v3.10.34"
+}
+
+TASK [openshift_version : set_fact] ********************************************
+ok: [openshift]
+
+TASK [openshift_version : assert openshift_release in openshift_image_tag] *****
+ok: [openshift] => {
+    "changed": false, 
+    "failed": false, 
+    "msg": "All assertions passed"
+}
+
+TASK [openshift_version : assert openshift_release in openshift_pkg_version] ***
+ok: [openshift] => {
+    "changed": false, 
+    "failed": false, 
+    "msg": "All assertions passed"
+}
+
+TASK [openshift_version : debug] ***********************************************
+ok: [openshift] => {
+    "openshift_release": "3.10"
+}
+
+TASK [openshift_version : debug] ***********************************************
+ok: [openshift] => {
+    "openshift_image_tag": "v3.10.34"
+}
+
+TASK [openshift_version : debug] ***********************************************
+ok: [openshift] => {
+    "openshift_pkg_version": "-3.10.34*"
+}
+
+TASK [openshift_version : debug] ***********************************************
+ok: [openshift] => {
+    "openshift_version": "3.10.34"
+}
+
+TASK [set openshift_version booleans (first master)] ***************************
+ok: [openshift]
+
+PLAY [Set openshift_version for etcd, node, and master hosts] ******************
+skipping: no hosts matched
+
+PLAY [Verify Requirements] *****************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [Run variable sanity checks] **********************************************
+ok: [openshift]
+
+TASK [Validate openshift_node_groups and openshift_node_group_name] ************
+ok: [openshift]
+
+PLAY [Initialization Checkpoint End] *******************************************
+
+TASK [Set install initialization 'Complete'] ***********************************
+ok: [winnode01]
+
+PLAY [Health Check Checkpoint Start] *******************************************
+
+TASK [Set Health Check 'In Progress'] ******************************************
+ok: [winnode01]
+
+PLAY [OpenShift Health Checks] *************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [Run health checks (install) - EL] ****************************************
+
+CHECK [docker_storage : openshift] *********************************************
+
+CHECK [disk_availability : openshift] ******************************************
+
+CHECK [package_availability : openshift] ***************************************
+
+CHECK [package_version : openshift] ********************************************
+
+CHECK [docker_image_availability : openshift] **********************************
+
+CHECK [memory_availability : openshift] ****************************************
+changed: [openshift]
+
+TASK [Run health checks (install) - Fedora] ************************************
+skipping: [openshift]
+
+PLAY [Health Check Checkpoint End] *********************************************
+
+TASK [Set Health Check 'Complete'] *********************************************
+ok: [winnode01]
+
+PLAY [Node Bootstrap Preparation Checkpoint Start] *****************************
+
+TASK [Set Node Bootstrap Preparation 'In Progress'] ****************************
+ok: [winnode01]
+
+PLAY [Only target nodes that have not yet been bootstrapped] *******************
+
+TASK [Gathering Facts] *********************************************************
+ok: [localhost]
+
+TASK [add_host] ****************************************************************
+ok: [localhost] => (item=openshift)
+
+PLAY [Disable excluders] *******************************************************
+skipping: no hosts matched
+
+PLAY [Configure nodes] *********************************************************
+skipping: no hosts matched
+
+PLAY [node bootstrap config] ***************************************************
+skipping: no hosts matched
+
+PLAY [Re-enable excluder if it was previously enabled] *************************
+skipping: no hosts matched
+
+PLAY [Node Bootstrap Preparation Checkpoint End] *******************************
+
+TASK [Set Node Bootstrap Preparation 'Complete'] *******************************
+ok: [winnode01]
+
+PLAY [etcd Install Checkpoint Start] *******************************************
+
+TASK [Set etcd install 'In Progress'] ******************************************
+ok: [winnode01]
+
+PLAY [Generate new etcd CA] ****************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [etcd : include_tasks] ****************************************************
+included: /usr/share/ansible/openshift-ansible/roles/etcd/tasks/certificates/deploy_ca.yml for openshift
+
+TASK [etcd : Install openssl] **************************************************
+ok: [openshift -> openshift]
+
+TASK [etcd : file] *************************************************************
+ok: [openshift -> openshift] => (item=/etc/etcd/ca/certs)
+ok: [openshift -> openshift] => (item=/etc/etcd/ca/crl)
+ok: [openshift -> openshift] => (item=/etc/etcd/ca/fragments)
+
+TASK [etcd : command] **********************************************************
+ok: [openshift -> openshift]
+
+TASK [etcd : template] *********************************************************
+ok: [openshift -> openshift]
+
+TASK [etcd : assemble] *********************************************************
+ok: [openshift -> openshift]
+
+TASK [etcd : Check etcd_ca_db exist] *******************************************
+ok: [openshift -> openshift]
+
+TASK [etcd : Touch etcd_ca_db file] ********************************************
+skipping: [openshift]
+
+TASK [etcd : copy] *************************************************************
+ok: [openshift -> openshift]
+
+TASK [etcd : Create etcd CA certificate] ***************************************
+ok: [openshift -> openshift]
+
+PLAY [Create etcd server certificates for etcd hosts] **************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [etcd : include_tasks] ****************************************************
+included: /usr/share/ansible/openshift-ansible/roles/etcd/tasks/ca.yml for openshift
+
+TASK [etcd : include_tasks] ****************************************************
+included: /usr/share/ansible/openshift-ansible/roles/etcd/tasks/certificates/deploy_ca.yml for openshift
+
+TASK [etcd : Install openssl] **************************************************
+ok: [openshift -> openshift]
+
+TASK [etcd : file] *************************************************************
+ok: [openshift -> openshift] => (item=/etc/etcd/ca/certs)
+ok: [openshift -> openshift] => (item=/etc/etcd/ca/crl)
+ok: [openshift -> openshift] => (item=/etc/etcd/ca/fragments)
+
+TASK [etcd : command] **********************************************************
+ok: [openshift -> openshift]
+
+TASK [etcd : template] *********************************************************
+ok: [openshift -> openshift]
+
+TASK [etcd : assemble] *********************************************************
+ok: [openshift -> openshift]
+
+TASK [etcd : Check etcd_ca_db exist] *******************************************
+ok: [openshift -> openshift]
+
+TASK [etcd : Touch etcd_ca_db file] ********************************************
+skipping: [openshift]
+
+TASK [etcd : copy] *************************************************************
+ok: [openshift -> openshift]
+
+TASK [etcd : Create etcd CA certificate] ***************************************
+ok: [openshift -> openshift]
+
+TASK [etcd : include_tasks] ****************************************************
+included: /usr/share/ansible/openshift-ansible/roles/etcd/tasks/certificates/fetch_server_certificates_from_ca.yml for openshift
+
+TASK [etcd : Install etcd] *****************************************************
+skipping: [openshift]
+
+TASK [etcd : Check status of etcd certificates] ********************************
+ok: [openshift] => (item=/etc/etcd/server.crt)
+ok: [openshift] => (item=/etc/etcd/peer.crt)
+ok: [openshift] => (item=/etc/etcd/ca.crt)
+
+TASK [etcd : set_fact] *********************************************************
+ok: [openshift]
+
+TASK [etcd : Ensure generated_certs directory present] *************************
+skipping: [openshift]
+
+TASK [etcd : Create the server csr] ********************************************
+skipping: [openshift]
+
+TASK [etcd : Sign and create the server crt] ***********************************
+skipping: [openshift]
+
+TASK [etcd : Create the peer csr] **********************************************
+skipping: [openshift]
+
+TASK [etcd : Sign and create the peer crt] *************************************
+skipping: [openshift]
+
+TASK [etcd : file] *************************************************************
+skipping: [openshift]
+
+TASK [etcd : Create a tarball of the etcd certs] *******************************
+skipping: [openshift]
+
+TASK [etcd : Retrieve etcd cert tarball] ***************************************
+skipping: [openshift]
+
+TASK [etcd : Ensure certificate directory exists] ******************************
+skipping: [openshift] => (item=/etc/etcd) 
+
+TASK [etcd : Unarchive cert tarball] *******************************************
+skipping: [openshift]
+
+TASK [etcd : Create a tarball of the etcd ca certs] ****************************
+skipping: [openshift]
+
+TASK [etcd : Retrieve etcd ca cert tarball] ************************************
+skipping: [openshift]
+
+TASK [etcd : Ensure ca directory exists] ***************************************
+skipping: [openshift] => (item=/etc/etcd/ca) 
+
+TASK [etcd : Delete temporary directory] ***************************************
+skipping: [openshift]
+
+TASK [etcd : Validate permissions on certificate files] ************************
+ok: [openshift] => (item=/etc/etcd/ca.crt)
+ok: [openshift] => (item=/etc/etcd/server.crt)
+ok: [openshift] => (item=/etc/etcd/server.key)
+
+TASK [etcd : Validate permissions on peer certificate files] *******************
+ok: [openshift] => (item=/etc/etcd/ca.crt)
+ok: [openshift] => (item=/etc/etcd/peer.crt)
+ok: [openshift] => (item=/etc/etcd/peer.key)
+
+TASK [etcd : Validate permissions on the config dir] ***************************
+ok: [openshift]
+
+PLAY [Create etcd client certificates for master hosts] ************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [etcd : include_tasks] ****************************************************
+included: /usr/share/ansible/openshift-ansible/roles/etcd/tasks/certificates/fetch_client_certificates_from_ca.yml for openshift
+
+TASK [etcd : Ensure CA certificate exists on etcd_ca_host] *********************
+ok: [openshift -> openshift]
+
+TASK [etcd : fail] *************************************************************
+skipping: [openshift]
+
+TASK [etcd : Check status of external etcd certificatees] **********************
+ok: [openshift] => (item=master.etcd-client.crt)
+ok: [openshift] => (item=master.etcd-client.key)
+ok: [openshift] => (item=master.etcd-ca.crt)
+
+TASK [etcd : set_fact] *********************************************************
+ok: [openshift]
+
+TASK [etcd : Ensure generated_certs directory present] *************************
+skipping: [openshift]
+
+TASK [etcd : Create the client csr] ********************************************
+skipping: [openshift]
+
+TASK [etcd : Sign and create the client crt] ***********************************
+skipping: [openshift]
+
+TASK [etcd : file] *************************************************************
+skipping: [openshift]
+
+TASK [etcd : Create a tarball of the etcd certs] *******************************
+skipping: [openshift]
+
+TASK [etcd : Retrieve the etcd cert tarballs] **********************************
+skipping: [openshift]
+
+TASK [etcd : Ensure certificate directory exists] ******************************
+skipping: [openshift]
+
+TASK [etcd : Unarchive etcd cert tarballs] *************************************
+skipping: [openshift]
+
+TASK [etcd : Delete temporary directory] ***************************************
+skipping: [openshift]
+
+TASK [etcd : file] *************************************************************
+skipping: [openshift] => (item=master.etcd-client.crt) 
+skipping: [openshift] => (item=master.etcd-client.key) 
+skipping: [openshift] => (item=master.etcd-ca.crt) 
+
+PLAY [Configure etcd] **********************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [fail] ********************************************************************
+skipping: [openshift]
+
+TASK [etcd : set etcd host and ip facts] ***************************************
+ok: [openshift]
+
+TASK [etcd : set etcd host and ip facts] ***************************************
+ok: [openshift]
+
+TASK [etcd : Check that etcd image is present] *********************************
+changed: [openshift]
+
+TASK [etcd : Pre-pull etcd image] **********************************************
+skipping: [openshift]
+
+TASK [etcd : Configure etcd profile.d aliases] *********************************
+ok: [openshift]
+
+TASK [etcd : Add iptables allow rules] *****************************************
+ok: [openshift] => (item={u'port': u'2379/tcp', u'service': u'etcd'})
+ok: [openshift] => (item={u'port': u'2380/tcp', u'service': u'etcd peering'})
+
+TASK [etcd : Remove iptables rules] ********************************************
+
+TASK [etcd : Add firewalld allow rules] ****************************************
+skipping: [openshift] => (item={u'port': u'2379/tcp', u'service': u'etcd'}) 
+skipping: [openshift] => (item={u'port': u'2380/tcp', u'service': u'etcd peering'}) 
+
+TASK [etcd : Remove firewalld allow rules] *************************************
+
+TASK [etcd : Ensure etcd datadir exists] ***************************************
+ok: [openshift]
+
+TASK [etcd : Validate permissions on the config dir] ***************************
+ok: [openshift]
+
+TASK [etcd : Validate permissions on the static pods dir] **********************
+changed: [openshift]
+
+TASK [etcd : Write etcd global config file] ************************************
+ok: [openshift]
+
+TASK [etcd : Create temp directory for static pods] ****************************
+ok: [openshift]
+
+TASK [etcd : Prepare etcd static pod] ******************************************
+changed: [openshift] => (item=etcd.yaml)
+
+TASK [etcd : Update etcd static pod] *******************************************
+changed: [openshift] => (item=etcd.yaml)
+
+TASK [etcd : Set etcd host as a probe target host] *****************************
+changed: [openshift] => (item=etcd.yaml)
+
+TASK [etcd : Deploy etcd static pod] *******************************************
+ok: [openshift] => (item=etcd.yaml)
+
+TASK [etcd : Remove temp directory] ********************************************
+ok: [openshift]
+
+TASK [etcd : set etcd host and ip facts] ***************************************
+skipping: [openshift]
+
+TASK [etcd : Add iptables allow rules] *****************************************
+skipping: [openshift] => (item={u'port': u'2379/tcp', u'service': u'etcd'}) 
+skipping: [openshift] => (item={u'port': u'2380/tcp', u'service': u'etcd peering'}) 
+
+TASK [etcd : Remove iptables rules] ********************************************
+
+TASK [etcd : Add firewalld allow rules] ****************************************
+skipping: [openshift] => (item={u'port': u'2379/tcp', u'service': u'etcd'}) 
+skipping: [openshift] => (item={u'port': u'2380/tcp', u'service': u'etcd peering'}) 
+
+TASK [etcd : Remove firewalld allow rules] *************************************
+
+TASK [etcd : Install etcd] *****************************************************
+skipping: [openshift]
+
+TASK [etcd : Configure etcd profile.d aliases] *********************************
+skipping: [openshift]
+
+TASK [etcd : Create configuration directory] ***********************************
+skipping: [openshift]
+
+TASK [etcd : Copy service file for etcd instance] ******************************
+skipping: [openshift]
+
+TASK [etcd : Create third party etcd service.d directory exists] ***************
+skipping: [openshift]
+
+TASK [etcd : Configure third part etcd service unit file] **********************
+skipping: [openshift]
+
+TASK [etcd : Ensure etcd datadir ownership for thirdparty datadir] *************
+skipping: [openshift]
+
+TASK [etcd : Write etcd global config file] ************************************
+skipping: [openshift]
+
+TASK [etcd : Ensure etcd owns the files in it's config dir] ********************
+skipping: [openshift]
+
+TASK [etcd : Enable etcd] ******************************************************
+skipping: [openshift]
+
+TASK [etcd : Set fact etcd_service_status_changed] *****************************
+skipping: [openshift]
+
+PLAY [etcd Install Checkpoint End] *********************************************
+
+TASK [Set etcd install 'Complete'] *********************************************
+ok: [winnode01]
+
+PLAY [NFS Install Checkpoint Start] ********************************************
+
+TASK [Set NFS install 'In Progress'] *******************************************
+skipping: [winnode01]
+
+PLAY [Configure nfs] ***********************************************************
+skipping: no hosts matched
+
+PLAY [NFS Install Checkpoint End] **********************************************
+
+TASK [Set NFS install 'Complete'] **********************************************
+skipping: [winnode01]
+
+PLAY [Load Balancer Install Checkpoint Start] **********************************
+
+TASK [Set load balancer install 'In Progress'] *********************************
+skipping: [winnode01]
+
+PLAY [Configure load balancers] ************************************************
+skipping: no hosts matched
+
+PLAY [Load Balancer Install Checkpoint End] ************************************
+
+TASK [Set load balancer install 'Complete'] ************************************
+skipping: [winnode01]
+
+PLAY [Master Install Checkpoint Start] *****************************************
+
+TASK [Set Master install 'In Progress'] ****************************************
+ok: [winnode01]
+
+PLAY [Create OpenShift certificates for master hosts] **************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [openshift_master_facts : Verify required variables are set] **************
+skipping: [openshift]
+
+TASK [openshift_master_facts : Set g_metrics_hostname] *************************
+ok: [openshift]
+
+TASK [openshift_master_facts : set_fact] ***************************************
+skipping: [openshift]
+
+TASK [openshift_master_facts : Set master facts] *******************************
+ok: [openshift]
+
+TASK [openshift_master_facts : Determine if scheduler config present] **********
+ok: [openshift]
+
+TASK [openshift_master_facts : Set Default scheduler predicates and priorities] ***
+ok: [openshift]
+
+TASK [openshift_master_facts : Retrieve current scheduler config] **************
+ok: [openshift]
+
+TASK [openshift_master_facts : Set openshift_master_scheduler_current_config] ***
+ok: [openshift]
+
+TASK [openshift_master_facts : Test if scheduler config is readable] ***********
+skipping: [openshift]
+
+TASK [openshift_master_facts : Set current scheduler predicates and priorities] ***
+ok: [openshift]
+
+TASK [openshift_named_certificates : set_fact] *********************************
+skipping: [openshift]
+
+TASK [openshift_named_certificates : openshift_facts] **************************
+ok: [openshift]
+
+TASK [openshift_named_certificates : Clear named certificates] *****************
+skipping: [openshift]
+
+TASK [openshift_named_certificates : Ensure named certificate directory exists] ***
+ok: [openshift]
+
+TASK [openshift_named_certificates : Land named certificates] ******************
+
+TASK [openshift_named_certificates : Land named certificate keys] **************
+
+TASK [openshift_named_certificates : Land named CA certificates] ***************
+
+TASK [openshift_cli : Install clients] *****************************************
+ok: [openshift]
+
+TASK [openshift_cli : Pull CLI Image (docker)] *********************************
+skipping: [openshift]
+
+TASK [openshift_cli : Pull CLI Image (atomic)] *********************************
+skipping: [openshift]
+
+TASK [openshift_cli : Copy client binaries/symlinks out of CLI image for use on the host] ***
+skipping: [openshift]
+
+TASK [openshift_cli : Install bash completion for oc tools] ********************
+ok: [openshift]
+
+TASK [openshift_cli : Ensure binaries from containerized deployments are cleaned up.] ***
+ok: [openshift] => (item=/usr/local/bin/oc)
+ok: [openshift] => (item=/usr/local/bin/openshift)
+ok: [openshift] => (item=/usr/local/bin/kubectl)
+
+TASK [openshift_ca : fail] *****************************************************
+skipping: [openshift]
+
+TASK [openshift_ca : Install the base package for admin tooling] ***************
+ok: [openshift -> openshift]
+
+TASK [openshift_ca : Reload generated facts] ***********************************
+skipping: [openshift]
+
+TASK [openshift_ca : Create openshift_ca_config_dir if it does not exist] ******
+ok: [openshift -> openshift]
+
+TASK [openshift_ca : Determine if CA must be created] **************************
+ok: [openshift -> openshift] => (item=ca-bundle.crt)
+ok: [openshift -> openshift] => (item=ca.crt)
+ok: [openshift -> openshift] => (item=ca.key)
+
+TASK [openshift_ca : Determine if front-proxy CA must be created] **************
+ok: [openshift -> openshift] => (item=front-proxy-ca.crt)
+ok: [openshift -> openshift] => (item=front-proxy-ca.key)
+
+TASK [openshift_ca : set_fact] *************************************************
+ok: [openshift]
+
+TASK [openshift_ca : Retain original serviceaccount keys] **********************
+skipping: [openshift] => (item=/etc/origin/master/serviceaccounts.private.key) 
+skipping: [openshift] => (item=/etc/origin/master/serviceaccounts.public.key) 
+
+TASK [openshift_ca : Deploy master ca certificate] *****************************
+skipping: [openshift] => (item={u'dest': u'ca.crt', u'src': u''}) 
+skipping: [openshift] => (item={u'dest': u'ca.key', u'src': u''}) 
+
+TASK [openshift_ca : Deploy additional ca] *************************************
+skipping: [openshift]
+
+TASK [openshift_ca : Create ca serial] *****************************************
+skipping: [openshift]
+
+TASK [openshift_ca : find] *****************************************************
+ok: [openshift]
+
+TASK [openshift_ca : Create the front-proxy CA if it does not already exist] ***
+skipping: [openshift]
+
+TASK [openshift_ca : Create the master certificates if they do not already exist] ***
+skipping: [openshift]
+
+TASK [openshift_ca : command] **************************************************
+changed: [openshift -> openshift]
+
+TASK [openshift_ca : copy] *****************************************************
+
+TASK [openshift_ca : copy] *****************************************************
+changed: [openshift -> openshift]
+
+TASK [openshift_ca : assemble] *************************************************
+ok: [openshift -> openshift]
+
+TASK [openshift_ca : Test local loopback context] ******************************
+ok: [openshift -> openshift]
+
+TASK [openshift_ca : Create temp directory for loopback master client config] ***
+skipping: [openshift]
+
+TASK [openshift_ca : Generate the loopback master client config] ***************
+skipping: [openshift]
+
+TASK [openshift_ca : Copy generated loopback master client config to master config dir] ***
+skipping: [openshift] => (item=openshift-master.crt) 
+skipping: [openshift] => (item=openshift-master.key) 
+skipping: [openshift] => (item=openshift-master.kubeconfig) 
+
+TASK [openshift_ca : Delete temp directory] ************************************
+skipping: [openshift]
+
+TASK [openshift_ca : Create temp directory for loopback master client config] ***
+changed: [openshift -> openshift]
+
+TASK [openshift_ca : Generate the aggregator api-client config] ****************
+changed: [openshift -> openshift]
+
+TASK [openshift_ca : Copy generated loopback master client config to master config dir] ***
+changed: [openshift -> openshift] => (item=aggregator-front-proxy.crt)
+changed: [openshift -> openshift] => (item=aggregator-front-proxy.key)
+changed: [openshift -> openshift] => (item=aggregator-front-proxy.kubeconfig)
+
+TASK [openshift_ca : Delete temp directory] ************************************
+changed: [openshift -> openshift]
+
+TASK [openshift_ca : Restore original serviceaccount keys] *********************
+skipping: [openshift] => (item=/etc/origin/master/serviceaccounts.private.key) 
+skipping: [openshift] => (item=/etc/origin/master/serviceaccounts.public.key) 
+
+TASK [openshift_ca : Remove backup serviceaccount keys] ************************
+skipping: [openshift] => (item=/etc/origin/master/serviceaccounts.private.key) 
+skipping: [openshift] => (item=/etc/origin/master/serviceaccounts.public.key) 
+
+TASK [openshift_master_certificates : Check status of master certificates] *****
+ok: [openshift] => (item=admin.crt)
+ok: [openshift] => (item=ca.crt)
+ok: [openshift] => (item=ca-bundle.crt)
+ok: [openshift] => (item=front-proxy-ca.crt)
+ok: [openshift] => (item=master.kubelet-client.crt)
+ok: [openshift] => (item=master.proxy-client.crt)
+ok: [openshift] => (item=master.server.crt)
+ok: [openshift] => (item=openshift-master.crt)
+ok: [openshift] => (item=service-signer.crt)
+ok: [openshift] => (item=aggregator-front-proxy.crt)
+
+TASK [openshift_master_certificates : set_fact] ********************************
+ok: [openshift]
+
+TASK [openshift_master_certificates : Ensure the generated_configs directory present] ***
+skipping: [openshift]
+
+TASK [openshift_master_certificates : find] ************************************
+ok: [openshift -> openshift]
+
+TASK [openshift_master_certificates : Create the master server certificate] ****
+
+TASK [openshift_master_certificates : Generate the loopback master client config] ***
+
+TASK [openshift_master_certificates : copy] ************************************
+skipping: [openshift] => (item=admin.crt) 
+skipping: [openshift] => (item=admin.key) 
+skipping: [openshift] => (item=admin.kubeconfig) 
+skipping: [openshift] => (item=aggregator-front-proxy.crt) 
+skipping: [openshift] => (item=aggregator-front-proxy.key) 
+skipping: [openshift] => (item=aggregator-front-proxy.kubeconfig) 
+skipping: [openshift] => (item=front-proxy-ca.crt) 
+skipping: [openshift] => (item=front-proxy-ca.key) 
+skipping: [openshift] => (item=master.kubelet-client.crt) 
+skipping: [openshift] => (item=master.kubelet-client.key) 
+skipping: [openshift] => (item=master.proxy-client.crt) 
+skipping: [openshift] => (item=master.proxy-client.key) 
+skipping: [openshift] => (item=service-signer.crt) 
+skipping: [openshift] => (item=service-signer.key) 
+skipping: [openshift] => (item=ca-bundle.crt) 
+skipping: [openshift] => (item=ca.crt) 
+skipping: [openshift] => (item=ca.key) 
+skipping: [openshift] => (item=client-ca-bundle.crt) 
+skipping: [openshift] => (item=serviceaccounts.private.key) 
+skipping: [openshift] => (item=serviceaccounts.public.key) 
+
+TASK [openshift_master_certificates : Remove generated etcd client certs when using external etcd] ***
+ok: [openshift -> openshift] => (item=master.etcd-client.crt)
+ok: [openshift -> openshift] => (item=master.etcd-client.key)
+
+TASK [openshift_master_certificates : Create local temp directory for syncing certs] ***
+skipping: [openshift]
+
+TASK [openshift_master_certificates : Chmod local temp directory for syncing certs] ***
+skipping: [openshift]
+
+TASK [openshift_master_certificates : Create a tarball of the master certs] ****
+skipping: [openshift]
+
+TASK [openshift_master_certificates : Retrieve the master cert tarball from the master] ***
+skipping: [openshift]
+
+TASK [openshift_master_certificates : Ensure certificate directory exists] *****
+skipping: [openshift]
+
+TASK [openshift_master_certificates : Unarchive the tarball on the master] *****
+skipping: [openshift]
+
+TASK [openshift_master_certificates : Delete local temp directory] *************
+skipping: [openshift]
+
+TASK [openshift_master_certificates : Lookup default group for ansible_ssh_user] ***
+ok: [openshift]
+
+TASK [openshift_master_certificates : set_fact] ********************************
+ok: [openshift]
+
+TASK [openshift_master_certificates : Create the client config dir(s)] *********
+ok: [openshift] => (item=root)
+
+TASK [openshift_master_certificates : Copy the admin client config(s)] *********
+ok: [openshift] => (item=root)
+
+TASK [openshift_master_certificates : Update the permissions on the admin client config(s)] ***
+ok: [openshift] => (item=root)
+
+TASK [openshift_master_certificates : Check for ca-bundle.crt] *****************
+ok: [openshift]
+
+TASK [openshift_master_certificates : Check for ca.crt] ************************
+ok: [openshift]
+
+TASK [openshift_master_certificates : Migrate ca.crt to ca-bundle.crt] *********
+skipping: [openshift]
+
+TASK [openshift_master_certificates : Link ca.crt to ca-bundle.crt] ************
+skipping: [openshift]
+
+PLAY [Disable excluders and gather facts] **************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [openshift_excluder : Detecting Atomic Host Operating System] *************
+ok: [openshift]
+
+TASK [openshift_excluder : Debug r_openshift_excluder_enable_docker_excluder] ***
+ok: [openshift] => {
+    "r_openshift_excluder_enable_docker_excluder": true
+}
+
+TASK [openshift_excluder : Debug r_openshift_excluder_enable_openshift_excluder] ***
+ok: [openshift] => {
+    "r_openshift_excluder_enable_openshift_excluder": true
+}
+
+TASK [openshift_excluder : Fail if invalid openshift_excluder_action provided] ***
+skipping: [openshift]
+
+TASK [openshift_excluder : Fail if r_openshift_excluder_upgrade_target is not defined] ***
+skipping: [openshift]
+
+TASK [openshift_excluder : Include main action task file] **********************
+included: /usr/share/ansible/openshift-ansible/roles/openshift_excluder/tasks/disable.yml for openshift
+
+TASK [openshift_excluder : Get available excluder version] *********************
+skipping: [openshift]
+
+TASK [openshift_excluder : Fail when excluder package is not found] ************
+skipping: [openshift]
+
+TASK [openshift_excluder : Set fact excluder_version] **************************
+skipping: [openshift]
+
+TASK [openshift_excluder : atomic-openshift-docker-excluder version detected] ***
+skipping: [openshift]
+
+TASK [openshift_excluder : Printing upgrade target version] ********************
+skipping: [openshift]
+
+TASK [openshift_excluder : Check the available atomic-openshift-docker-excluder version is at most of the upgrade target version] ***
+skipping: [openshift]
+
+TASK [openshift_excluder : Get available excluder version] *********************
+skipping: [openshift]
+
+TASK [openshift_excluder : Fail when excluder package is not found] ************
+skipping: [openshift]
+
+TASK [openshift_excluder : Set fact excluder_version] **************************
+skipping: [openshift]
+
+TASK [openshift_excluder : atomic-openshift-excluder version detected] *********
+skipping: [openshift]
+
+TASK [openshift_excluder : Printing upgrade target version] ********************
+skipping: [openshift]
+
+TASK [openshift_excluder : Check the available atomic-openshift-excluder version is at most of the upgrade target version] ***
+skipping: [openshift]
+
+TASK [openshift_excluder : Check for docker-excluder] **************************
+ok: [openshift]
+
+TASK [openshift_excluder : disable docker excluder] ****************************
+changed: [openshift]
+
+TASK [openshift_excluder : Check for openshift excluder] ***********************
+ok: [openshift]
+
+TASK [openshift_excluder : disable openshift excluder] *************************
+changed: [openshift]
+
+TASK [openshift_excluder : Install docker excluder - yum] **********************
+ok: [openshift]
+
+TASK [openshift_excluder : Install docker excluder - dnf] **********************
+skipping: [openshift]
+
+TASK [openshift_excluder : Install openshift excluder - yum] *******************
+ok: [openshift]
+
+TASK [openshift_excluder : Install openshift excluder - dnf] *******************
+skipping: [openshift]
+
+TASK [openshift_excluder : set_fact] *******************************************
+ok: [openshift]
+
+TASK [openshift_excluder : Check for docker-excluder] **************************
+ok: [openshift]
+
+TASK [openshift_excluder : Enable docker excluder] *****************************
+changed: [openshift]
+
+TASK [openshift_excluder : Check for openshift excluder] ***********************
+ok: [openshift]
+
+TASK [openshift_excluder : Enable openshift excluder] **************************
+changed: [openshift]
+
+TASK [openshift_excluder : Check for docker-excluder] **************************
+ok: [openshift]
+
+TASK [openshift_excluder : disable docker excluder] ****************************
+skipping: [openshift]
+
+TASK [openshift_excluder : Check for openshift excluder] ***********************
+ok: [openshift]
+
+TASK [openshift_excluder : disable openshift excluder] *************************
+changed: [openshift]
+
+TASK [Check for RPM generated config marker file .config_managed] **************
+ok: [openshift]
+
+TASK [Remove RPM generated config files if present] ****************************
+skipping: [openshift] => (item=master) 
+skipping: [openshift] => (item=node) 
+skipping: [openshift] => (item=.config_managed) 
+
+TASK [openshift_facts] *********************************************************
+ok: [openshift]
+
+TASK [openshift_facts] *********************************************************
+ok: [openshift]
+
+PLAY [Generate or retrieve existing session secrets] ***************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [openshift_control_plane : Determine if sessions secrets already in place] ***
+ok: [openshift]
+
+TASK [openshift_control_plane : slurp session secrets if defined] **************
+ok: [openshift]
+
+TASK [openshift_control_plane : Gather existing session secrets from first master] ***
+ok: [openshift]
+
+TASK [openshift_control_plane : setup session secrets if not defined] **********
+skipping: [openshift]
+
+PLAY [Configure masters] *******************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [openshift_node_group : create node config template] **********************
+ok: [openshift]
+
+TASK [openshift_node_group : remove existing node config] **********************
+changed: [openshift]
+
+TASK [openshift_node_group : Ensure required directories are present] **********
+changed: [openshift] => (item=/etc/origin/node/pods)
+ok: [openshift] => (item=/etc/origin/node/certificates)
+
+TASK [openshift_node_group : Update the sysconfig to group "node-config-all-in-one"] ***
+ok: [openshift]
+
+TASK [openshift_node : openshift_facts] ****************************************
+ok: [openshift]
+
+TASK [openshift_node : Configure Proxy Settings] *******************************
+skipping: [openshift] => (item={u'regex': u'^HTTP_PROXY=', u'line': u'HTTP_PROXY='}) 
+skipping: [openshift] => (item={u'regex': u'^HTTPS_PROXY=', u'line': u'HTTPS_PROXY='}) 
+skipping: [openshift] => (item={u'regex': u'^NO_PROXY=', u'line': u'NO_PROXY=[],172.30.0.0/16,10.128.0.0/14'}) 
+
+TASK [openshift_master_facts : Verify required variables are set] **************
+skipping: [openshift]
+
+TASK [openshift_master_facts : Set g_metrics_hostname] *************************
+ok: [openshift]
+
+TASK [openshift_master_facts : set_fact] ***************************************
+skipping: [openshift]
+
+TASK [openshift_master_facts : Set master facts] *******************************
+ok: [openshift]
+
+TASK [openshift_master_facts : Determine if scheduler config present] **********
+ok: [openshift]
+
+TASK [openshift_master_facts : Set Default scheduler predicates and priorities] ***
+ok: [openshift]
+
+TASK [openshift_master_facts : Retrieve current scheduler config] **************
+ok: [openshift]
+
+TASK [openshift_master_facts : Set openshift_master_scheduler_current_config] ***
+ok: [openshift]
+
+TASK [openshift_master_facts : Test if scheduler config is readable] ***********
+skipping: [openshift]
+
+TASK [openshift_master_facts : Set current scheduler predicates and priorities] ***
+ok: [openshift]
+
+TASK [openshift_cloud_provider : Set cloud provider facts] *********************
+skipping: [openshift]
+
+TASK [openshift_cloud_provider : Create cloudprovider config dir] **************
+skipping: [openshift]
+
+TASK [openshift_cloud_provider : include the defined cloud provider files] *****
+skipping: [openshift]
+
+TASK [openshift_builddefaults : Set builddefaults] *****************************
+changed: [openshift]
+
+TASK [openshift_builddefaults : Set builddefaults config structure] ************
+changed: [openshift]
+
+TASK [openshift_buildoverrides : Set buildoverrides config structure] **********
+ok: [openshift]
+
+TASK [openshift_control_plane : fail] ******************************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : Check that origin image is present] ************
+changed: [openshift]
+
+TASK [openshift_control_plane : Pre-pull Origin image] *************************
+changed: [openshift]
+
+TASK [openshift_control_plane : Add iptables allow rules] **********************
+ok: [openshift] => (item={u'port': u'8443/tcp', u'service': u'api server https'})
+ok: [openshift] => (item={u'port': u'8444/tcp', u'service': u'api controllers https'})
+ok: [openshift] => (item={u'port': u'8053/tcp', u'service': u'skydns tcp'})
+ok: [openshift] => (item={u'port': u'8053/udp', u'service': u'skydns udp'})
+
+TASK [openshift_control_plane : Remove iptables rules] *************************
+
+TASK [openshift_control_plane : Add firewalld allow rules] *********************
+skipping: [openshift] => (item={u'port': u'8443/tcp', u'service': u'api server https'}) 
+skipping: [openshift] => (item={u'port': u'8444/tcp', u'service': u'api controllers https'}) 
+skipping: [openshift] => (item={u'port': u'8053/tcp', u'service': u'skydns tcp'}) 
+skipping: [openshift] => (item={u'port': u'8053/udp', u'service': u'skydns udp'}) 
+
+TASK [openshift_control_plane : Remove firewalld allow rules] ******************
+
+TASK [openshift_control_plane : Copy static master scripts] ********************
+ok: [openshift] => (item=scripts/docker/master-exec)
+ok: [openshift] => (item=scripts/docker/master-logs)
+ok: [openshift] => (item=scripts/docker/master-restart)
+
+TASK [openshift_control_plane : Ensure cri-tools installed] ********************
+skipping: [openshift]
+
+TASK [openshift_control_plane : Create r_openshift_master_data_dir] ************
+ok: [openshift]
+
+TASK [openshift_control_plane : Create config parent directory if it does not exist] ***
+ok: [openshift]
+
+TASK [openshift_control_plane : Create flexvolume directory when on atomic hosts] ***
+skipping: [openshift]
+
+TASK [openshift_control_plane : Flex volume directory on non-atomic host] ******
+ok: [openshift]
+
+TASK [openshift_control_plane : Create the policy file if it does not already exist] ***
+ok: [openshift]
+
+TASK [openshift_control_plane : Create the scheduler config] *******************
+ok: [openshift]
+
+TASK [openshift_control_plane : Install httpd-tools if needed] *****************
+ok: [openshift] => (item={'challenge': u'true', 'login': u'true', 'kind': u'HTPasswdPasswordIdentityProvider', 'name': u'htpasswd_auth'})
+
+TASK [openshift_control_plane : Create the htpasswd file if needed] ************
+skipping: [openshift] => (item={'challenge': u'true', 'login': u'true', 'kind': u'HTPasswdPasswordIdentityProvider', 'name': u'htpasswd_auth'}) 
+
+TASK [openshift_control_plane : Ensure htpasswd file exists] *******************
+ok: [openshift] => (item={'challenge': u'true', 'login': u'true', 'kind': u'HTPasswdPasswordIdentityProvider', 'name': u'htpasswd_auth'})
+
+TASK [openshift_control_plane : Create the ldap ca file if needed] *************
+skipping: [openshift] => (item={'challenge': u'true', 'login': u'true', 'kind': u'HTPasswdPasswordIdentityProvider', 'name': u'htpasswd_auth'}) 
+
+TASK [openshift_control_plane : Create the openid ca file if needed] ***********
+skipping: [openshift] => (item={'challenge': u'true', 'login': u'true', 'kind': u'HTPasswdPasswordIdentityProvider', 'name': u'htpasswd_auth'}) 
+
+TASK [openshift_control_plane : Create the request header ca file if needed] ***
+skipping: [openshift] => (item={'challenge': u'true', 'login': u'true', 'kind': u'HTPasswdPasswordIdentityProvider', 'name': u'htpasswd_auth'}) 
+
+TASK [openshift_control_plane : Set fact of all etcd host IPs] *****************
+ok: [openshift]
+
+TASK [openshift_control_plane : Create session secrets file] *******************
+ok: [openshift]
+
+TASK [openshift_control_plane : set_fact] **************************************
+ok: [openshift]
+
+TASK [openshift_control_plane : Create master config] **************************
+changed: [openshift]
+
+TASK [openshift_control_plane : Test local loopback context] *******************
+ok: [openshift]
+
+TASK [openshift_control_plane : command] ***************************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : command] ***************************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : command] ***************************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : Create the master service env file] ************
+ok: [openshift]
+
+TASK [openshift_control_plane : Enable bootstrapping in the master config] *****
+changed: [openshift]
+
+TASK [openshift_control_plane : Create temp directory for static pods] *********
+ok: [openshift]
+
+TASK [openshift_control_plane : Prepare master static pods] ********************
+changed: [openshift] => (item=apiserver.yaml)
+changed: [openshift] => (item=controller.yaml)
+
+TASK [openshift_control_plane : Update master static pods] *********************
+changed: [openshift] => (item=apiserver.yaml)
+changed: [openshift] => (item=controller.yaml)
+
+TASK [openshift_control_plane : Update master static pod (api)] ****************
+ok: [openshift]
+
+TASK [openshift_control_plane : Update controller-manager static pod on atomic host] ***
+skipping: [openshift]
+
+TASK [openshift_control_plane : ensure pod location exists] ********************
+ok: [openshift]
+
+TASK [openshift_control_plane : Update master static pods] *********************
+changed: [openshift] => (item=apiserver.yaml)
+changed: [openshift] => (item=controller.yaml)
+
+TASK [openshift_control_plane : Remove old files in /etc/sysconfig] ************
+ok: [openshift] => (item=/etc/sysconfig/atomic-openshift-master-api)
+ok: [openshift] => (item=/etc/sysconfig/atomic-openshift-master-controllers)
+
+TASK [openshift_control_plane : Remove temporary directory] ********************
+ok: [openshift]
+
+TASK [openshift_control_plane : Establish the default bootstrap kubeconfig for masters] ***
+ok: [openshift] => (item=/etc/origin/node/bootstrap.kubeconfig)
+ok: [openshift] => (item=/etc/origin/node/node.kubeconfig)
+
+TASK [openshift_control_plane : Check status of control plane image pre-pull] ***
+changed: [openshift]
+
+TASK [openshift_control_plane : Check status of etcd image pre-pull] ***********
+skipping: [openshift]
+
+TASK [openshift_control_plane : Start and enable self-hosting node] ************
+changed: [openshift]
+
+TASK [openshift_control_plane : Get node logs] *********************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : debug] *****************************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : fail] ******************************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : Wait for control plane pods to appear] *********
+ok: [openshift] => (item=etcd)
+ok: [openshift] => (item=api)
+ok: [openshift] => (item=controllers)
+
+TASK [openshift_control_plane : Check status in the kube-system namespace] *****
+skipping: [openshift]
+
+TASK [openshift_control_plane : debug] *****************************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : Get pods in the kube-system namespace] *********
+skipping: [openshift]
+
+TASK [openshift_control_plane : debug] *****************************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : Get events in the kube-system namespace] *******
+skipping: [openshift]
+
+TASK [openshift_control_plane : debug] *****************************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : Get node logs] *********************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : debug] *****************************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : Report control plane errors] *******************
+skipping: [openshift]
+
+TASK [openshift_control_plane : Wait for all control plane pods to become ready] ***
+ok: [openshift] => (item=etcd)
+FAILED - RETRYING: Wait for all control plane pods to become ready (60 retries left).
+ok: [openshift] => (item=api)
+ok: [openshift] => (item=controllers)
+
+TASK [openshift_control_plane : debug] *****************************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : Get events in the kube-system namespace] *******
+skipping: [openshift]
+
+TASK [openshift_control_plane : debug] *****************************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : Get node logs] *********************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : debug] *****************************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : Get API logs] **********************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : debug] *****************************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : Get controllers logs] **************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : debug] *****************************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : Get etcd logs] *********************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : debug] *****************************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : Report control plane errors] *******************
+skipping: [openshift]
+
+TASK [openshift_control_plane : Wait for APIs to become available] *************
+changed: [openshift] => (item=apps.openshift.io)
+changed: [openshift] => (item=authorization.openshift.io)
+changed: [openshift] => (item=build.openshift.io)
+changed: [openshift] => (item=image.openshift.io)
+changed: [openshift] => (item=network.openshift.io)
+changed: [openshift] => (item=oauth.openshift.io)
+changed: [openshift] => (item=project.openshift.io)
+changed: [openshift] => (item=quota.openshift.io)
+changed: [openshift] => (item=route.openshift.io)
+changed: [openshift] => (item=security.openshift.io)
+changed: [openshift] => (item=template.openshift.io)
+changed: [openshift] => (item=user.openshift.io)
+
+TASK [openshift_control_plane : Collect API logs when API didn't become available] ***
+skipping: [openshift]
+
+TASK [openshift_control_plane : Dump API logs when the API didn't become availabale] ***
+skipping: [openshift]
+
+TASK [openshift_control_plane : fail] ******************************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : Remove oc cache to refresh a list of APIs] *****
+changed: [openshift]
+
+TASK [tuned : Check for tuned package] *****************************************
+ok: [openshift]
+
+TASK [tuned : Set tuned OpenShift variables] ***********************************
+ok: [openshift]
+
+TASK [tuned : Ensure directory structure exists] *******************************
+ok: [openshift] => (item={'group': u'root', 'uid': 0, 'selevel': 's0', 'seuser': 'system_u', 'state': 'directory', 'ctime': 1536545090.623086, 'serole': 'object_r', 'gid': 0, 'mode': '0755', 'mtime': 1536545090.623086, 'owner': 'root', 'path': u'openshift', 'size': 24, 'root': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates', 'setype': 'usr_t'})
+ok: [openshift] => (item={'group': u'root', 'uid': 0, 'selevel': 's0', 'seuser': 'system_u', 'state': 'directory', 'ctime': 1536545090.621086, 'serole': 'object_r', 'gid': 0, 'mode': '0755', 'mtime': 1536545090.621086, 'owner': 'root', 'path': u'openshift-control-plane', 'size': 24, 'root': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates', 'setype': 'usr_t'})
+ok: [openshift] => (item={'group': u'root', 'uid': 0, 'selevel': 's0', 'seuser': 'system_u', 'state': 'directory', 'ctime': 1536545090.622086, 'serole': 'object_r', 'gid': 0, 'mode': '0755', 'mtime': 1536545090.622086, 'owner': 'root', 'path': u'openshift-node', 'size': 24, 'root': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates', 'setype': 'usr_t'})
+skipping: [openshift] => (item={'src': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates/recommend.conf', 'group': u'root', 'uid': 0, 'selevel': 's0', 'seuser': 'system_u', 'serole': 'object_r', 'ctime': 1536545090.623086, 'state': 'file', 'gid': 0, 'mode': '0644', 'mtime': 1535557149.0, 'owner': 'root', 'path': u'recommend.conf', 'size': 290, 'root': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates', 'setype': 'usr_t'}) 
+skipping: [openshift] => (item={'src': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates/openshift/tuned.conf', 'group': u'root', 'uid': 0, 'selevel': u's0', 'seuser': u'system_u', 'serole': u'object_r', 'ctime': 1536545090.623086, 'state': u'file', 'gid': 0, 'mode': u'0644', 'mtime': 1535557149.0, 'owner': u'root', 'path': u'openshift/tuned.conf', 'size': 594, 'root': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates', 'setype': u'usr_t'}) 
+skipping: [openshift] => (item={'src': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates/openshift-control-plane/tuned.conf', 'group': u'root', 'uid': 0, 'selevel': u's0', 'seuser': u'system_u', 'serole': u'object_r', 'ctime': 1536545090.621086, 'state': u'file', 'gid': 0, 'mode': u'0644', 'mtime': 1535557149.0, 'owner': u'root', 'path': u'openshift-control-plane/tuned.conf', 'size': 744, 'root': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates', 'setype': u'usr_t'}) 
+skipping: [openshift] => (item={'src': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates/openshift-node/tuned.conf', 'group': u'root', 'uid': 0, 'selevel': u's0', 'seuser': u'system_u', 'serole': u'object_r', 'ctime': 1536545090.622086, 'state': u'file', 'gid': 0, 'mode': u'0644', 'mtime': 1535557149.0, 'owner': u'root', 'path': u'openshift-node/tuned.conf', 'size': 283, 'root': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates', 'setype': u'usr_t'}) 
+
+TASK [tuned : Ensure files are populated from templates] ***********************
+skipping: [openshift] => (item={'group': u'root', 'uid': 0, 'selevel': 's0', 'seuser': 'system_u', 'state': 'directory', 'ctime': 1536545090.623086, 'serole': 'object_r', 'gid': 0, 'mode': '0755', 'mtime': 1536545090.623086, 'owner': 'root', 'path': u'openshift', 'size': 24, 'root': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates', 'setype': 'usr_t'}) 
+skipping: [openshift] => (item={'group': u'root', 'uid': 0, 'selevel': 's0', 'seuser': 'system_u', 'state': 'directory', 'ctime': 1536545090.621086, 'serole': 'object_r', 'gid': 0, 'mode': '0755', 'mtime': 1536545090.621086, 'owner': 'root', 'path': u'openshift-control-plane', 'size': 24, 'root': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates', 'setype': 'usr_t'}) 
+skipping: [openshift] => (item={'group': u'root', 'uid': 0, 'selevel': 's0', 'seuser': 'system_u', 'state': 'directory', 'ctime': 1536545090.622086, 'serole': 'object_r', 'gid': 0, 'mode': '0755', 'mtime': 1536545090.622086, 'owner': 'root', 'path': u'openshift-node', 'size': 24, 'root': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates', 'setype': 'usr_t'}) 
+ok: [openshift] => (item={'src': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates/recommend.conf', 'group': u'root', 'uid': 0, 'selevel': 's0', 'seuser': 'system_u', 'serole': 'object_r', 'ctime': 1536545090.623086, 'state': 'file', 'gid': 0, 'mode': '0644', 'mtime': 1535557149.0, 'owner': 'root', 'path': u'recommend.conf', 'size': 290, 'root': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates', 'setype': 'usr_t'})
+ok: [openshift] => (item={'src': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates/openshift/tuned.conf', 'group': u'root', 'uid': 0, 'selevel': 's0', 'seuser': 'system_u', 'serole': 'object_r', 'ctime': 1536545090.623086, 'state': 'file', 'gid': 0, 'mode': '0644', 'mtime': 1535557149.0, 'owner': 'root', 'path': u'openshift/tuned.conf', 'size': 594, 'root': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates', 'setype': 'usr_t'})
+ok: [openshift] => (item={'src': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates/openshift-control-plane/tuned.conf', 'group': u'root', 'uid': 0, 'selevel': 's0', 'seuser': 'system_u', 'serole': 'object_r', 'ctime': 1536545090.621086, 'state': 'file', 'gid': 0, 'mode': '0644', 'mtime': 1535557149.0, 'owner': 'root', 'path': u'openshift-control-plane/tuned.conf', 'size': 744, 'root': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates', 'setype': 'usr_t'})
+ok: [openshift] => (item={'src': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates/openshift-node/tuned.conf', 'group': u'root', 'uid': 0, 'selevel': u's0', 'seuser': u'system_u', 'serole': u'object_r', 'ctime': 1536545090.622086, 'state': u'file', 'gid': 0, 'mode': u'0644', 'mtime': 1535557149.0, 'owner': u'root', 'path': u'openshift-node/tuned.conf', 'size': 283, 'root': u'/usr/share/ansible/openshift-ansible/roles/tuned/templates', 'setype': u'usr_t'})
+
+TASK [tuned : Make tuned use the recommended tuned profile on restart] *********
+changed: [openshift] => (item=/etc/tuned/active_profile)
+changed: [openshift] => (item=/etc/tuned/profile_mode)
+
+TASK [tuned : Restart tuned service] *******************************************
+changed: [openshift]
+
+TASK [nuage_common : Set the Nuage plugin openshift directory fact to handle Atomic host install] ***
+skipping: [openshift]
+
+TASK [nuage_common : Set the Nuage CNI network config directory fact to handle Atomic host install] ***
+skipping: [openshift]
+
+TASK [nuage_common : Set the Nuage CNI binary directory fact to handle Atomic host install] ***
+skipping: [openshift]
+
+TASK [nuage_common : Assure CNI plugin config dir exists before daemon set install] ***
+skipping: [openshift]
+
+TASK [nuage_common : Assure CNI netconf directory exists before daemon set install] ***
+skipping: [openshift]
+
+TASK [nuage_common : Assure CNI plugin binary directory exists before daemon set install] ***
+skipping: [openshift]
+
+TASK [nuage_ca : Install openssl] **********************************************
+skipping: [openshift]
+
+TASK [nuage_ca : Create CA directory] ******************************************
+skipping: [openshift]
+
+TASK [nuage_ca : Create certificate directory] *********************************
+skipping: [openshift]
+
+TASK [nuage_ca : Check if the CA key already exists] ***************************
+skipping: [openshift]
+
+TASK [nuage_ca : Create CA key] ************************************************
+skipping: [openshift]
+
+TASK [nuage_ca : Check if the CA crt already exists] ***************************
+skipping: [openshift]
+
+TASK [nuage_ca : Create CA crt] ************************************************
+skipping: [openshift]
+
+TASK [nuage_ca : Create the serial file] ***************************************
+skipping: [openshift]
+
+TASK [nuage_ca : Copy SSL config file] *****************************************
+skipping: [openshift]
+
+TASK [nuage_common : Set the Nuage plugin openshift directory fact to handle Atomic host install] ***
+skipping: [openshift]
+
+TASK [nuage_common : Set the Nuage CNI network config directory fact to handle Atomic host install] ***
+skipping: [openshift]
+
+TASK [nuage_common : Set the Nuage CNI binary directory fact to handle Atomic host install] ***
+skipping: [openshift]
+
+TASK [nuage_common : Assure CNI plugin config dir exists before daemon set install] ***
+skipping: [openshift]
+
+TASK [nuage_common : Assure CNI netconf directory exists before daemon set install] ***
+skipping: [openshift]
+
+TASK [nuage_common : Assure CNI plugin binary directory exists before daemon set install] ***
+skipping: [openshift]
+
+TASK [nuage_master : Add iptables allow rules] *********************************
+skipping: [openshift] => (item={u'port': u'9443/tcp', u'service': u'openshift-monitor'}) 
+
+TASK [nuage_master : Remove iptables rules] ************************************
+
+TASK [nuage_master : Add firewalld allow rules] ********************************
+skipping: [openshift] => (item={u'port': u'9443/tcp', u'service': u'openshift-monitor'}) 
+
+TASK [nuage_master : Remove firewalld allow rules] *****************************
+
+TASK [nuage_master : Set the Nuage certificate directory fact for Atomic hosts] ***
+skipping: [openshift]
+
+TASK [nuage_master : Set the Nuage kubeconfig file path fact for Atomic hosts] ***
+skipping: [openshift]
+
+TASK [nuage_master : Set the Nuage monitor yaml location fact for Atomic hosts] ***
+skipping: [openshift]
+
+TASK [nuage_master : Set the Nuage monitor certs location fact for Atomic hosts] ***
+skipping: [openshift]
+
+TASK [nuage_master : Set the Nuage master config directory for daemon sets install] ***
+skipping: [openshift]
+
+TASK [nuage_master : Set the Nuage node config directory for daemon sets install] ***
+skipping: [openshift]
+
+TASK [nuage_master : Set the Nuage CNI plugin binary directory for daemon sets install] ***
+skipping: [openshift]
+
+TASK [nuage_master : Create directory /usr/share/nuage-openshift-monitor] ******
+skipping: [openshift]
+
+TASK [nuage_master : Create directory /var/usr/share/nuage-openshift-monitor] ***
+skipping: [openshift]
+
+TASK [nuage_master : Create directory /var/usr/bin for monitor binary on atomic] ***
+skipping: [openshift]
+
+TASK [nuage_master : Create CNI bin directory /var/opt/cni/bin] ****************
+skipping: [openshift]
+
+TASK [nuage_master : Create the log directory] *********************************
+skipping: [openshift]
+
+TASK [nuage_master : include_tasks] ********************************************
+skipping: [openshift]
+
+TASK [nuage_master : Download the certs and keys] ******************************
+skipping: [openshift] => (item=ca.crt) 
+skipping: [openshift] => (item=nuage.crt) 
+skipping: [openshift] => (item=nuage.key) 
+skipping: [openshift] => (item=nuage.kubeconfig) 
+
+TASK [nuage_master : Copy the certificates and keys] ***************************
+skipping: [openshift] => (item=ca.crt) 
+skipping: [openshift] => (item=nuage.crt) 
+skipping: [openshift] => (item=nuage.key) 
+skipping: [openshift] => (item=nuage.kubeconfig) 
+
+TASK [nuage_master : include_tasks] ********************************************
+skipping: [openshift]
+
+TASK [nuage_master : include_tasks] ********************************************
+skipping: [openshift]
+
+TASK [nuage_master : Install Nuage VSD user certificate] ***********************
+skipping: [openshift]
+
+TASK [nuage_master : Install Nuage VSD user key] *******************************
+skipping: [openshift]
+
+TASK [nuage_master : Create Nuage master daemon set yaml file] *****************
+skipping: [openshift]
+
+TASK [nuage_master : Create Nuage node daemon set yaml file] *******************
+skipping: [openshift]
+
+TASK [nuage_master : Create Nuage Infra Pod daemon set yaml file] **************
+skipping: [openshift]
+
+TASK [nuage_master : Add the service account to the privileged scc to have root permissions for kube-system] ***
+skipping: [openshift]
+
+TASK [nuage_master : Add the service account to the privileged scc to have root permissions for openshift-infra] ***
+skipping: [openshift]
+
+TASK [nuage_master : Spawn Nuage Master monitor daemon sets pod] ***************
+skipping: [openshift]
+
+TASK [nuage_master : Spawn Nuage CNI daemon sets pod] **************************
+skipping: [openshift]
+
+TASK [nuage_master : Spawn Nuage Infra daemon sets pod] ************************
+skipping: [openshift]
+
+TASK [nuage_master : Restart daemons] ******************************************
+skipping: [openshift]
+
+TASK [calico_master : include_tasks] *******************************************
+skipping: [openshift]
+
+TASK [calico_master : Calico Master | oc adm policy add-scc-to-user privileged system:serviceaccount:kube-system:calico-node] ***
+skipping: [openshift]
+
+TASK [calico_master : Calico Master | oc adm policy add-scc-to-user privileged system:serviceaccount:kube-system:calico-kube-controllers] ***
+skipping: [openshift]
+
+TASK [calico_master : Calico Master | oc adm policy add-scc-to-user privileged system:serviceaccount:kube-system:calico-upgrade-job] ***
+skipping: [openshift]
+
+TASK [calico_master : Set default selector for kube-system] ********************
+skipping: [openshift]
+
+TASK [calico_master : Calico Master | Create temp directory] *******************
+skipping: [openshift]
+
+TASK [calico_master : Calico Master | Parse node version] **********************
+skipping: [openshift]
+
+TASK [calico_master : Calico Master | Write Calico v2] *************************
+skipping: [openshift]
+
+TASK [calico_master : Calico Master | Write Calico v3] *************************
+skipping: [openshift]
+
+TASK [calico_master : Calico Master | Launch Calico] ***************************
+skipping: [openshift]
+
+TASK [calico_master : Calico Master | Delete temp directory] *******************
+skipping: [openshift]
+
+TASK [kuryr : Perform OpenShift ServiceAccount config] *************************
+skipping: [openshift]
+
+TASK [kuryr : Create kuryr manifests tempdir] **********************************
+skipping: [openshift]
+
+TASK [kuryr : Create OpenShift node's ImageStreamTag manifest] *****************
+skipping: [openshift]
+
+TASK [kuryr : Set certificate contents as fact] ********************************
+skipping: [openshift]
+
+TASK [kuryr : Create Kuryr certificates Secret manifest] ***********************
+skipping: [openshift]
+
+TASK [kuryr : Create kuryr ConfigMap manifest] *********************************
+skipping: [openshift]
+
+TASK [kuryr : Create kuryr-controller Deployment manifest] *********************
+skipping: [openshift]
+
+TASK [kuryr : Create kuryr-cni DaemonSet manifest] *****************************
+skipping: [openshift]
+
+TASK [kuryr : Apply OpenShift node's ImageStreamTag manifest] ******************
+skipping: [openshift]
+
+TASK [kuryr : Apply Kuryr certificates Secret] *********************************
+skipping: [openshift]
+
+TASK [kuryr : Apply ConfigMap manifest] ****************************************
+skipping: [openshift]
+
+TASK [kuryr : Apply Controller Deployment manifest] ****************************
+skipping: [openshift]
+
+TASK [kuryr : Apply kuryr-cni DaemonSet manifest] ******************************
+skipping: [openshift]
+
+TASK [openshift_control_plane : modify controller args] ************************
+ok: [openshift]
+
+TASK [openshift_control_plane : create service account kubeconfig with csr rights] ***
+changed: [openshift]
+
+TASK [openshift_control_plane : put service account kubeconfig into a file on disk for bootstrap] ***
+ok: [openshift]
+
+TASK [Create group for deployment type] ****************************************
+ok: [openshift]
+
+TASK [openshift_excluder : Detecting Atomic Host Operating System] *************
+ok: [openshift]
+
+TASK [openshift_excluder : Debug r_openshift_excluder_enable_docker_excluder] ***
+ok: [openshift] => {
+    "r_openshift_excluder_enable_docker_excluder": true
+}
+
+TASK [openshift_excluder : Debug r_openshift_excluder_enable_openshift_excluder] ***
+ok: [openshift] => {
+    "r_openshift_excluder_enable_openshift_excluder": true
+}
+
+TASK [openshift_excluder : Fail if invalid openshift_excluder_action provided] ***
+skipping: [openshift]
+
+TASK [openshift_excluder : Fail if r_openshift_excluder_upgrade_target is not defined] ***
+skipping: [openshift]
+
+TASK [openshift_excluder : Include main action task file] **********************
+included: /usr/share/ansible/openshift-ansible/roles/openshift_excluder/tasks/enable.yml for openshift
+
+TASK [openshift_excluder : Install docker excluder - yum] **********************
+skipping: [openshift]
+
+TASK [openshift_excluder : Install docker excluder - dnf] **********************
+skipping: [openshift]
+
+TASK [openshift_excluder : Install openshift excluder - yum] *******************
+skipping: [openshift]
+
+TASK [openshift_excluder : Install openshift excluder - dnf] *******************
+skipping: [openshift]
+
+TASK [openshift_excluder : set_fact] *******************************************
+skipping: [openshift]
+
+TASK [openshift_excluder : Check for docker-excluder] **************************
+ok: [openshift]
+
+TASK [openshift_excluder : Enable docker excluder] *****************************
+changed: [openshift]
+
+TASK [openshift_excluder : Check for openshift excluder] ***********************
+ok: [openshift]
+
+TASK [openshift_excluder : Enable openshift excluder] **************************
+changed: [openshift]
+
+PLAY [Deploy the central bootstrap configuration] ******************************
+
+TASK [openshift_node_group : Build node config maps] ***************************
+included: /usr/share/ansible/openshift-ansible/roles/openshift_node_group/tasks/create_config.yml for openshift
+included: /usr/share/ansible/openshift-ansible/roles/openshift_node_group/tasks/create_config.yml for openshift
+included: /usr/share/ansible/openshift-ansible/roles/openshift_node_group/tasks/create_config.yml for openshift
+included: /usr/share/ansible/openshift-ansible/roles/openshift_node_group/tasks/create_config.yml for openshift
+included: /usr/share/ansible/openshift-ansible/roles/openshift_node_group/tasks/create_config.yml for openshift
+
+TASK [openshift_node_group : include_tasks] ************************************
+included: /usr/share/ansible/openshift-ansible/roles/openshift_node_group/tasks/fetch_config.yml for openshift
+
+TASK [openshift_node_group : fetch node configmap] *****************************
+ok: [openshift]
+
+TASK [openshift_node_group : debug node config] ********************************
+ok: [openshift] => {
+    "configout": {
+        "changed": false, 
+        "failed": false, 
+        "results": {
+            "cmd": "/usr/bin/oc get configmap node-config-master -o json -n openshift-node", 
+            "results": [
+                {
+                    "apiVersion": "v1", 
+                    "data": {
+                        "node-config.yaml": "apiVersion: v1\nauthConfig:\n  authenticationCacheSize: 1000\n  authenticationCacheTTL: 5m\n  authorizationCacheSize: 1000\n  authorizationCacheTTL: 5m\ndnsBindAddress: 127.0.0.1:53\ndnsDomain: cluster.local\ndnsIP: 0.0.0.0\ndnsNameservers: null\ndnsRecursiveResolvConf: /etc/origin/node/resolv.conf\ndockerConfig:\n  dockerShimRootDirectory: /var/lib/dockershim\n  dockerShimSocket: /var/run/dockershim.sock\n  execHandlerName: native\nenableUnidling: true\nimageConfig:\n  format: registry.access.redhat.com/openshift3/ose-${component}:${version}\n  latest: false\niptablesSyncPeriod: 30s\nkind: NodeConfig\nkubeletArguments:\n  bootstrap-kubeconfig:\n  - /etc/origin/node/bootstrap.kubeconfig\n  cert-dir:\n  - /etc/origin/node/certificates\n  enable-controller-attach-detach:\n  - 'true'\n  feature-gates:\n  - RotateKubeletClientCertificate=true,RotateKubeletServerCertificate=true\n  node-labels:\n  - node-role.kubernetes.io/master=true\n  pod-manifest-path:\n  - /etc/origin/node/pods\n  rotate-certificates:\n  - 'true'\nmasterClientConnectionOverrides:\n  acceptContentTypes: application/vnd.kubernetes.protobuf,application/json\n  burst: 40\n  contentType: application/vnd.kubernetes.protobuf\n  qps: 20\nmasterKubeConfig: node.kubeconfig\nnetworkConfig:\n  mtu: 1450\n  networkPluginName: cni\nservingInfo:\n  bindAddress: 0.0.0.0:10250\n  bindNetwork: tcp4\n  clientCA: client-ca.crt\nvolumeConfig:\n  localQuota:\n    perFSGroup: null\nvolumeDirectory: /var/lib/origin/openshift.local.volumes\n"
+                    }, 
+                    "kind": "ConfigMap", 
+                    "metadata": {
+                        "creationTimestamp": "2018-09-10T03:30:11Z", 
+                        "name": "node-config-master", 
+                        "namespace": "openshift-node", 
+                        "resourceVersion": "1004", 
+                        "selfLink": "/api/v1/namespaces/openshift-node/configmaps/node-config-master", 
+                        "uid": "d2ae315b-b4a9-11e8-9abc-0050561f6060"
+                    }
+                }
+            ], 
+            "returncode": 0
+        }, 
+        "state": "list"
+    }
+}
+
+TASK [openshift_node_group : create a temp dir for this work] ******************
+changed: [openshift]
+
+TASK [openshift_node_group : create node config template] **********************
+skipping: [openshift]
+
+TASK [openshift_node_group : lay down the config from the existing configmap] ***
+changed: [openshift]
+
+TASK [openshift_node_group : specialize the generated configs for node-config-master] ***
+ok: [openshift]
+
+TASK [openshift_node_group : show the yeditout debug var] **********************
+ok: [openshift] => {
+    "yeditout": {
+        "changed": false, 
+        "failed": false, 
+        "result": [], 
+        "state": "present"
+    }
+}
+
+TASK [openshift_node_group : create volume config template] ********************
+skipping: [openshift]
+
+TASK [openshift_node_group : lay down the volume config from the existing configmap] ***
+skipping: [openshift]
+
+TASK [openshift_node_group : specialize the volume config for node-config-master] ***
+skipping: [openshift]
+
+TASK [openshift_node_group : show the volume_yeditout debug var] ***************
+ok: [openshift] => {
+    "volume_yeditout": {
+        "changed": false, 
+        "skip_reason": "Conditional result was False", 
+        "skipped": true
+    }
+}
+
+TASK [openshift_node_group : create node-config.yaml configmap] ****************
+ok: [openshift]
+
+TASK [openshift_node_group : create node-config.yaml and volume-config.yaml configmap] ***
+skipping: [openshift]
+
+TASK [openshift_node_group : remove templated files] ***************************
+changed: [openshift]
+
+TASK [openshift_node_group : include_tasks] ************************************
+included: /usr/share/ansible/openshift-ansible/roles/openshift_node_group/tasks/fetch_config.yml for openshift
+
+TASK [openshift_node_group : fetch node configmap] *****************************
+ok: [openshift]
+
+TASK [openshift_node_group : debug node config] ********************************
+ok: [openshift] => {
+    "configout": {
+        "changed": false, 
+        "failed": false, 
+        "results": {
+            "cmd": "/usr/bin/oc get configmap node-config-infra -o json -n openshift-node", 
+            "results": [
+                {
+                    "apiVersion": "v1", 
+                    "data": {
+                        "node-config.yaml": "apiVersion: v1\nauthConfig:\n  authenticationCacheSize: 1000\n  authenticationCacheTTL: 5m\n  authorizationCacheSize: 1000\n  authorizationCacheTTL: 5m\ndnsBindAddress: 127.0.0.1:53\ndnsDomain: cluster.local\ndnsIP: 0.0.0.0\ndnsNameservers: null\ndnsRecursiveResolvConf: /etc/origin/node/resolv.conf\ndockerConfig:\n  dockerShimRootDirectory: /var/lib/dockershim\n  dockerShimSocket: /var/run/dockershim.sock\n  execHandlerName: native\nenableUnidling: true\nimageConfig:\n  format: registry.access.redhat.com/openshift3/ose-${component}:${version}\n  latest: false\niptablesSyncPeriod: 30s\nkind: NodeConfig\nkubeletArguments:\n  bootstrap-kubeconfig:\n  - /etc/origin/node/bootstrap.kubeconfig\n  cert-dir:\n  - /etc/origin/node/certificates\n  enable-controller-attach-detach:\n  - 'true'\n  feature-gates:\n  - RotateKubeletClientCertificate=true,RotateKubeletServerCertificate=true\n  node-labels:\n  - node-role.kubernetes.io/infra=true\n  pod-manifest-path:\n  - /etc/origin/node/pods\n  rotate-certificates:\n  - 'true'\nmasterClientConnectionOverrides:\n  acceptContentTypes: application/vnd.kubernetes.protobuf,application/json\n  burst: 40\n  contentType: application/vnd.kubernetes.protobuf\n  qps: 20\nmasterKubeConfig: node.kubeconfig\nnetworkConfig:\n  mtu: 1450\n  networkPluginName: cni\nservingInfo:\n  bindAddress: 0.0.0.0:10250\n  bindNetwork: tcp4\n  clientCA: client-ca.crt\nvolumeConfig:\n  localQuota:\n    perFSGroup: null\nvolumeDirectory: /var/lib/origin/openshift.local.volumes\n"
+                    }, 
+                    "kind": "ConfigMap", 
+                    "metadata": {
+                        "creationTimestamp": "2018-09-10T03:30:14Z", 
+                        "name": "node-config-infra", 
+                        "namespace": "openshift-node", 
+                        "resourceVersion": "1009", 
+                        "selfLink": "/api/v1/namespaces/openshift-node/configmaps/node-config-infra", 
+                        "uid": "d4f1fc42-b4a9-11e8-9abc-0050561f6060"
+                    }
+                }
+            ], 
+            "returncode": 0
+        }, 
+        "state": "list"
+    }
+}
+
+TASK [openshift_node_group : create a temp dir for this work] ******************
+changed: [openshift]
+
+TASK [openshift_node_group : create node config template] **********************
+skipping: [openshift]
+
+TASK [openshift_node_group : lay down the config from the existing configmap] ***
+changed: [openshift]
+
+TASK [openshift_node_group : specialize the generated configs for node-config-infra] ***
+ok: [openshift]
+
+TASK [openshift_node_group : show the yeditout debug var] **********************
+ok: [openshift] => {
+    "yeditout": {
+        "changed": false, 
+        "failed": false, 
+        "result": [], 
+        "state": "present"
+    }
+}
+
+TASK [openshift_node_group : create volume config template] ********************
+skipping: [openshift]
+
+TASK [openshift_node_group : lay down the volume config from the existing configmap] ***
+skipping: [openshift]
+
+TASK [openshift_node_group : specialize the volume config for node-config-infra] ***
+skipping: [openshift]
+
+TASK [openshift_node_group : show the volume_yeditout debug var] ***************
+ok: [openshift] => {
+    "volume_yeditout": {
+        "changed": false, 
+        "skip_reason": "Conditional result was False", 
+        "skipped": true
+    }
+}
+
+TASK [openshift_node_group : create node-config.yaml configmap] ****************
+ok: [openshift]
+
+TASK [openshift_node_group : create node-config.yaml and volume-config.yaml configmap] ***
+skipping: [openshift]
+
+TASK [openshift_node_group : remove templated files] ***************************
+changed: [openshift]
+
+TASK [openshift_node_group : include_tasks] ************************************
+included: /usr/share/ansible/openshift-ansible/roles/openshift_node_group/tasks/fetch_config.yml for openshift
+
+TASK [openshift_node_group : fetch node configmap] *****************************
+ok: [openshift]
+
+TASK [openshift_node_group : debug node config] ********************************
+ok: [openshift] => {
+    "configout": {
+        "changed": false, 
+        "failed": false, 
+        "results": {
+            "cmd": "/usr/bin/oc get configmap node-config-compute -o json -n openshift-node", 
+            "results": [
+                {
+                    "apiVersion": "v1", 
+                    "data": {
+                        "node-config.yaml": "apiVersion: v1\nauthConfig:\n  authenticationCacheSize: 1000\n  authenticationCacheTTL: 5m\n  authorizationCacheSize: 1000\n  authorizationCacheTTL: 5m\ndnsBindAddress: 127.0.0.1:53\ndnsDomain: cluster.local\ndnsIP: 0.0.0.0\ndnsNameservers: null\ndnsRecursiveResolvConf: /etc/origin/node/resolv.conf\ndockerConfig:\n  dockerShimRootDirectory: /var/lib/dockershim\n  dockerShimSocket: /var/run/dockershim.sock\n  execHandlerName: native\nenableUnidling: true\nimageConfig:\n  format: registry.access.redhat.com/openshift3/ose-${component}:${version}\n  latest: false\niptablesSyncPeriod: 30s\nkind: NodeConfig\nkubeletArguments:\n  bootstrap-kubeconfig:\n  - /etc/origin/node/bootstrap.kubeconfig\n  cert-dir:\n  - /etc/origin/node/certificates\n  enable-controller-attach-detach:\n  - 'true'\n  feature-gates:\n  - RotateKubeletClientCertificate=true,RotateKubeletServerCertificate=true\n  node-labels:\n  - node-role.kubernetes.io/compute=true\n  pod-manifest-path:\n  - /etc/origin/node/pods\n  rotate-certificates:\n  - 'true'\nmasterClientConnectionOverrides:\n  acceptContentTypes: application/vnd.kubernetes.protobuf,application/json\n  burst: 40\n  contentType: application/vnd.kubernetes.protobuf\n  qps: 20\nmasterKubeConfig: node.kubeconfig\nnetworkConfig:\n  mtu: 1450\n  networkPluginName: cni\nservingInfo:\n  bindAddress: 0.0.0.0:10250\n  bindNetwork: tcp4\n  clientCA: client-ca.crt\nvolumeConfig:\n  localQuota:\n    perFSGroup: null\nvolumeDirectory: /var/lib/origin/openshift.local.volumes\n"
+                    }, 
+                    "kind": "ConfigMap", 
+                    "metadata": {
+                        "creationTimestamp": "2018-09-10T03:30:18Z", 
+                        "name": "node-config-compute", 
+                        "namespace": "openshift-node", 
+                        "resourceVersion": "1015", 
+                        "selfLink": "/api/v1/namespaces/openshift-node/configmaps/node-config-compute", 
+                        "uid": "d72fbaee-b4a9-11e8-9abc-0050561f6060"
+                    }
+                }
+            ], 
+            "returncode": 0
+        }, 
+        "state": "list"
+    }
+}
+
+TASK [openshift_node_group : create a temp dir for this work] ******************
+changed: [openshift]
+
+TASK [openshift_node_group : create node config template] **********************
+skipping: [openshift]
+
+TASK [openshift_node_group : lay down the config from the existing configmap] ***
+changed: [openshift]
+
+TASK [openshift_node_group : specialize the generated configs for node-config-compute] ***
+ok: [openshift]
+
+TASK [openshift_node_group : show the yeditout debug var] **********************
+ok: [openshift] => {
+    "yeditout": {
+        "changed": false, 
+        "failed": false, 
+        "result": [], 
+        "state": "present"
+    }
+}
+
+TASK [openshift_node_group : create volume config template] ********************
+skipping: [openshift]
+
+TASK [openshift_node_group : lay down the volume config from the existing configmap] ***
+skipping: [openshift]
+
+TASK [openshift_node_group : specialize the volume config for node-config-compute] ***
+skipping: [openshift]
+
+TASK [openshift_node_group : show the volume_yeditout debug var] ***************
+ok: [openshift] => {
+    "volume_yeditout": {
+        "changed": false, 
+        "skip_reason": "Conditional result was False", 
+        "skipped": true
+    }
+}
+
+TASK [openshift_node_group : create node-config.yaml configmap] ****************
+ok: [openshift]
+
+TASK [openshift_node_group : create node-config.yaml and volume-config.yaml configmap] ***
+skipping: [openshift]
+
+TASK [openshift_node_group : remove templated files] ***************************
+changed: [openshift]
+
+TASK [openshift_node_group : include_tasks] ************************************
+included: /usr/share/ansible/openshift-ansible/roles/openshift_node_group/tasks/fetch_config.yml for openshift
+
+TASK [openshift_node_group : fetch node configmap] *****************************
+ok: [openshift]
+
+TASK [openshift_node_group : debug node config] ********************************
+ok: [openshift] => {
+    "configout": {
+        "changed": false, 
+        "failed": false, 
+        "results": {
+            "cmd": "/usr/bin/oc get configmap node-config-master-infra -o json -n openshift-node", 
+            "results": [
+                {
+                    "apiVersion": "v1", 
+                    "data": {
+                        "node-config.yaml": "apiVersion: v1\nauthConfig:\n  authenticationCacheSize: 1000\n  authenticationCacheTTL: 5m\n  authorizationCacheSize: 1000\n  authorizationCacheTTL: 5m\ndnsBindAddress: 127.0.0.1:53\ndnsDomain: cluster.local\ndnsIP: 0.0.0.0\ndnsNameservers: null\ndnsRecursiveResolvConf: /etc/origin/node/resolv.conf\ndockerConfig:\n  dockerShimRootDirectory: /var/lib/dockershim\n  dockerShimSocket: /var/run/dockershim.sock\n  execHandlerName: native\nenableUnidling: true\nimageConfig:\n  format: registry.access.redhat.com/openshift3/ose-${component}:${version}\n  latest: false\niptablesSyncPeriod: 30s\nkind: NodeConfig\nkubeletArguments:\n  bootstrap-kubeconfig:\n  - /etc/origin/node/bootstrap.kubeconfig\n  cert-dir:\n  - /etc/origin/node/certificates\n  enable-controller-attach-detach:\n  - 'true'\n  feature-gates:\n  - RotateKubeletClientCertificate=true,RotateKubeletServerCertificate=true\n  node-labels:\n  - node-role.kubernetes.io/infra=true,node-role.kubernetes.io/master=true\n  pod-manifest-path:\n  - /etc/origin/node/pods\n  rotate-certificates:\n  - 'true'\nmasterClientConnectionOverrides:\n  acceptContentTypes: application/vnd.kubernetes.protobuf,application/json\n  burst: 40\n  contentType: application/vnd.kubernetes.protobuf\n  qps: 20\nmasterKubeConfig: node.kubeconfig\nnetworkConfig:\n  mtu: 1450\n  networkPluginName: cni\nservingInfo:\n  bindAddress: 0.0.0.0:10250\n  bindNetwork: tcp4\n  clientCA: client-ca.crt\nvolumeConfig:\n  localQuota:\n    perFSGroup: null\nvolumeDirectory: /var/lib/origin/openshift.local.volumes\n"
+                    }, 
+                    "kind": "ConfigMap", 
+                    "metadata": {
+                        "creationTimestamp": "2018-09-10T03:30:22Z", 
+                        "name": "node-config-master-infra", 
+                        "namespace": "openshift-node", 
+                        "resourceVersion": "1021", 
+                        "selfLink": "/api/v1/namespaces/openshift-node/configmaps/node-config-master-infra", 
+                        "uid": "d96a0eb8-b4a9-11e8-9abc-0050561f6060"
+                    }
+                }
+            ], 
+            "returncode": 0
+        }, 
+        "state": "list"
+    }
+}
+
+TASK [openshift_node_group : create a temp dir for this work] ******************
+changed: [openshift]
+
+TASK [openshift_node_group : create node config template] **********************
+skipping: [openshift]
+
+TASK [openshift_node_group : lay down the config from the existing configmap] ***
+changed: [openshift]
+
+TASK [openshift_node_group : specialize the generated configs for node-config-master-infra] ***
+ok: [openshift]
+
+TASK [openshift_node_group : show the yeditout debug var] **********************
+ok: [openshift] => {
+    "yeditout": {
+        "changed": false, 
+        "failed": false, 
+        "result": [], 
+        "state": "present"
+    }
+}
+
+TASK [openshift_node_group : create volume config template] ********************
+skipping: [openshift]
+
+TASK [openshift_node_group : lay down the volume config from the existing configmap] ***
+skipping: [openshift]
+
+TASK [openshift_node_group : specialize the volume config for node-config-master-infra] ***
+skipping: [openshift]
+
+TASK [openshift_node_group : show the volume_yeditout debug var] ***************
+ok: [openshift] => {
+    "volume_yeditout": {
+        "changed": false, 
+        "skip_reason": "Conditional result was False", 
+        "skipped": true
+    }
+}
+
+TASK [openshift_node_group : create node-config.yaml configmap] ****************
+ok: [openshift]
+
+TASK [openshift_node_group : create node-config.yaml and volume-config.yaml configmap] ***
+skipping: [openshift]
+
+TASK [openshift_node_group : remove templated files] ***************************
+changed: [openshift]
+
+TASK [openshift_node_group : include_tasks] ************************************
+included: /usr/share/ansible/openshift-ansible/roles/openshift_node_group/tasks/fetch_config.yml for openshift
+
+TASK [openshift_node_group : fetch node configmap] *****************************
+ok: [openshift]
+
+TASK [openshift_node_group : debug node config] ********************************
+ok: [openshift] => {
+    "configout": {
+        "changed": false, 
+        "failed": false, 
+        "results": {
+            "cmd": "/usr/bin/oc get configmap node-config-all-in-one -o json -n openshift-node", 
+            "results": [
+                {
+                    "apiVersion": "v1", 
+                    "data": {
+                        "node-config.yaml": "apiVersion: v1\nauthConfig:\n  authenticationCacheSize: 1000\n  authenticationCacheTTL: 5m\n  authorizationCacheSize: 1000\n  authorizationCacheTTL: 5m\ndnsBindAddress: 127.0.0.1:53\ndnsDomain: cluster.local\ndnsIP: 0.0.0.0\ndnsNameservers: null\ndnsRecursiveResolvConf: /etc/origin/node/resolv.conf\ndockerConfig:\n  dockerShimRootDirectory: /var/lib/dockershim\n  dockerShimSocket: /var/run/dockershim.sock\n  execHandlerName: native\nenableUnidling: true\nimageConfig:\n  format: registry.access.redhat.com/openshift3/ose-${component}:${version}\n  latest: false\niptablesSyncPeriod: 30s\nkind: NodeConfig\nkubeletArguments:\n  bootstrap-kubeconfig:\n  - /etc/origin/node/bootstrap.kubeconfig\n  cert-dir:\n  - /etc/origin/node/certificates\n  enable-controller-attach-detach:\n  - 'true'\n  feature-gates:\n  - RotateKubeletClientCertificate=true,RotateKubeletServerCertificate=true\n  node-labels:\n  - node-role.kubernetes.io/infra=true,node-role.kubernetes.io/master=true,node-role.kubernetes.io/compute=true\n  pod-manifest-path:\n  - /etc/origin/node/pods\n  rotate-certificates:\n  - 'true'\nmasterClientConnectionOverrides:\n  acceptContentTypes: application/vnd.kubernetes.protobuf,application/json\n  burst: 40\n  contentType: application/vnd.kubernetes.protobuf\n  qps: 20\nmasterKubeConfig: node.kubeconfig\nnetworkConfig:\n  mtu: 1450\n  networkPluginName: cni\nservingInfo:\n  bindAddress: 0.0.0.0:10250\n  bindNetwork: tcp4\n  clientCA: client-ca.crt\nvolumeConfig:\n  localQuota:\n    perFSGroup: null\nvolumeDirectory: /var/lib/origin/openshift.local.volumes\n"
+                    }, 
+                    "kind": "ConfigMap", 
+                    "metadata": {
+                        "creationTimestamp": "2018-09-10T03:30:26Z", 
+                        "name": "node-config-all-in-one", 
+                        "namespace": "openshift-node", 
+                        "resourceVersion": "1028", 
+                        "selfLink": "/api/v1/namespaces/openshift-node/configmaps/node-config-all-in-one", 
+                        "uid": "dbd07f8a-b4a9-11e8-9abc-0050561f6060"
+                    }
+                }
+            ], 
+            "returncode": 0
+        }, 
+        "state": "list"
+    }
+}
+
+TASK [openshift_node_group : create a temp dir for this work] ******************
+changed: [openshift]
+
+TASK [openshift_node_group : create node config template] **********************
+skipping: [openshift]
+
+TASK [openshift_node_group : lay down the config from the existing configmap] ***
+changed: [openshift]
+
+TASK [openshift_node_group : specialize the generated configs for node-config-all-in-one] ***
+ok: [openshift]
+
+TASK [openshift_node_group : show the yeditout debug var] **********************
+ok: [openshift] => {
+    "yeditout": {
+        "changed": false, 
+        "failed": false, 
+        "result": [], 
+        "state": "present"
+    }
+}
+
+TASK [openshift_node_group : create volume config template] ********************
+skipping: [openshift]
+
+TASK [openshift_node_group : lay down the volume config from the existing configmap] ***
+skipping: [openshift]
+
+TASK [openshift_node_group : specialize the volume config for node-config-all-in-one] ***
+skipping: [openshift]
+
+TASK [openshift_node_group : show the volume_yeditout debug var] ***************
+ok: [openshift] => {
+    "volume_yeditout": {
+        "changed": false, 
+        "skip_reason": "Conditional result was False", 
+        "skipped": true
+    }
+}
+
+TASK [openshift_node_group : create node-config.yaml configmap] ****************
+ok: [openshift]
+
+TASK [openshift_node_group : create node-config.yaml and volume-config.yaml configmap] ***
+skipping: [openshift]
+
+TASK [openshift_node_group : remove templated files] ***************************
+changed: [openshift]
+
+TASK [openshift_bootstrap_autoapprover : Make temp directory for templates] ****
+skipping: [openshift]
+
+TASK [openshift_bootstrap_autoapprover : Copy templates to temp directory] *****
+skipping: [openshift] => (item=/usr/share/ansible/openshift-ansible/roles/openshift_bootstrap_autoapprover/files/openshift-bootstrap-controller-policy.yaml) 
+skipping: [openshift] => (item=/usr/share/ansible/openshift-ansible/roles/openshift_bootstrap_autoapprover/files/openshift-bootstrap-controller-role.yaml) 
+skipping: [openshift] => (item=/usr/share/ansible/openshift-ansible/roles/openshift_bootstrap_autoapprover/files/openshift-bootstrap-controller-serviceaccount.yaml) 
+skipping: [openshift] => (item=/usr/share/ansible/openshift-ansible/roles/openshift_bootstrap_autoapprover/files/openshift-bootstrap-controller.yaml) 
+skipping: [openshift] => (item=/usr/share/ansible/openshift-ansible/roles/openshift_bootstrap_autoapprover/files/openshift-bootstrap-images.yaml) 
+
+TASK [openshift_bootstrap_autoapprover : Update the image tag] *****************
+skipping: [openshift]
+
+TASK [openshift_bootstrap_autoapprover : Remove the image stream tag] **********
+skipping: [openshift]
+
+TASK [openshift_bootstrap_autoapprover : Apply the config] *********************
+skipping: [openshift]
+
+TASK [openshift_bootstrap_autoapprover : Remove temp directory] ****************
+skipping: [openshift]
+
+TASK [openshift_node_group : Ensure project exists] ****************************
+ok: [openshift]
+
+TASK [openshift_node_group : Make temp directory for templates] ****************
+ok: [openshift]
+
+TASK [openshift_node_group : Copy templates to temp directory] *****************
+changed: [openshift] => (item=/usr/share/ansible/openshift-ansible/roles/openshift_node_group/files/sync-images.yaml)
+changed: [openshift] => (item=/usr/share/ansible/openshift-ansible/roles/openshift_node_group/files/sync-policy.yaml)
+changed: [openshift] => (item=/usr/share/ansible/openshift-ansible/roles/openshift_node_group/files/sync.yaml)
+
+TASK [openshift_node_group : Update the image tag] *****************************
+changed: [openshift]
+
+TASK [openshift_node_group : Ensure the service account can run privileged] ****
+ok: [openshift]
+
+TASK [openshift_node_group : Remove the image stream tag] **********************
+changed: [openshift]
+
+TASK [openshift_node_group : Apply the config] *********************************
+changed: [openshift]
+
+TASK [openshift_node_group : Remove temp directory] ****************************
+ok: [openshift]
+
+PLAY [Ensure inventory labels are assigned to masters] *************************
+
+TASK [openshift_manage_node : Wait for master API to become available before proceeding] ***
+skipping: [openshift]
+
+TASK [openshift_manage_node : Wait for Node Registration] **********************
+ok: [openshift -> openshift]
+
+TASK [openshift_manage_node : include_tasks] ***********************************
+included: /usr/share/ansible/openshift-ansible/roles/openshift_manage_node/tasks/config.yml for openshift
+
+TASK [openshift_manage_node : Set node schedulability] *************************
+ok: [openshift -> openshift]
+
+PLAY [Master Install Checkpoint End] *******************************************
+
+TASK [Set Master install 'Complete'] *******************************************
+ok: [winnode01]
+
+PLAY [Master Additional Install Checkpoint Start] ******************************
+
+TASK [Set Master Additional install 'In Progress'] *****************************
+ok: [winnode01]
+
+PLAY [Additional master configuration] *****************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [openshift_sdn : Ensure project exists] ***********************************
+skipping: [openshift]
+
+TASK [openshift_sdn : Make temp directory for templates] ***********************
+skipping: [openshift]
+
+TASK [openshift_sdn : Copy templates to temp directory] ************************
+skipping: [openshift] => (item=/usr/share/ansible/openshift-ansible/roles/openshift_sdn/files/sdn-images.yaml) 
+skipping: [openshift] => (item=/usr/share/ansible/openshift-ansible/roles/openshift_sdn/files/sdn-ovs.yaml) 
+skipping: [openshift] => (item=/usr/share/ansible/openshift-ansible/roles/openshift_sdn/files/sdn-policy.yaml) 
+skipping: [openshift] => (item=/usr/share/ansible/openshift-ansible/roles/openshift_sdn/files/sdn.yaml) 
+
+TASK [openshift_sdn : Update the image tag] ************************************
+skipping: [openshift]
+
+TASK [openshift_sdn : Ensure the service account can run privileged] ***********
+skipping: [openshift]
+
+TASK [openshift_sdn : Remove the image stream tag] *****************************
+skipping: [openshift]
+
+TASK [openshift_sdn : Apply the config] ****************************************
+skipping: [openshift]
+
+TASK [openshift_sdn : Remove temp directory] ***********************************
+skipping: [openshift]
+
+TASK [openshift_project_request_template : Create temp file for template] ******
+skipping: [openshift]
+
+TASK [openshift_project_request_template : Generate default project template] ***
+skipping: [openshift]
+
+TASK [openshift_project_request_template : Write default project template to file] ***
+skipping: [openshift]
+
+TASK [openshift_project_request_template : Apply template modifications] *******
+skipping: [openshift]
+
+TASK [openshift_project_request_template : Create or update project request template] ***
+skipping: [openshift]
+
+TASK [openshift_project_request_template : Delete temp file] *******************
+skipping: [openshift]
+
+TASK [openshift_examples : Create local temp dir for OpenShift examples copy] ***
+changed: [openshift -> localhost]
+
+TASK [openshift_examples : Chmod local temp dir for OpenShift examples copy] ***
+changed: [openshift -> localhost]
+
+TASK [openshift_examples : Create tar of OpenShift examples] *******************
+changed: [openshift -> localhost]
+
+TASK [openshift_examples : Chmod local temp dir for OpenShift examples copy] ***
+changed: [openshift -> localhost]
+
+TASK [openshift_examples : Create the remote OpenShift examples directory] *****
+ok: [openshift]
+
+TASK [openshift_examples : Unarchive the OpenShift examples on the remote] *****
+changed: [openshift]
+
+TASK [openshift_examples : Cleanup the OpenShift Examples temp dir] ************
+changed: [openshift -> localhost]
+
+TASK [openshift_examples : Modify registry paths if registry_url is not registry.access.redhat.com] ***
+changed: [openshift]
+
+TASK [openshift_examples : Import RHEL streams] ********************************
+ok: [openshift] => (item=/usr/share/openshift/examples/image-streams/image-streams-rhel7.json)
+ok: [openshift] => (item=/usr/share/openshift/examples/image-streams/dotnet_imagestreams.json)
+
+TASK [openshift_examples : Import Centos Image streams] ************************
+skipping: [openshift] => (item=/usr/share/openshift/examples/image-streams/image-streams-centos7.json) 
+skipping: [openshift] => (item=/usr/share/openshift/examples/image-streams/dotnet_imagestreams_centos.json) 
+
+TASK [openshift_examples : Import db templates] ********************************
+ok: [openshift]
+
+TASK [openshift_examples : Remove defunct quickstart template files] ***********
+ok: [openshift] => (item=/usr/share/openshift/examples/quickstart-templates/nodejs.json)
+ok: [openshift] => (item=/usr/share/openshift/examples/quickstart-templates/cakephp.json)
+ok: [openshift] => (item=/usr/share/openshift/examples/quickstart-templates/dancer.json)
+ok: [openshift] => (item=/usr/share/openshift/examples/quickstart-templates/django.json)
+
+TASK [openshift_examples : Remove defunct quickstart templates from openshift namespace] ***
+ok: [openshift] => (item=nodejs-example)
+ok: [openshift] => (item=cakephp-example)
+ok: [openshift] => (item=dancer-example)
+ok: [openshift] => (item=django-example)
+
+TASK [openshift_examples : Import quickstart-templates] ************************
+ok: [openshift]
+
+TASK [openshift_examples : Remove old xPaas template files] ********************
+ok: [openshift] => (item=/usr/share/openshift/examples/xpaas-templates/sso70-basic.json)
+
+TASK [openshift_examples : Remove old xPaas templates from openshift namespace] ***
+ok: [openshift] => (item=sso70-basic)
+
+TASK [openshift_examples : Import xPaas image streams] *************************
+ok: [openshift]
+
+TASK [openshift_examples : Import xPaas templates] *****************************
+ok: [openshift]
+
+TASK [openshift_manageiq : Add Management Infrastructure project] **************
+ok: [openshift]
+
+TASK [openshift_manageiq : Create Admin and Image Inspector Service Account] ***
+ok: [openshift] => (item=management-admin)
+ok: [openshift] => (item=inspector-admin)
+
+TASK [openshift_manageiq : Create manageiq cluster role] ***********************
+ok: [openshift]
+
+TASK [openshift_manageiq : Create Hawkular Metrics Admin Cluster Role] *********
+ok: [openshift]
+
+TASK [openshift_manageiq : Configure role/user permissions] ********************
+ok: [openshift] => (item={u'resource_kind': u'role', u'resource_name': u'admin', u'user': u'management-admin'})
+ok: [openshift] => (item={u'resource_kind': u'role', u'resource_name': u'admin', u'user': u'system:serviceaccount:management-infra:management-admin'})
+ok: [openshift] => (item={u'resource_kind': u'cluster-role', u'resource_name': u'management-infra-admin', u'user': u'system:serviceaccount:management-infra:management-admin'})
+ok: [openshift] => (item={u'resource_kind': u'cluster-role', u'resource_name': u'cluster-reader', u'user': u'system:serviceaccount:management-infra:management-admin'})
+ok: [openshift] => (item={u'resource_kind': u'scc', u'resource_name': u'privileged', u'user': u'system:serviceaccount:management-infra:management-admin'})
+ok: [openshift] => (item={u'resource_kind': u'cluster-role', u'resource_name': u'system:image-puller', u'user': u'system:serviceaccount:management-infra:inspector-admin'})
+ok: [openshift] => (item={u'resource_kind': u'scc', u'resource_name': u'privileged', u'user': u'system:serviceaccount:management-infra:inspector-admin'})
+ok: [openshift] => (item={u'resource_kind': u'cluster-role', u'resource_name': u'self-provisioner', u'user': u'system:serviceaccount:management-infra:management-admin'})
+ok: [openshift] => (item={u'resource_kind': u'cluster-role', u'resource_name': u'hawkular-metrics-admin', u'user': u'system:serviceaccount:management-infra:management-admin'})
+
+TASK [openshift_manageiq : Configure 3_2 role/user permissions] ****************
+ok: [openshift] => (item={u'resource_kind': u'cluster-role', u'resource_name': u'system:image-auditor', u'user': u'system:serviceaccount:management-infra:management-admin'})
+
+TASK [cockpit : Add iptables allow rules] **************************************
+skipping: [openshift] => (item={u'port': u'9090/tcp', u'service': u'cockpit-ws'}) 
+
+TASK [cockpit : Remove iptables rules] *****************************************
+
+TASK [cockpit : Add firewalld allow rules] *************************************
+skipping: [openshift] => (item={u'port': u'9090/tcp', u'service': u'cockpit-ws'}) 
+
+TASK [cockpit : Remove firewalld allow rules] **********************************
+
+TASK [cockpit : Install cockpit-ws] ********************************************
+skipping: [openshift] => (item=cockpit-ws) 
+skipping: [openshift] => (item=cockpit-system) 
+skipping: [openshift] => (item=cockpit-bridge) 
+skipping: [openshift] => (item=cockpit-docker) 
+skipping: [openshift] => (item=cockpit-kubernetes) 
+
+TASK [cockpit : Enable cockpit-ws] *********************************************
+skipping: [openshift]
+
+TASK [flannel_register : Assures /etc/flannel dir exists] **********************
+skipping: [openshift]
+
+TASK [flannel_register : Generate etcd configuration for etcd] *****************
+skipping: [openshift]
+
+TASK [flannel_register : Insert flannel configuration into etcd] ***************
+skipping: [openshift]
+
+PLAY [configure vsphere svc account] *******************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [openshift_cloud_provider : Check to see if the vsphere cluster role already exists] ***
+skipping: [openshift]
+
+TASK [openshift_cloud_provider : Create svc acccount file] *********************
+skipping: [openshift]
+
+TASK [openshift_cloud_provider : Create vsphere-svc on cluster] ****************
+skipping: [openshift]
+
+TASK [openshift_cloud_provider : Remove vsphere-svc file] **********************
+skipping: [openshift]
+
+PLAY [update vsphere provider master config] ***********************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [openshift]
+
+TASK [openshift_cloud_provider : modify controller args] ***********************
+skipping: [openshift]
+
+PLAY [Master Additional Install Checkpoint End] ********************************
+
+TASK [Set Master Additional install 'Complete'] ********************************
+ok: [winnode01]
+
+PLAY [Node Join Checkpoint Start] **********************************************
+
+TASK [Set Node Join 'In Progress'] *********************************************
+ok: [winnode01]
+
+PLAY [Distribute bootstrap and start nodes] ************************************
+
+TASK [openshift_node : Gather node information] ********************************
+ok: [openshift]
+
+TASK [openshift_node : Copy master bootstrap config locally] *******************
+ok: [openshift]
+
+TASK [openshift_node : Distribute bootstrap kubeconfig if one does not exist] ***
+ok: [openshift]
+
+TASK [openshift_node : Start and enable node for bootstrapping] ****************
+changed: [openshift]
+
+TASK [openshift_node : Get node logs] ******************************************
+skipping: [openshift]
+
+TASK [openshift_node : debug] **************************************************
+skipping: [openshift]
+
+TASK [openshift_node : fail] ***************************************************
+skipping: [openshift]
+
+PLAY [Approve any pending CSR requests from inventory nodes] *******************
+
+TASK [Dump all candidate bootstrap hostnames] **********************************
+ok: [openshift] => {
+    "msg": [
+        "openshift"
+    ]
+}
+
+TASK [Find all hostnames for bootstrapping] ************************************
+ok: [openshift]
+
+TASK [Dump the bootstrap hostnames] ********************************************
+ok: [openshift] => {
+    "msg": [
+        "openshift.green.k.e2e.bos.redhat.com"
+    ]
+}
+
+TASK [Approve node certificates when bootstrapping] ****************************
+FAILED - RETRYING: Approve node certificates when bootstrapping (30 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (29 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (28 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (27 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (26 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (25 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (24 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (23 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (22 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (21 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (20 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (19 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (18 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (17 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (16 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (15 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (14 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (13 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (12 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (11 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (10 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (9 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (8 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (7 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (6 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (5 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (4 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (3 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (2 retries left).
+FAILED - RETRYING: Approve node certificates when bootstrapping (1 retries left).
+fatal: [openshift]: FAILED! => {"attempts": 30, "changed": false, "failed": true, "msg": "Cound not find csr for nodes: openshift.green.k.e2e.bos.redhat.com", "state": "unknown"}
+	to retry, use: --limit @/usr/share/ansible/openshift-ansible/playbooks/deploy_cluster.retry
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=13   changed=0    unreachable=0    failed=0   
+openshift                  : ok=330  changed=64   unreachable=0    failed=1   
+winnode01                  : ok=13   changed=0    unreachable=0    failed=0   
+
+
+INSTALLER STATUS ***************************************************************
+Initialization              : Complete (0:00:16)
+Health Check                : Complete (0:02:55)
+etcd Install                : Complete (0:00:59)
+Node Bootstrap Preparation  : Complete (0:00:00)
+Master Install              : Complete (0:04:35)
+Master Additional Install   : Complete (0:00:32)
+Node Join                   : In Progress (0:02:56)
+	This phase can be restarted by running: playbooks/openshift-node/join.yml
+
+
+Failure summary:
+
+
+  1. Hosts:    openshift
+     Play:     Approve any pending CSR requests from inventory nodes
+     Task:     Approve node certificates when bootstrapping
+     Message:  Cound not find csr for nodes: openshift.green.k.e2e.bos.redhat.com
+
+PLAY [masters] ***********************************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************************************************************************************************************
+ok: [openshift]
+
+TASK [Create Master Directory] *******************************************************************************************************************************************************************************
+ok: [openshift]
+
+TASK [add initial user to Red Hat OpenShift Container Platform] **********************************************************************************************************************************************
+changed: [openshift]
+
+PLAY RECAP ***************************************************************************************************************************************************************************************************
+openshift                  : ok=3    changed=1    unreachable=0    failed=0   
+
+Loaded plugins: product-id, search-disabled-repos, subscription-manager
+Nothing to do
+cluster role "cluster-admin" added: "glennswest"

@@ -47,7 +47,7 @@ subscription-manager repos --disable="*"
 subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-fast-datapath-rpms" --enable="rhel-7-server-ose-3.10-rpms" --enable="rhel-7-server-ansible-2.4-rpms"
 yum -y update
 yum -y install gcc wget git net-tools atomic-openshift-utils git net-tools bind-utils iptables-services bridge-utils bash-completion httpd-tools nodejs qemu-img kexec-tools sos psacct docker-1.13.1 ansible libffi-devel yum-utils
-yum install -y atomic-openshift-utils
+yum install -y openshift-ansible
 yum -y install docker-1.13.1
 yum -y install PyYAML
 yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
@@ -115,7 +115,7 @@ openshift_override_hostname_check=true
 osm_use_cockpit=false
 openshift_install_examples=true
 deployment_type=openshift-enterprise
-openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider'}]
 openshift_master_manage_htpasswd=false
 
 openshift_master_default_subdomain=$AppPublicURL
@@ -123,7 +123,7 @@ openshift_use_dnsmasq=true
 openshift_public_hostname=$OpenShiftPublicURL
 
 [masters]
-$LinuxHostName openshift_host_name=$LinuxHostName openshift_node_labels="{'region': 'infra'}"
+$LinuxHostName
 
 [etcd]
 $LinuxHostName
@@ -132,7 +132,7 @@ $LinuxHostName
 [new_masters]
 
 [nodes]
-$LinuxHostName openshift_host_name=$LinuxHostName
+$LinuxHostName openshift_host_name=$LinuxHostName openshift_node_group_name='node-config-all-in-one'
  
 [windows]
 $WindowsHostName
