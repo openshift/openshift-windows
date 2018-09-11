@@ -132,7 +132,7 @@ osm_default_node_selector="node-role.kubernetes.io/compute=true"
 $LinuxHostName.$InternalDomain
 
 [etcd]
-$LinuxHostName
+$LinuxHostName.$InternalDomain
 
 [new_nodes]
 [new_masters]
