@@ -129,7 +129,7 @@ openshift_master_bootstrap_auto_approver_node_selector={"node-role.kubernetes.io
 osm_default_node_selector="node-role.kubernetes.io/compute=true"
 
 [masters]
-$LinuxHostName
+$LinuxHostName.$InternalDomain
 
 [etcd]
 $LinuxHostName
@@ -138,10 +138,10 @@ $LinuxHostName
 [new_masters]
 
 [nodes]
-$LinuxHostName openshift_host_name=$LinuxHostName openshift_node_group_name='node-config-all-in-one'
+$LinuxHostName.$InternalDomain openshift_node_group_name='node-config-all-in-one'
  
 [windows]
-$WindowsHostName
+$WindowsHostName.$InternalDomain
 
 EOF
 
