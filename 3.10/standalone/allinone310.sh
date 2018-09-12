@@ -47,7 +47,12 @@ subscription-manager repos --disable="*"
 subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-fast-datapath-rpms" --enable="rhel-7-server-ose-3.10-rpms" --enable="rhel-7-server-ansible-2.4-rpms"
 yum -y update
 yum -y install gcc wget git net-tools atomic-openshift-utils git net-tools bind-utils iptables-services bridge-utils bash-completion httpd-tools nodejs qemu-img kexec-tools sos psacct docker-1.13.1 ansible libffi-devel yum-utils
-yum install -y openshift-ansible
+#yum install -y openshift-ansible
+git clone https://github.com/openshift/openshift-ansible.git ~/openshift-ansible
+cd ~/openshift-ansible
+git checkout release-3.10
+git pull
+cd ~
 yum -y install docker-1.13.1
 yum -y install PyYAML
 yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
@@ -161,8 +166,8 @@ EOF
 
 
 cat <<EOF > ~/openshift-install.sh
-ansible-playbook  /usr/share/ansible/openshift-ansible/playbooks/prerequisites.yml < /dev/null
-ansible-playbook  /usr/share/ansible/openshift-ansible/playbooks/deploy_cluster.yml < /dev/null || true
+ansible-playbook  ~/openshift-ansible/playbooks/prerequisites.yml < /dev/null
+ansible-playbook  ~/openshift-ansible/playbooks/deploy_cluster.yml < /dev/null || true
 ansible-playbook  ~/postinstall.yml
 
 yum -y install atomic-openshift-clients
