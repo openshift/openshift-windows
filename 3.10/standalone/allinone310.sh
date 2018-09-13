@@ -102,23 +102,9 @@ ansible_ssh_user=root
 openshift_use_openshift_sdn=false
 os_sdn_network_plugin_name=cni
 openshift_disable_check=memory_availability
-oreg_url=registry.access.redhat.com/openshift3/ose-\${component}:\${version}
-openshift_examples_modify_imagestreams=true
-openshift_clock_enabled=true
 openshift_enable_service_catalog=false
 debug_level=2
 console_port=8443
-docker_udev_workaround=True
-openshift_node_debug_level="{{ node_debug_level | default(debug_level, true) }}"
-openshift_master_debug_level="{{ master_debug_level | default(debug_level, true) }}"
-openshift_master_access_token_max_seconds=2419200
-openshift_hosted_router_replicas=1
-openshift_hosted_registry_replicas=1
-openshift_master_api_port="{{ console_port }}"
-openshift_master_console_port="{{ console_port }}"
-openshift_override_hostname_check=true
-osm_use_cockpit=false
-openshift_install_examples=true
 deployment_type=openshift-enterprise
 openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider'}]
 openshift_master_manage_htpasswd=false
@@ -127,10 +113,6 @@ openshift_master_default_subdomain=$AppPublicURL
 openshift_use_dnsmasq=true
 openshift_public_hostname=$OpenShiftPublicURL
 
-openshift_master_bootstrap_enabled=true
-openshift_master_bootstrap_auto_approve=true
-openshift_node_bootstrap=true
-openshift_master_bootstrap_auto_approver_node_selector={"node-role.kubernetes.io/master":"true"}
 osm_default_node_selector="node-role.kubernetes.io/compute=true"
 
 [masters]

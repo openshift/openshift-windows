@@ -268,10 +268,10 @@
                    ingressIPNetworkCIDR: 172.29.0.0/16
                    networkPluginName: cni
                    serviceNetworkCIDR: 172.30.0.0/16
-  - name: restart atomic-openshift-master-controllers
-    shell: systemctl restart atomic-openshift-master-controllers
-  - name: restart atomic-openshift-master-api
-    shell: systemctl restart atomic-openshift-master-api
+#  - name: restart atomic-openshift-master-controllers
+#    shell: systemctl restart atomic-openshift-master-controllers
+#  - name: restart atomic-openshift-master-api
+#    shell: systemctl restart atomic-openshift-master-api
 - hosts: nodes
   become: yes
   become_user: root
@@ -286,8 +286,8 @@
     shell: systemctl daemon-reload
   - name: Clear old rules
     shell: iptables -t nat -F
-  - name: restart atomic-openshift-node
-    shell: systemctl restart  atomic-openshift-node
+#  - name: restart atomic-openshift-node
+#    shell: systemctl restart  atomic-openshift-node
 - hosts: nodes[0]
   tasks:
   - name: Grab /etc/openvswitch/ovn_k8s.conf
@@ -390,7 +390,7 @@
   gather_facts: no
   tasks:
   - name: Recreate the router
-    shell: oc adm policy add-scc-to-user hostnetwork -z router;oc adm router --selector='region=infra'
+    shell: oc adm policy add-scc-to-user hostnetwork -z router;oc adm router --selector='node-role.kubernetes.io/infra=true'
   - name: Recreate the registry
     shell: oc adm registry
   - name: Recreate the webconsole
