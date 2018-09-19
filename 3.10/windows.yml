@@ -435,3 +435,5 @@
     win_shell: Set-Service ocpkubelet -StartupType Automatic
   - name: Start kubelet
     win_shell: Start-Service ocpkubelet
+  - name: Add windows node label (compute=true)
+    win_shell: oc label node "{{inventory_hostname_short}}" node-role.kubernetes.io/compute=true
