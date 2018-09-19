@@ -37,7 +37,7 @@
     win_shell: "{{ipv6cmd}}"
     ignore_errors: yes
   - name: Rename Computer
-    win_shell: Rename-Computer -NewName "{{inventory_hostname}}" -Force
+    win_shell: Rename-Computer -NewName "{{inventory_hostname_short}}" -Force
     ignore_errors: yes
   - name: Restart Windows Nodes (For rename)
     win_reboot:
@@ -166,13 +166,13 @@
 - hosts: masters
   gather_facts: no
   tasks:
-  - name: Restart atomic-openshift-master-controllers.service
-    shell: systemctl restart atomic-openshift-master-controllers.service
-  - name: Restart atomic-openshift-master-api.service
-    shell: systemctl restart atomic-openshift-master-api.service
-  - name: Wait for clean restart
-    pause:
-       minutes: 2
+#  - name: Restart atomic-openshift-master-controllers.service
+#    shell: systemctl restart atomic-openshift-master-controllers.service
+#  - name: Restart atomic-openshift-master-api.service
+#    shell: systemctl restart atomic-openshift-master-api.service
+#  - name: Wait for clean restart
+#    pause:
+#       minutes: 2
 - hosts: windows
   gather_facts: no
   vars:
@@ -246,21 +246,6 @@
     file:
          path: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows"
          state: directory
-  - name: Fix system-node kubconfig
-    copy:
-       src: "/etc/origin/generated-configs/node-{{ groups.masters | first }}.{{InternalDomain}}/system:node:{{ groups.masters | first }}.{{InternalDomain}}.kubeconfig"
-       dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/system-node-{{ groups.masters | first }}.{{InternalDomain}}.kubeconfig"
-       force: yes
-  - name: Fix system-node crt
-    copy:
-       src: "/etc/origin/generated-configs/node-{{ groups.masters | first }}.{{InternalDomain}}/system:node:{{ groups.masters | first }}.{{InternalDomain}}.crt"
-       dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/system-node-{{ groups.masters | first }}.{{InternalDomain}}.crt"
-       force: yes
-  - name: Fix system-node key
-    copy:
-       src: "/etc/origin/generated-configs/node-{{ groups.masters | first }}.{{InternalDomain}}/system:node:{{ groups.masters | first }}.{{InternalDomain}}.key"
-       dest: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/system-node-{{ groups.masters | first }}.{InternalDomain}}.key"
-       force: yes
   - name: Flush arp cache
     shell: ip -s -s neigh flush all
 - hosts: windows
@@ -447,6 +432,6 @@
   - name: Start kubeovn
     win_shell: Start-Service kubeovn
   - name: Enable kubelet
-    win_shell: Set-Service kubelet -StartupType Automatic
+    win_shell: Set-Service ocpkubelet -StartupType Automatic
   - name: Start kubelet
-    win_shell: Start-Service kubelet
+    win_shell: Start-Service ocpkubelet
