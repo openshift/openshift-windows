@@ -44,10 +44,15 @@ systemctl start dnsmasq.service
 swapoff -a
 
 subscription-manager repos --disable="*"
-subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-fast-datapath-rpms" --enable="rhel-7-server-ose-3.9-rpms" --enable="rhel-7-server-ansible-2.4-rpms"
+subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-fast-datapath-rpms" --enable="rhel-7-server-ose-3.10-rpms" --enable="rhel-7-server-ansible-2.4-rpms"
 yum -y update
 yum -y install gcc wget git net-tools atomic-openshift-utils git net-tools bind-utils iptables-services bridge-utils bash-completion httpd-tools nodejs qemu-img kexec-tools sos psacct docker-1.13.1 ansible libffi-devel yum-utils
-yum install -y atomic-openshift-utils
+#yum install -y openshift-ansible
+git clone https://github.com/openshift/openshift-ansible.git ~/openshift-ansible
+cd ~/openshift-ansible
+git checkout release-3.10
+git pull
+cd ~
 yum -y install docker-1.13.1
 yum -y install PyYAML
 yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
@@ -97,45 +102,33 @@ ansible_ssh_user=root
 openshift_use_openshift_sdn=false
 os_sdn_network_plugin_name=cni
 openshift_disable_check=memory_availability
-oreg_url=registry.access.redhat.com/openshift3/ose-\${component}:\${version}
-openshift_examples_modify_imagestreams=true
-openshift_clock_enabled=true
 openshift_enable_service_catalog=false
 debug_level=2
 console_port=8443
-docker_udev_workaround=True
-openshift_node_debug_level="{{ node_debug_level | default(debug_level, true) }}"
-openshift_master_debug_level="{{ master_debug_level | default(debug_level, true) }}"
-openshift_master_access_token_max_seconds=2419200
-openshift_hosted_router_replicas=1
-openshift_hosted_registry_replicas=1
-openshift_master_api_port="{{ console_port }}"
-openshift_master_console_port="{{ console_port }}"
-openshift_override_hostname_check=true
-osm_use_cockpit=false
-openshift_install_examples=true
 deployment_type=openshift-enterprise
-openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider'}]
 openshift_master_manage_htpasswd=false
 
 openshift_master_default_subdomain=$AppPublicURL
 openshift_use_dnsmasq=true
 openshift_public_hostname=$OpenShiftPublicURL
 
+osm_default_node_selector="node-role.kubernetes.io/compute=true"
+
 [masters]
-$LinuxHostName openshift_host_name=$LinuxHostName openshift_node_labels="{'region': 'infra'}"
+$LinuxHostName.$InternalDomain
 
 [etcd]
-$LinuxHostName
+$LinuxHostName.$InternalDomain
 
 [new_nodes]
 [new_masters]
 
 [nodes]
-$LinuxHostName openshift_host_name=$LinuxHostName
+$LinuxHostName.$InternalDomain openshift_node_group_name='node-config-all-in-one'
  
 [windows]
-$WindowsHostName
+$WindowsHostName.$InternalDomain
 
 EOF
 
@@ -155,8 +148,8 @@ EOF
 
 
 cat <<EOF > ~/openshift-install.sh
-ansible-playbook  /usr/share/ansible/openshift-ansible/playbooks/prerequisites.yml < /dev/null
-ansible-playbook  /usr/share/ansible/openshift-ansible/playbooks/deploy_cluster.yml < /dev/null || true
+ansible-playbook  ~/openshift-ansible/playbooks/prerequisites.yml < /dev/null
+ansible-playbook  ~/openshift-ansible/playbooks/deploy_cluster.yml < /dev/null || true
 ansible-playbook  ~/postinstall.yml
 
 yum -y install atomic-openshift-clients
