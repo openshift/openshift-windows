@@ -437,4 +437,4 @@
     win_shell: Start-Service ocpkubelet
   - name: Add windows node label (compute=true)
     shell: oc label node "{{inventory_hostname_short}}" node-role.kubernetes.io/compute=true
-    delagate_to: masters[0]
+    delegate_to: localhost]
