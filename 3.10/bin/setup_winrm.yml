@@ -1,0 +1,26 @@
+# Presetup for WindowsFeature
+- hosts: 127.0.0.1
+  connection: local
+  sudo: yes
+  gather_facts: no
+  vars:
+     user: "{{lookup('env','USER')}}"
+  tasks:
+  - debug: msg="User is {{ user }}"
+  - name: Install PIP and Related
+    shell: yum install -y gcc libffi-devel python-devel krb5-devel krb5-libs krb5-workstation
+  - name: Add yumutils
+    shell: yum install -y yum-utils
+  - name: Enable Extras
+    shell: yum-config-manager --enable rhel-7-server-extras-rpms
+  - name: Enable EPEL
+    shell: yum install -y  https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm || true
+    ignore_errors: yes
+  - name: Install PIP and Related
+    shell: yum install -y python-pip
+  - name: disable epel
+    shell: yum-config-manager --disable epel
+  - name: Install pywinrm
+    shell: pip install "pywinrm" --upgrade 
+  - name: Install pywinrm keberos
+    shell: pip install pywinrm[kerberos] --upgrade

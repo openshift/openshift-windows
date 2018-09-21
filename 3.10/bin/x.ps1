@@ -1,8 +1,13 @@
-$a = Test-Path "C:\k\network_setup.lock"
-IF ($a -eq "True") {Write-Host "Network Already Installed";exit}
 Write-Host "Installing Network"
 date > c:\k\network_setup.lock
 $ErrorActionPreference = "SilentlyContinue"
+
+If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
+{   
+  $arguments = "& '" + $myinvocation.mycommand.definition + "'"
+  Start-Process powershell -Verb runAs -ArgumentList $arguments
+  Break
+}
 
 # The name is saved in the docker setup
 $roughname = Get-Content "C:\k\interface.txt" | Out-String
@@ -18,7 +23,7 @@ ovs-vsctl --no-wait add-port br-ex "$INTERFACE_ALIAS"
 Get-VMSwitch -SwitchType External | Enable-VMSwitchExtension "Cloudbase Open vSwitch Extension"; sleep 2; Restart-Service ovs-vswitchd
 # Clone the MAC Address of $INTERFACE_ALIAS on br-ex
 $MAC_ADDRESS=$(Get-NetAdapter "$INTERFACE_ALIAS").MacAddress
-$FAKE_MAC_ADDRESS=$MAC_ADDRESS.Substring(0,15)+"90"
+$FAKE_MAC_ADDRESS=$MAC_ADDRESS.Substring(0,15)+"99"
 Set-NetAdapter -Name "$INTERFACE_ALIAS" -MacAddress $FAKE_MAC_ADDRESS -Confirm:$false
 Set-NetAdapter -Name br-ex -MacAddress $MAC_ADDRESS -Confirm:$false
 # br-ex will get all the interface details from the DHCP server now
