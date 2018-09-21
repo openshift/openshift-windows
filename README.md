@@ -8,21 +8,20 @@ The Windows Node is Windows Server Core 1803.
 The Windows node requires it to be enabled for Ansible.
 bin/winansible.ps1 set's up the windows node for ansible.
 
-How to Use:
+## Repos for Openshift Windows:
 
-##Repos for Openshift Windows:
+https://github.com/openshift/openshift-windows
 
-Supported
-http:/github.com/glennswest/openshift-windows
-Upstream:
-http://github.com/glennswest/hybrid
+## How to Use:
 
-Requirements:
+### Requirements:
+
 1. Linux node with host name set, and static ip, and a proper search domain
 2. Windows node with a hostname set, and dhcp that returns same ip all the time, matching hostname.
 3. The windows node must have the correct host name, make sure you rename it.
 
-Overview:
+### Overview:
+
 1. Install two nodes, one with RHEL 7.5 and one with Windows 1803.
 2. Setup DNS for both nodes, and search domain so the hosts can be found by both there short name, and there fully qualified name.
 3. Make sure the windows node can use DHCP to find its IP address.
@@ -36,7 +35,7 @@ Important Note: The Windows Node must run on a physical box, or a environment th
 
 ./allinone.sh LinuxHostName WindowsHostName InternalDomain OpenShiftPublicURL AppPublicURL UserName Password
 
-Arguments Examples:
+### Examples:
 
 Linux Host Name - node01 or openshift or linuxnode
 Windows Host Name: winnode01 or windows 
