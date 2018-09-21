@@ -1,0 +1,21 @@
+- hosts: windows
+  gather_facts: no
+  vars:
+    ipv6cmd: !unsafe New-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters\' -Name  'DisabledComponents' -Value '0xffffffff' -PropertyType 'DWord'
+  tasks:
+  - name: Check Comm
+    win_ping:
+  - name: Fix search
+    win_shell: Set-DnsClientGlobalSetting -SuffixSearchList @("star.k.e2e.bos.redhat.com")
+  - name: Turn off v6
+    win_shell: "{{ipv6cmd}}"
+  - name: Rename Computer
+    win_shell: Rename-Computer -NewName "{{inventory_hostname}}" -Force
+  - name: Enable Ping
+    win_shell: Set-NetFirewallRule -Name FPS-ICMP4-ERQ-In -Enabled True;Set-NetFirewallRule -Name FPS-ICMP4-ERQ-out -Enabled True
+  - name: Enable RDP Part 1
+    win_shell: Set-ItemProperty ‘HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\‘ -Name “fDenyTSConnections” -Value 0
+  - name: Enable RDP Part 2
+    win_shell: Set-ItemProperty ‘HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp\‘ -Name “UserAuthentication” -Value 1
+  - name: Enable RDP Part 3
+    win_shell: Enable-NetFirewallRule -DisplayGroup “Remote Desktop”

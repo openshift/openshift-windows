@@ -1,10 +1,10 @@
 # openshift-windows
 Windows Nodes in OpenShift
 
-This current is tested on Vmware, with two machines, one running OpenShift 3.9 on RHEL 7.5.
+This current is tested on Vmware, with two machines, one running OpenShift 3.10 on RHEL 7.5.
 A full openshift subscription is required.
 
-The Windows Node is Windows Server Core 1709.
+The Windows Node is Windows Server Core 1803.
 The Windows node requires it to be enabled for Ansible.
 bin/winansible.ps1 set's up the windows node for ansible.
 
@@ -15,12 +15,14 @@ https://github.com/openshift/openshift-windows
 ## How to Use:
 
 ### Requirements:
+
 1. Linux node with host name set, and static ip, and a proper search domain
 2. Windows node with a hostname set, and dhcp that returns same ip all the time, matching hostname.
 3. The windows node must have the correct host name, make sure you rename it.
 
 ### Overview:
-1. Install two nodes, one with RHEL 7.5 and one with Windows 1709.
+
+1. Install two nodes, one with RHEL 7.5 and one with Windows 1803.
 2. Setup DNS for both nodes, and search domain so the hosts can be found by both there short name, and there fully qualified name.
 3. Make sure the windows node can use DHCP to find its IP address.
 4. Make sure the Mac address is unique for the windows node in the first 5 bytes.
@@ -52,7 +54,7 @@ Password:  SuperSecret
     B. From Command Prompt: (To Enable Ansible)
          i. type: powershell 
         ii. type: [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        iii. Invoke-WebRequest -Uri https://raw.githubusercontent.com/glennswest/hybrid/master/bin/winansible.ps1 -OutFile "winansible.ps1" -UseDefaultCredentials
+        iii. Invoke-WebRequest -Uri https://raw.githubusercontent.com/openshift/hybrid/master/bin/winansible.ps1 -OutFile "winansible.ps1" -UseDefaultCredentials
         iv. .\winansible.ps1
         v.   Rename-Computer -NewName "winnode01" -Restart -Force
         vi.  Disconnect from windows.
@@ -61,5 +63,3 @@ Password:  SuperSecret
 15. ansible-playbook windows.yml
 
 ## Known Issues:
-
-1. After installation, restart of ovn-kubernnets-master may be required
