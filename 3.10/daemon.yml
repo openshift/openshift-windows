@@ -1,0 +1,32 @@
+- hosts: masters
+  become: yes
+  become_user: root
+  tasks:
+  - name: Remove OVS DB Content
+    shell: rm -rf /var/lib/openvswitch/ovn*.db
+  - name: Clone ovn-kubernetes
+    shell: git clone https://github.com/openvswitch/ovn-kubernetes ~/ovn-kubernetes
+  - name: Provision the OVN Namespace
+    shell: oc create -f yaml/ovn-namespace.yaml
+    chdir: ~/ovn-kubernetes/dist
+  - name: Provision the OVN Policy
+    shell: oc create -f yaml/ovn-policy.yaml
+    chdir: ~/ovn-kubernetes/dist
+  - name: Provision the OVN Project
+    shell: oc project ovn-kubernetes
+    chdir: ~/ovn-kubernetes/dist
+  - name: Add adm policy auyuid
+    shell: oc adm policy add-scc-to-user anyuid -z ovn
+    chdir: ~/ovn-kubernetes/dist
+  - name: Run the ovn-setup
+    shell: ./ansible/scripts/ovn-setup.sh
+    chdir: ~/ovn-kubernetes/dist
+  - name: Start the ovn-ovs daemonset
+    shell: oc create -f yaml/sdn-ovs.yaml
+    chdir: ~/ovn-kubernetes/dist
+  - name: Start the master ovn daemonset
+    shell: oc create -f yaml/ovnkube-master.yaml
+    chdir: ~/ovn-kubernetes/dist
+  - name: Start the node ovn daemonset
+    shell: oc create -f yaml/ovnkube.yaml
+    chdir: ~/ovn-kubernetes/dist
