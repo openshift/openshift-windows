@@ -2,18 +2,6 @@
   become: yes
   become_user: root
   tasks:
-  - name: Create destination directory
-    file: path=/etc/cni/net.d state=directory
-  - name: Create cni config
-    copy:
-      dest: /etc/cni/net.d/10-ovn-kubernetes.conf
-      content: |
-               {"name":"ovn-kubernetes", "type":"ovn-k8s-cni-overlay"}
-
-- hosts: localhost
-  become: yes
-  become_user: root
-  tasks:
   - name: Remove OVS DB Content
     shell: rm -rf /var/lib/openvswitch/ovn*.db
   - name: Remove any old ovn-kubernets
