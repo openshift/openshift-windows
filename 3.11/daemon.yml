@@ -1,4 +1,4 @@
-- hosts: masters
+- hosts: localhost
   become: yes
   become_user: root
   tasks:
@@ -10,7 +10,7 @@
       content: |
                {"name":"ovn-kubernetes", "type":"ovn-k8s-cni-overlay"}
 
-- hosts: masters
+- hosts: localhosts
   become: yes
   become_user: root
   tasks:
