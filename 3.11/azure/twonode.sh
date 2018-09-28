@@ -164,7 +164,7 @@ yum -y install git
 cd /home/${AUSERNAME}
 git clone https://github.com/glennswest/openshift-windows
 
-cat <<EOF > /home/${AUSERNAME}/openshift-windows/3.10/group_vars/windows.yml
+cat <<EOF > /home/${AUSERNAME}/openshift-windows/3.11/group_vars/windows.yml
 ansible_user: ${AUSERNAME}
 ansible_password: ${PASSWORD}
 ansible_port: 5985
@@ -206,7 +206,7 @@ EOF
 export LOCAL_DOMAIN=`hostname -d`
 cat <<EOF > /home/${AUSERNAME}/install.sh
 cd /home/${AUSERNAME}/openshift-windows
-cd 3.10
+cd 3.11
 cd standalone
 ssh -o StrictHostKeyChecking=no root@${RESOURCEGROUP} ls 
 ./allinone.sh ${RESOURCEGROUP} ${RESOURCEGROUP}win ${LOCAL_DOMAIN} ${WILDCARDFQDN} ${WILDCARDNIP} ${AUSERNAME} ${PASSWORD} 
