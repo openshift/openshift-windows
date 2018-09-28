@@ -148,6 +148,7 @@ EOF
 
 
 cat <<EOF > ~/openshift-install.sh
+nohup ~/openshift-windows/3.11/auto-install-ovn.sh > ~/auto-install-ovn.out &
 ansible-playbook  ~/openshift-ansible/playbooks/prerequisites.yml < /dev/null
 ansible-playbook  ~/openshift-ansible/playbooks/deploy_cluster.yml < /dev/null || true
 ansible-playbook  ~/postinstall.yml

@@ -1,3 +1,4 @@
+cd ~/openshift-windows/3.11/
 wait_file() {
   local file="$1"; shift
   local wait_seconds="${1:-10}"; shift # 10 seconds as default timeout
