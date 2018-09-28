@@ -9,7 +9,17 @@ wait_file() {
 
 oc_cmd_path=/usr/bin/oc
 kconfig_path=/root/.kube/config
+ansible_path=/usr/bin/ansible-playbook
 
+echo "Wait on Ansible"
+wait_file "$ansible_path" 36000 || {
+      echo "Ansible Not Installed - Timeout"
+      exit 1
+      }
+echo "Ansible Installed"
+echo "OVN Presetup Executing"
+ansible-playbook ovn_presetup.yml
+echo "OVN Preset Complete"
 echo "Waiting On OC Command Installation"
 wait_file "$oc_cmd_path" 36000 || {
       echo "Openshift Not Installed - Timeout"
