@@ -2,6 +2,14 @@
   become: yes
   become_user: root
   tasks:
+  - name: open firewall 6641
+    shell: iptables -A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 6641 -j ACCEPT
+  - name: open firewall 6642
+    shell: iptables -A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 6642 -j ACCEPT
+  - name: open firewall 6081
+    shell: iptables -A OS_FIREWALL_ALLOW -p udp -m state --state NEW -m udp --dport 6081 -j ACCEPT
+  - name: Save iptables rules
+    shell: service iptables save
   - name: Remove OVS DB Content
     shell: rm -rf /var/lib/openvswitch/ovn*.db
   - name: Remove any old ovn-kubernets
