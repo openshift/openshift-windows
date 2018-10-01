@@ -17,10 +17,10 @@
   - name: Clone ovn-kubernetes
     shell: git clone https://github.com/openvswitch/ovn-kubernetes ~/ovn-kubernetes
   - name: Provision the OVN Namespace
-    shell: oc create -f ~/ovn-kubernetes/dist/yaml/ovn-namespace.yaml
+    shell: oc create -f /root/openshift-windows/3.11/kubeovn/ovn-namespace.yaml
     ignore_errors: yes
   - name: Provision the OVN Policy
-    shell: oc create -f ~/ovn-kubernetes/dist/yaml/ovn-policy.yaml
+    shell: oc create -f /root/openshift-windows/3.11/kubeovn/ovn-policy.yaml
     ignore_errors: yes
   - name: Provision the OVN Project
     shell: oc project ovn-kubernetes
@@ -32,11 +32,11 @@
     shell: cd ~/ovn-kubernetes/dist/ansible/scripts; ./ovn-setup.sh
     ignore_errors: yes
   - name: Start the ovn-ovs daemonset
-    shell: oc create -f ~/ovn-kubernetes/dist/yaml/sdn-ovs.yaml
+    shell: oc create -f /root/openshift-windows/3.11/kubeovn/sdn-ovs.yaml
     ignore_errors: yes
   - name: Start the master ovn daemonset
-    shell: oc create -f ~/ovn-kubernetes/dist/yaml/ovnkube-master.yaml
+    shell: oc create -f /root/openshift-windows/3.11/kubeovn/ovnkube-master.yaml
     ignore_errors: yes
   - name: Start the node ovn daemonset
-    shell: oc create -f ~/ovn-kubernetes/dist/yaml/ovnkube.yaml
+    shell: oc create -f /root/openshift-windows/3.11/kubeovn/ovnkube.yaml
     ignore_errors: yes
