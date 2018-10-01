@@ -37,6 +37,3 @@
   - name: Start the master ovn daemonset
     shell: oc create -f /root/openshift-windows/3.11/kubeovn/ovnkube-master.yaml
     ignore_errors: yes
-  - name: Start the node ovn daemonset
-    shell: oc create -f /root/openshift-windows/3.11/kubeovn/ovnkube.yaml
-    ignore_errors: yes
