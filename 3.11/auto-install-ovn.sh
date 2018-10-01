@@ -18,9 +18,9 @@ wait_file "$ansible_path" 36000 || {
       exit 1
       }
 echo "Ansible Installed"
-echo "OVN Presetup Executing"
-ansible-playbook ovn_presetup.yml
-echo "OVN Preset Complete"
+#echo "OVN Presetup Executing"
+#ansible-playbook ovn_presetup.yml
+#echo "OVN Preset Complete"
 echo "Waiting On OC Command Installation"
 wait_file "$oc_cmd_path" 36000 || {
       echo "Openshift Not Installed - Timeout"
