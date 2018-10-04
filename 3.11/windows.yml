@@ -1,3 +1,19 @@
+- hosts: localhost
+  become: yes
+  become_user: root
+  tasks:
+  - name: Install go
+    yum:
+      name: golang
+      enablerepo: rhel-7-server-optional-rpms
+  - name: Clear previous build if it exists
+    file: path=~/ovn-kubernetes state=absent
+  - name: Clone to ovn-kubernetes repo
+    shell: git clone https://github.com/openvswitch/ovn-kubernetes ~/ovn-kubernetes
+  - name: Create the ovn-kubernetes directory
+    file: path=~/ovn-kubernetes state=directory
+  - name: Build The Controller (Windows)
+    shell: cd ~/ovn-kubernetes;cd go-controller;make clean;make windows
 # Presetup for WindowsFeature
 - hosts: 127.0.0.1
   connection: local
