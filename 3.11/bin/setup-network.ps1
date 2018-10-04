@@ -16,6 +16,7 @@ Get-VMSwitch -SwitchType External | Set-VMSwitch -AllowManagementOS $false
 ovs-vsctl --no-wait --may-exist add-br br-ex
 ovs-vsctl --no-wait add-port br-ex "$INTERFACE_ALIAS"
 Get-VMSwitch -SwitchType External | Enable-VMSwitchExtension "Cloudbase Open vSwitch Extension"; sleep 2; Restart-Service ovs-vswitchd
+ipconfig /release $INTERFACE_ALIAS
 # Clone the MAC Address of $INTERFACE_ALIAS on br-ex
 $MAC_ADDRESS=$(Get-NetAdapter "$INTERFACE_ALIAS").MacAddress
 $FAKE_MAC_ADDRESS=$MAC_ADDRESS.Substring(0,15)+"90"
@@ -26,5 +27,8 @@ Enable-NetAdapter br-ex
 # First time may not work
 Set-NetAdapter -Name br-ex -MacAddress $MAC_ADDRESS -Confirm:$false
 # Make sure arp etc is update to date
+ipconfig /release $INTERFACE_ALIAS
+ipconfig /release br-ex
+ipconfig /renew br-ex
 ping 8.8.8.8
 Write-Host "SDN Network is setup"
