@@ -2,6 +2,14 @@
   become: yes
   become_user: root
   tasks:
+  - name: Get server url
+    shell: "oc whoami --show-server"
+    register: api_url
+  - local_action: copy content="{{ api_url.stdout }}" dest="{{playbook_dir}}/api_host.txt"
+- hosts: localhost
+  become: yes
+  become_user: root
+  tasks:
   - name: Install go
     yum:
       name: golang
