@@ -9,22 +9,25 @@ $roughname = Get-Content "C:\k\interface.txt" | Out-String
 $INTERFACE_ALIAS= $roughname -replace "`n|`r",""
 echo $INTERFACE_ALIAS
 
-Stop-Service ovs-vswitchd -force; Get-VMSwitch -SwitchType External | Disable-VMSwitchExtension "Cloudbase Open vSwitch Extension"
-Get-VMSwitch -SwitchType External | Set-VMSwitch -AllowManagementOS $false
-# Ignore the error from the first command
-Get-VMSwitch -SwitchType External | Set-VMSwitch -AllowManagementOS $false
+Import-Module "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\HostNetworkingService\HostNetworkingService.psm1"
+Import-Module "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\OVS\OVS.psm1"
+Import-Module "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\HNSHelper\HNSHelper.psm1"
+
+# # There should be only one transparent network
+$HNS_NW = Get-HNSNetwork | where {$_.type -eq "transparent"}
+$HNS_ID = $HNS_NW.Id
+Disable-OVSOnHNSNetwork $HNS_ID
+ovs-vsctl --if-exists --no-wait del-br br-ex
 ovs-vsctl --no-wait --may-exist add-br br-ex
-ovs-vsctl --no-wait add-port br-ex "$INTERFACE_ALIAS"
-Get-VMSwitch -SwitchType External | Enable-VMSwitchExtension "Cloudbase Open vSwitch Extension"; sleep 2; Restart-Service ovs-vswitchd
-# Clone the MAC Address of $INTERFACE_ALIAS on br-ex
-$MAC_ADDRESS=$(Get-NetAdapter "$INTERFACE_ALIAS").MacAddress
-$FAKE_MAC_ADDRESS=$MAC_ADDRESS.Substring(0,15)+"90"
-Set-NetAdapter -Name "$INTERFACE_ALIAS" -MacAddress $FAKE_MAC_ADDRESS -Confirm:$false
-Set-NetAdapter -Name br-ex -MacAddress $MAC_ADDRESS -Confirm:$false
-# br-ex will get all the interface details from the DHCP server now
-Enable-NetAdapter br-ex
-# First time may not work
-Set-NetAdapter -Name br-ex -MacAddress $MAC_ADDRESS -Confirm:$false
+ovs-vsctl --no-wait add-port br-ex "vEthernet (${INTERFACE_ALIAS})" -- set interface  "vEthernet (${INTERFACE_ALIAS})" type=internal
+ovs-vsctl --no-wait add-port br-ex "${INTERFACE_ALIAS}"
+Stop-Service ovs-vswitchd
+Enable-OVSOnHNSNetwork $HNS_ID
+
+Start-Service ovs-vswitchd
+sleep 2
+Restart-Service ovs-vswitchd
+
 # Make sure arp etc is update to date
 ping 8.8.8.8
 Write-Host "SDN Network is setup"
