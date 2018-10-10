@@ -96,11 +96,6 @@ new_nodes
 new_masters
 
 [OSEv3:vars]
-#openshift_web_console_install=False 
-#openshift_enable_service_catalog=False 
-#openshift_hosted_manage_router=False 
-#openshift_hosted_manage_registry=False 
-#openshift_hosted_manage_registry_console=False
 ansible_ssh_user=root
 openshift_use_openshift_sdn=false
 os_sdn_network_plugin_name=cni
