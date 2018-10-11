@@ -137,6 +137,8 @@
     ignore_errors: yes
   - name: Pull openvswitch
     win_shell: wget.exe https://cloudbase.it/downloads/openvswitch-hyperv-installer-beta.msi -O openvswitch.msi
+  - name: Install cloudbase certificate
+    win_shell:  certutil -addstore -f "TrustedPublisher" c:\k\hybrid\3.11\cloudbase.sst
   - name: Install open vswitch
     win_shell: msiexec /i openvswitch.msi ADDLOCAL="OpenvSwitchCLI,OpenvSwitchDriver,OVNHost" /qn
     ignore_errors: yes
