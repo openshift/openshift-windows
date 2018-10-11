@@ -136,7 +136,7 @@
     win_shell: git clone {{theRepo}}  c:\k\hybrid
     ignore_errors: yes
   - name: Pull openvswitch
-    win_shell: wget.exe https://cloudbase.it/downloads/openvswitch-hyperv-2.7.0-certified.msi -O openvswitch.msi
+    win_shell: wget.exe https://cloudbase.it/downloads/openvswitch-hyperv-installer-beta.msi -O openvswitch.msi
   - name: Install open vswitch
     win_shell: msiexec /i openvswitch.msi ADDLOCAL="OpenvSwitchCLI,OpenvSwitchDriver,OVNHost" /qn
     ignore_errors: yes
