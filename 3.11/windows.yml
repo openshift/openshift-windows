@@ -334,15 +334,6 @@
     args:
       chdir: c:\k\hybrid\3.11
 # Part 2
-- hosts: masters[0]
-  become: yes
-  become_user: root
-  tasks:
-  - name: Get the ovn_k8s.conf
-    fetch:
-          src: /etc/openvswitch/ovn_k8s.conf
-          dest: "{{playbook_dir}}/"
-          flat: yes
 - hosts: windows
   tasks:
   - name: Create the master directory
