@@ -16,6 +16,8 @@
     shell: rm -r -f ~/ovn-kubernetes
   - name: Clone ovn-kubernetes
     shell: git clone https://github.com/openvswitch/ovn-kubernetes ~/ovn-kubernetes
+  - name: Revert back a PR (442)
+    shell: ~/ovn-kubernetes; git pull origin pull/442/head
   - name: Provision the OVN Namespace
     shell: oc create -f /root/openshift-windows/3.11/kubeovn/ovn-namespace.yaml
     ignore_errors: yes
