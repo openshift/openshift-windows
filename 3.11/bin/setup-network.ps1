@@ -9,9 +9,9 @@ Import-Module "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\OVS\OVS.psm1"
 Import-Module "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\HNSHelper\HNSHelper.psm1"
  
 # # There should be only one transparent network
-$HNS_NW = Get-OVSEnabledHNSNetworks
-$HNS_ID = $HNS_NW.Id
-$INTERFACE_ALIAS = $HNS_NW.NetworkAdapterName
+$HNS_NW = [array](Get-HNSNetwork | where {$_.type -eq "transparent"})
+$HNS_ID = $HNS_NW[0].Id
+$INTERFACE_ALIAS = $HNS_NW[0].NetworkAdapterName
 sc.exe config ovs-vswitchd start= disabled
 Stop-Service ovs-vswitchd -Force
 Disable-OVSOnHNSNetwork $HNS_ID
@@ -28,3 +28,4 @@ Restart-Service ovs-vswitchd
  
 ping 8.8.8.8
 Write-Host "SDN Network is setup"
+
