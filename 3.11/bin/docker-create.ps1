@@ -10,7 +10,6 @@ $INTERFACE_ALIAS= $roughname.Substring(7) -replace "`n|`r",""
 echo $INTERFACE_ALIAS
 echo $INTERFACE_ALIAS > C:\k\interface.txt
 # multinode
-#docker network create -d transparent --gateway 10.128.2.1 --subnet 10.128.2.0/24 -o com.docker.network.windowsshim.interface="Ethernet0" external
-# Single node
-docker network create -d transparent --gateway 10.128.1.1 --subnet 10.128.1.0/24 -o com.docker.network.windowsshim.interface=$INTERFACE_ALIAS  external
 
+# Single node
+docker network create -d transparent --gateway 10.128.1.1 --subnet 10.128.1.0/24 -o com.docker.network.windowsshim.interface="${INTERFACE_ALIAS}"  external
