@@ -75,7 +75,7 @@
   - name: Install Docker Provider
     win_shell: Install-Package -Name docker -ProviderName DockerMsftProvider -Confirm
   - name: Install Docker
-    win_shell: Install-Package Docker -ProviderName DockerMsftProvider -Force
+    win_shell: Install-Package -Name docker -ProviderName DockerMsftProvider -Force -RequiredVersion 18.03.1-ee-3
   - name: Windows Update
     win_shell: Install-Package PSWindowsUpdate -Force
   - name: Do updates
