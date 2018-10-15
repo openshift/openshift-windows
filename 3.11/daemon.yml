@@ -16,13 +16,11 @@
     shell: rm -r -f ~/ovn-kubernetes
   - name: Clone ovn-kubernetes
     shell: git clone https://github.com/openvswitch/ovn-kubernetes ~/ovn-kubernetes
-  - name: Revert back a PR (442)
-    shell: ~/ovn-kubernetes; git pull origin pull/442/head
   - name: Provision the OVN Namespace
-    shell: oc create -f /root/openshift-windows/3.11/kubeovn/ovn-namespace.yaml
+    shell: oc create -f /root/ovn-kubernetes/dist/yaml/ovn-namespace.yaml
     ignore_errors: yes
   - name: Provision the OVN Policy
-    shell: oc create -f /root/openshift-windows/3.11/kubeovn/ovn-policy.yaml
+    shell: oc create -f /root/ovn-kubernetes/dist/yaml/ovn-policy.yaml
     ignore_errors: yes
   - name: Provision the OVN Project
     shell: oc project ovn-kubernetes
@@ -34,8 +32,8 @@
     shell: cd ~/ovn-kubernetes/dist/ansible/scripts; ./ovn-setup.sh
     ignore_errors: yes
   - name: Start the ovn-ovs daemonset
-    shell: oc create -f /root/openshift-windows/3.11/kubeovn/sdn-ovs.yaml
+    shell: oc create -f /root/ovn-kubernetes/dist/yaml/sdn-ovs.yaml
     ignore_errors: yes
   - name: Start the master ovn daemonset
-    shell: oc create -f /root/openshift-windows/3.11/kubeovn/ovnkube-master.yaml
+    shell: oc create -f /root/ovn-kubernetes/dist/yaml/ovnkube-master.yaml
     ignore_errors: yes
