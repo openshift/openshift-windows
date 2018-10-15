@@ -36,7 +36,7 @@ echo "Kubeconfig is created"
 echo "Waiting on API Response"
 until oc whoami | grep -m 1 "system:admin"; do sleep 1 ; done
 echo "API Is Ready"
-sleep 300s
+sleep 400s
 echo "Waiting on API Response(2)"
 until oc whoami | grep -m 1 "system:admin"; do sleep 1 ; done
 echo "API Is Ready"
