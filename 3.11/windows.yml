@@ -68,9 +68,6 @@
   - name: Restart Windows Nodes (For rename)
     win_reboot:
         reboot_timeout: 3600
-  - name: Install HyperV
-    win_shell: Install-WindowsFeature -Name Hyper-V, RSAT-Hyper-V-Tools
-    ignore_errors: yes
   - name: Install the Nuget provider
     win_shell: Find-PackageProvider -Name "Nuget" | Install-PackageProvider -Verbose -Force
   - name: Install Package Manager Provider
