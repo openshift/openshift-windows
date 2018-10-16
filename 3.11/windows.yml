@@ -72,10 +72,12 @@
     win_shell: Find-PackageProvider -Name "Nuget" | Install-PackageProvider -Verbose -Force
   - name: Install Package Manager Provider
     win_shell: Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
-  - name: Install Docker Provider
-    win_shell: Install-Package -Name docker -ProviderName DockerMsftProvider -Confirm
   - name: Install Docker
     win_shell: Install-Package -Name docker -ProviderName DockerMsftProvider -Force -RequiredVersion 18.03.1-ee-3
+  - name: Docker | Start docker service
+    win_service:
+        name: docker
+        state: started
   - name: Windows Update
     win_shell: Install-Package PSWindowsUpdate -Force
   - name: Do updates
@@ -278,8 +280,8 @@
   vars:
      user: "{{lookup('env','USER')}}"
   tasks:
-  - name: Pull the kubernetes client
-    win_shell: wget.exe --no-check-certificate https://dl.k8s.io/v1.11.3/kubernetes-client-windows-amd64.tar.gz C:\Windows\Temp\kubernetes.tar.gz
+  - name: Pull the kubernetes node kubelet
+    win_shell: curl.exe -L -k https://dl.k8s.io/v1.11.3/kubernetes-node-windows-amd64.tar.gz -o C:\Windows\Temp\kubernetes.tar.gz
     async: 3600
     poll: 5 
   - name: Unzip kubernetes
@@ -320,6 +322,10 @@
     win_shell: "[System.Environment]::SetEnvironmentVariable('KUBECONFIG', 'c:/k/config;c:/k/system-node-1.masters | first }}.kubeconfig', [System.EnvironmentVariableTarget]::Machine)"
   - name: Set kubeconfig
     win_shell: "[System.Environment]::SetEnvironmentVariable('KUBECONFIG', 'c:/k/config;c:/k/system-node-{{ groups.masters | first }}.kubeconfig')"
+  - name: Docker | Start docker service
+    win_service:
+        name: docker
+        state: started
   - name: Pull down windowsservercore 1803 (Note this may take a long time)
     win_shell: docker pull microsoft/windowsservercore:1803
     async: 50000
