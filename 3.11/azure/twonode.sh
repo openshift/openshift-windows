@@ -209,14 +209,12 @@ cd /home/${AUSERNAME}/openshift-windows
 cd 3.11
 cd standalone
 ssh -o StrictHostKeyChecking=no root@${RESOURCEGROUP} ls 
-./allinone.sh ${RESOURCEGROUP} ${RESOURCEGROUP}win ${LOCAL_DOMAIN} ${WILDCARDFQDN} ${WILDCARDNIP} ${AUSERNAME} ${PASSWORD} 
+./allinone.sh ${RESOURCEGROUP} ${RESOURCEGROUP}win ${LOCAL_DOMAIN} ${WILDCARDFQDN} ${WILDCARDNIP} ${AUSERNAME} ${PASSWORD} ${RHNUSERNAME} ${RHNPASSWORD}
 mkdir /home/${AUSERNAME}/.kube
 cp /root/.kube/config /home/${AUSERNAME}/.kube/config
 chown -R ${AUSERNAME} /home/${AUSERNAME}/.kube
 cd ..
-ansible-playbook ovn_presetup.yml
 sleep 45s
-ansible-playbook ovn_postsetup.yml
 #ansible-playbook windows.yml
 EOF
 chmod +x /home/${AUSERNAME}/install.sh
