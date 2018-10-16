@@ -15,7 +15,7 @@
   - name: Remove any old ovn-kubernets
     shell: rm -r -f ~/ovn-kubernetes
   - name: Clone ovn-kubernetes
-    shell: git clone https://github.com/openvswitch/ovn-kubernetes ~/ovn-kubernetes
+    shell: git clone https://github.com/glennswest/ovn-kubernetes ~/ovn-kubernetes
   - name: Provision the OVN Namespace
     shell: oc create -f /root/ovn-kubernetes/dist/yaml/ovn-namespace.yaml
     ignore_errors: yes
