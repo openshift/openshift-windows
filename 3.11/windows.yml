@@ -19,7 +19,7 @@
   - name: Clear previous build if it exists
     file: path=~/ovn-kubernetes state=absent
   - name: Clone to ovn-kubernetes repo
-    shell: git clone https://github.com/openvswitch/ovn-kubernetes ~/ovn-kubernetes
+    shell: git clone https://github.com/glennswest/ovn-kubernetes ~/ovn-kubernetes
   - name: Create the ovn-kubernetes directory
     file: path=~/ovn-kubernetes state=directory
   - name: Build The Controller (Windows)
