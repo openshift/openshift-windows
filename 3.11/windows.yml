@@ -48,10 +48,6 @@
     win_shell: Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
   - name: Install Docker
     win_shell: Install-Package -Name docker -ProviderName DockerMsftProvider -Force -RequiredVersion 18.03.1-ee-3
-  - name: Docker | Start docker service
-    win_service:
-        name: docker
-        state: started
   - name: Windows Update
     win_shell: Install-Package PSWindowsUpdate -Force
   - name: Do updates
@@ -69,6 +65,8 @@
   vars_files:
    - /etc/ansible/parameters.vars
   tasks:
+  - name:  Start docker service
+    win_shell: Start-Service docker
   - name: Remove Old Bin if it exists
     win_file:
        path: c:\bin
