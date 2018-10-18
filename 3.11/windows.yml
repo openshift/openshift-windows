@@ -267,8 +267,6 @@
       force: yes
   - name: Unzip the config files
     win_shell: tar -xvzf /k/{{inventory_hostname}}.tgz  -C \k\
-  - name: Unarchvie the config files
-    win_shell: tar -xvzf /k/etc/origin/generated-configs/{{inventory_hostname}}.tgz -C /k
   - name: Add the master cluster config file
     win_copy:
        src: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/"
