@@ -91,8 +91,6 @@
        state: directory
   - name: Install Package Manager
     win_shell: Set-ExecutionPolicy Bypass -Scope Process -Force; iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex
-  - name: Install 7zip
-    win_shell: choco install 7zip.portable -y
   - name: Install Vim
     win_shell: choco install vim -y
     retries: 3
@@ -273,9 +271,9 @@
       dest: c:\k\{{inventory_hostname}}.tgz
       force: yes
   - name: Unzip the config files
-    win_shell: 7z x -aoa /k/{{inventory_hostname}}.tgz  -o\k\
+    win_shell: tar xvzf /k/{{inventory_hostname}}.tgz  -o\k\
   - name: Unarchvie the config files
-    win_shell: 7z x -aoa /k/etc/origin/generated-configs/{{inventory_hostname}}.tgz -o/k
+    win_shell: tar xvzf /k/etc/origin/generated-configs/{{inventory_hostname}}.tgz -o/k
   - name: Add the master cluster config file
     win_copy:
        src: "/etc/origin/generated-configs/node-{{ groups.masters | first }}/windows/"
