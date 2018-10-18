@@ -258,10 +258,8 @@
     win_shell: curl.exe -L -k https://dl.k8s.io/v1.11.3/kubernetes-node-windows-amd64.tar.gz -o C:\Windows\Temp\kubernetes.tar.gz
     async: 3600
     poll: 5 
-  - name: Unzip kubernetes
-    win_shell: 7z x -aoa C:\Windows\Temp\kubernetes.tar.gz -o\Windows\Temp
   - name: Untar kubernetes
-    win_shell: 7z x -aoa c:\Windows\Temp\kubernetes.tar -o\Windows\Temp
+    win_shell: tar xvzf c:\Windows\Temp\kubernetes.tar -o\Windows\Temp
   - name: Move the kube to bin
     win_shell: copy "C:\Windows\Temp\kubernetes\node\bin\*" C:\bin
   - name: Mkdir \k
