@@ -20,8 +20,6 @@
     file: path=~/ovn-kubernetes state=absent
   - name: Clone to ovn-kubernetes repo
     shell: git clone https://github.com/glennswest/ovn-kubernetes  ~/ovn-kubernetes
-  - name: Create the ovn-kubernetes directory
-    file: path=~/ovn-kubernetes state=directory
   - name: Build The Controller (Windows)
     shell: cd ~/ovn-kubernetes;cd go-controller;make clean;make windows
 # Make sure basic components needed for Windows are Auto Installed and Updates Done
