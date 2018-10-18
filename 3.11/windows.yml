@@ -123,6 +123,9 @@
   gather_facts: no
   serial: 1
   tasks:
+  - name: Pause for ovs start
+    pause:
+       minutes: 1
   - name: Expand System Disk
     win_shell: expanddisk.ps1
     args:
