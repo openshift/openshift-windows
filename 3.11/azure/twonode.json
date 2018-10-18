@@ -194,7 +194,7 @@
     }
   },
   "variables" : {
-    "gituser" : "openshift",
+    "gituser" : "glennswest",
     "branch" : "master",
     "version" : "3.9",
     "baseTemplateUrl" : "[concat('https://raw.githubusercontent.com/',variables('gituser'),'/openshift-windows/',variables('branch'),'/',variables('version'),'/azure/')]",
@@ -444,8 +444,8 @@
     "windows" : {
       "publisher" : "MicrosoftWindowsServer",
       "offer" : "WindowsServerSemiAnnual",
-      "sku" : "Datacenter-Core-1709-with-Containers-smalldisk",
-      "version" : "1709.0.20180613"
+      "sku" : "Datacenter-Core-1803-with-Containers-smalldisk",
+      "version" : "latest"
     },
     "WinnicName" : "WindowsNic"
   },
