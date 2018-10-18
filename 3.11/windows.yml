@@ -98,6 +98,8 @@
     win_shell: choco install git -y
     retries: 3
     delay: 5
+  - name: Set up path for git
+    win_shell: setx PATH "C:\Program Files\Git\bin;$env:path" -m
   - name: Pull down hybrid directoy
     win_shell: git clone {{theRepo}}  c:\k\hybrid
     ignore_errors: yes
