@@ -255,7 +255,7 @@
      user: "{{lookup('env','USER')}}"
   tasks:
   - name: Pull the kubernetes node kubelet
-    win_shell: wget.exe --no-check-certificate https://dl.k8s.io/v1.10.7/kubernetes-node-windows-amd64.tar.gz -O C:\Windows\Temp\kubernetes.tar.gz
+    win_shell: curl.exe -L -k https://dl.k8s.io/v1.11.3/kubernetes-node-windows-amd64.tar.gz -o C:\Windows\Temp\kubernetes.tar.gz
     async: 3600
     poll: 5 
   - name: Unzip kubernetes
