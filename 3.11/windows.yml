@@ -99,15 +99,11 @@
     win_shell: choco install git -y
     retries: 3
     delay: 5
-  - name: Install wget
-    win_shell: choco install wget -y
-    retries: 3
-    delay: 5
   - name: Pull down hybrid directoy
     win_shell: git clone {{theRepo}}  c:\k\hybrid
     ignore_errors: yes
   - name: Pull openvswitch
-    win_shell: wget.exe https://cloudbase.it/downloads/openvswitch-hyperv-installer-beta.msi -O openvswitch.msi
+    win_shell: curl.exe -L -k https://cloudbase.it/downloads/openvswitch-hyperv-installer-beta.msi -o openvswitch.msi
   - name: Install cloudbase certificate
     win_shell:  certutil -addstore -f "TrustedPublisher" c:\k\hybrid\3.11\bin\cloudbase.sst
   - name: Install open vswitch
