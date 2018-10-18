@@ -196,7 +196,7 @@
   "variables" : {
     "gituser" : "glennswest",
     "branch" : "master",
-    "version" : "3.9",
+    "version" : "3.11",
     "baseTemplateUrl" : "[concat('https://raw.githubusercontent.com/',variables('gituser'),'/openshift-windows/',variables('branch'),'/',variables('version'),'/azure/')]",
     "baseVMachineTemplateUriWinNode" : "[concat(variables('baseTemplateUrl'), 'nodewin.json')]",
     "location" : "[resourceGroup().location]",
