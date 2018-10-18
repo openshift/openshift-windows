@@ -47,7 +47,7 @@
   - name: Install Package Manager Provider
     win_shell: Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
   - name: Install Docker
-    win_shell: Install-Package -Name docker -ProviderName DockerMsftProvider -Force -RequiredVersion 18.03.1-ee-3 -Force
+    win_shell: Install-Package -Name docker -ProviderName DockerMsftProvider -Force -RequiredVersion 18.03.1-ee-3 
   - name: Install the Containers Feature
     win_shell: install-windowsfeature -name containers
   - name: Windows Update
