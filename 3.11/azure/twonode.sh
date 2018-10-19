@@ -161,10 +161,10 @@ fi
 subscription-manager attach --pool=$RHNPOOLID
 yum-config-manager --disable rhel-7-server-htb-rpms || true 
 yum -y install git
-cd ~
-git clone https://github.com/glennswest/openshift-windows
+cd /root
+git clone https://github.com/glennswest/openshift-windows 
 
-cat <<EOF > ~/openshift-windows/3.11/group_vars/windows.yml
+cat <<EOF > /root/openshift-windows/3.11/group_vars/windows.yml
 ansible_user: ${AUSERNAME}
 ansible_password: ${PASSWORD}
 ansible_port: 5985
@@ -205,7 +205,7 @@ EOF
 
 export LOCAL_DOMAIN=`hostname -d`
 cat <<EOF > ~/install.sh
-cd ~/openshift-windows
+cd /root/openshift-windows
 cd 3.11
 cd standalone
 ssh -o StrictHostKeyChecking=no root@${RESOURCEGROUP} ls 
@@ -215,11 +215,11 @@ cp /root/.kube/config /home/${AUSERNAME}/.kube/config
 chown -R ${AUSERNAME} /home/${AUSERNAME}/.kube
 cd ..
 sleep 45s
-#ansible-playbook windows.yml
+ansible-playbook windows.yml
 EOF
-chmod +x ~/install.sh
 chown ${AUSERNAME} /home/${AUSERNAME}/.ansible.cfg
-chown ${AUSERNAME} /home/${AUSERNAME}/install.sh
-chown -R ${AUSERNAME} /home/${AUSERNAME}/openshift-windows
-~/install.sh &> /home/${AUSERNAME}/install.out &
+chown ${AUSERNAME} /root/install.sh
+chown -R ${AUSERNAME} /root/openshift-windows
+chmod +x /root/install.sh
+/root/install.sh &> /home/${AUSERNAME}/install.out &
 exit 0
