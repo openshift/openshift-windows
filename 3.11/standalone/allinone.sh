@@ -114,6 +114,7 @@ openshift_master_manage_htpasswd=false
 openshift_master_default_subdomain=$AppPublicURL
 openshift_use_dnsmasq=true
 openshift_public_hostname=$OpenShiftPublicURL
+openshift_master_cluster_public_hostname=$OpenShiftPublicURL
 
 osm_default_node_selector="node-role.kubernetes.io/compute=true"
 
