@@ -113,13 +113,12 @@ openshift_master_manage_htpasswd=false
 
 openshift_master_default_subdomain=$AppPublicURL
 openshift_use_dnsmasq=true
-openshift_public_hostname=$OpenShiftPublicURL
 openshift_master_cluster_public_hostname=$OpenShiftPublicURL
 
 osm_default_node_selector="node-role.kubernetes.io/compute=true"
 
 [masters]
-$LinuxHostName.$InternalDomain
+$LinuxHostName.$InternalDomain openshift_public_hostname=$OpenShiftPublicURL
 
 [etcd]
 $LinuxHostName.$InternalDomain
@@ -128,7 +127,7 @@ $LinuxHostName.$InternalDomain
 [new_masters]
 
 [nodes]
-$LinuxHostName.$InternalDomain openshift_node_group_name='node-config-all-in-one'
+$LinuxHostName.$InternalDomain openshift_public_hostname=$OpenShiftPublicURL openshift_node_group_name='node-config-all-in-one'
  
 [windows]
 $WindowsHostName.$InternalDomain
