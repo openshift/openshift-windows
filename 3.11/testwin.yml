@@ -1,0 +1,7 @@
+# Make sure basic components needed for Windows are Auto Installed and Updates Done
+- hosts: windows
+  gather_facts: no
+  tasks:
+  - name: Check Comm
+    win_ping:
+

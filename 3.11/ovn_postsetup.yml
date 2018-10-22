@@ -1,0 +1,87 @@
+- hosts: localhost
+  become: yes
+  become_user: root
+  vars:
+     user: "{{lookup('env','USER')}}"
+  tasks:
+  - name: Get server url
+    shell: "oc whoami --show-server"
+    register: api_url
+  - local_action: copy content="{{ api_url.stdout }}" dest=/tmp/api_host.txt
+# Recreate the openshift router and registry
+- hosts: localhost
+  gather_facts: no
+  tasks:
+  - name: delete the docker-registry
+    shell: oc delete dc/docker-registry
+    ignore_errors: yes
+  - name: delete the po/docker-registry-1-deploy 
+    shell: oc delete po/docker-registry-1-deploy 
+    ignore_errors: yes
+  - name: delete the router
+    shell: oc delete dc/router
+    ignore_errors: yes
+  - name: delete svc router
+    shell: oc delete svc/router
+    ignore_errors: yes
+  - name: delete router service account
+    shell: oc delete sa router
+    ignore_errors: yes
+  - name: delete registry service account
+    shell: oc delete sa registry
+    ignore_errors: yes
+  - name: delete the cluster role for router
+    shell: oc delete clusterrolebindings router-router-role
+    ignore_errors: yes
+  - name: delete the cluster role for registry
+    shell: oc delete clusterrolebindings registry-registry-role
+    ignore_errors: yes
+  - name: delete svc docker-registry
+    shell: oc delete svc/docker-registry
+    ignore_errors: yes
+  - name: Wait for cleanup
+    pause:
+       minutes: 4
+- hosts: localhost
+  gather_facts: no
+  tasks:
+  - name: Recreate the router
+    shell: oc adm policy add-scc-to-user hostnetwork -z router;oc adm router --selector='node-role.kubernetes.io/infra=true'
+  - name: Recreate the registry
+    shell: oc adm registry
+  - name: Recreate the webconsole
+    shell: oc login -u system:admin;oc create namespace openshift-web-console;oc process -f console-template.yaml -p "API_SERVER_CONFIG=$(cat console-config.yaml)" | oc apply -n openshift-web-console -f -
+# Recreate the openshift-web-console
+- hosts: localhost
+  become: yes
+  become_user: root
+  vars:
+     user: "{{lookup('env','USER')}}"
+     config_dir: "/etc/origin/master"
+     apihost: "{{ lookup('file', '/tmp/api_host.txt') }}"
+  tasks:
+  - name: fix PublicConsoleUrl
+    lineinfile:
+       path: "{{playbook_dir}}/console-config.yaml"
+       regexp: '^  consolePublicURL:'
+       line: '  consolePublicURL: {{apihost}}/console/'
+       backup: yes
+  - name: fix MasterPublicURL
+    lineinfile:
+       path: "{{playbook_dir}}/console-config.yaml"
+       regexp: '^  masterPublicURL:'
+       line: '  masterPublicURL: {{apihost}}'
+       backup: yes
+  - name: Login to Openshift
+    shell: oc login -u system:admin
+  - name: Delete Existing openshift-web-console
+    shell: oc delete project openshift-web-console
+  - name: Wait for delete to finish
+    pause:
+      minutes: 3
+  - name: Create New Project and Make sure the selector is empty
+    shell: oc adm new-project openshift-web-console --node-selector=''
+  - name: Create the New OpenShift Web Console
+    shell: oc process -f console-template.yaml -p "API_SERVER_CONFIG=$(cat console-config.yaml)" | oc apply -n openshift-web-console -f -
+
+
