@@ -1,7 +1,7 @@
 # openshift-windows
 Windows Nodes in OpenShift
 
-This current is tested on Vmware, with two machines, one running OpenShift 3.10 on RHEL 7.5.
+This current is tested on Vmware, with two machines, one running OpenShift 3.11 on RHEL 7.5.
 A full openshift subscription is required.
 
 The Windows Node is Windows Server Core 1803.
@@ -13,9 +13,9 @@ How to Use:
 ##Repos for Openshift Windows:
 
 Supported
-http:/github.com/glennswest/openshift-windows
+http:/github.com/openshift/openshift-windows
 Upstream:
-http://github.com/glennswest/hybrid
+http://github.com/glennswest/openshift-windows
 
 Requirements:
 1. Linux node with host name set, and static ip, and a proper search domain
@@ -34,7 +34,7 @@ Overview:
 
 Important Note: The Windows Node must run on a physical box, or a environment that supports nested virt, with passthru configured on the VM. 
 
-./allinone.sh LinuxHostName WindowsHostName InternalDomain OpenShiftPublicURL AppPublicURL UserName Password
+./allinone.sh LinuxHostName WindowsHostName InternalDomain OpenShiftPublicURL AppPublicURL UserName Password rhnusername rhnpassword
 
 Arguments Examples:
 
@@ -45,12 +45,12 @@ Openshift Public URL: openshift.ncc9.com
 App Public URL: example: app.openshift.ncc9.com
 Username:  example: openshift
 Password:  SuperSecret
+rhnusername: A Red Hat Network Username - For OpenShift and RHEL Subscription
+rhnpassword: A Red Hat Network Password
 
 
 9. cd ..
-10. Run ansible-playbook ovn-presetup.yml
-11. Run ansible-playbook ovn-postsetup.yml
-12. Prepare Windows Machine
+10. Prepare Windows Machine
     A. RDP To windows console (Or use vmware console)
     B. From Command Prompt: (To Enable Ansible)
          i. type: powershell 
@@ -59,8 +59,11 @@ Password:  SuperSecret
         iv. .\winansible.ps1
         v.   Rename-Computer -NewName "winnode01" -Restart -Force
         vi.  Disconnect from windows.
-13. copy the group_vars/windows.example to group_vars/windows
-14. Add a user name and password to group_vars/windows
-15. ansible-playbook windows.yml
+11. copy the group_vars/windows.example to group_vars/windows
+12. Add a user name and password to group_vars/windows
+13. ansible-playbook windows.yml
 
-## Known Issues:
+## Known Issues/ Changes:
+1.Azure testing is current in process. Azure will require a further update to fucntion. 
+2. The 3.11 branch requires 2 additional arguments, rhnusername and rhnpassword
+3. Nested Virt is no longer required
