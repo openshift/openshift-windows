@@ -34,6 +34,9 @@
   - name: Disable Extra IP Stack
     win_shell: "{{ipv6cmd}}"
     ignore_errors: yes
+  - name: Make sure low level hyperv is disabled
+    win_shell: bcdedit /set hypervisorlaunchtype off
+    ignore_errors: yes
   - name: Disable HyperV
     win_shell: Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V
     ignore_errors: yes
