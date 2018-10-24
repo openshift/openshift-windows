@@ -222,5 +222,5 @@ chown ${AUSERNAME} /home/${AUSERNAME}/.ansible.cfg
 chown ${AUSERNAME} /root/install.sh
 chown -R ${AUSERNAME} /root/openshift-windows
 chmod +x /root/install.sh
-/root/install.sh &> /home/${AUSERNAME}/install.out &
+# /root/install.sh &> /home/${AUSERNAME}/install.out &
 exit 0
