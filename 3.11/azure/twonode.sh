@@ -215,8 +215,8 @@ mkdir /home/${AUSERNAME}/.kube
 cp /root/.kube/config /home/${AUSERNAME}/.kube/config
 chown -R ${AUSERNAME} /home/${AUSERNAME}/.kube
 cd ..
-sleep 45s
-sudo ansible-playbook windows.yml
+#sleep 45s
+#sudo ansible-playbook windows.yml
 EOF
 chown ${AUSERNAME} /home/${AUSERNAME}/.ansible.cfg
 chown ${AUSERNAME} /root/install.sh
