@@ -210,7 +210,7 @@ cd /root/openshift-windows
 cd 3.11
 cd standalone
 ssh -o StrictHostKeyChecking=no root@${RESOURCEGROUP} ls 
-sudo ./allinone.sh ${RESOURCEGROUP} ${RESOURCEGROUP}win ${LOCAL_DOMAIN} ${WILDCARDFQDN} ${WILDCARDNIP} ${AUSERNAME} ${PASSWORD} ${RHNUSERNAME} ${RHNPASSWORD}
+sudo ./allinone-azure.sh ${RESOURCEGROUP} ${RESOURCEGROUP}win ${LOCAL_DOMAIN} ${WILDCARDFQDN} ${WILDCARDNIP} ${AUSERNAME} ${PASSWORD} ${RHNUSERNAME} ${RHNPASSWORD}
 mkdir /home/${AUSERNAME}/.kube
 cp /root/.kube/config /home/${AUSERNAME}/.kube/config
 chown -R ${AUSERNAME} /home/${AUSERNAME}/.kube
