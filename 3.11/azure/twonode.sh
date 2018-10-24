@@ -205,7 +205,6 @@ EOF
 
 export LOCAL_DOMAIN=`hostname -d`
 cat <<EOF > ~/install.sh
-hostnamectl set-hostname ${RESOURCEGROUP}.${LOCAL_DOMAIN}
 cd /root/openshift-windows
 cd 3.11
 cd standalone
@@ -222,5 +221,5 @@ chown ${AUSERNAME} /home/${AUSERNAME}/.ansible.cfg
 chown ${AUSERNAME} /root/install.sh
 chown -R ${AUSERNAME} /root/openshift-windows
 chmod +x /root/install.sh
-# /root/install.sh &> /home/${AUSERNAME}/install.out &
+/root/install.sh &> /home/${AUSERNAME}/install.out &
 exit 0
