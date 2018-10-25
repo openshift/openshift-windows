@@ -38,7 +38,7 @@
     win_shell: bcdedit /set hypervisorlaunchtype off
     ignore_errors: yes
   - name: Disable HyperV
-    win_shell: Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V
+    win_shell: Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -Confirm:$False
     ignore_errors: yes
   - name: Rename Computer
     win_shell: Rename-Computer -NewName "{{inventory_hostname_short}}" -Force
