@@ -23,7 +23,8 @@ Enable-OVSOnHNSNetwork $HNS_ID
  
 sc.exe config ovs-vswitchd start= auto
 Start-Service ovs-vswitchd
-sleep 2
+Start-Service ovs-vswitchd
+sleep 4
 Restart-Service ovs-vswitchd
  
 ping 8.8.8.8
