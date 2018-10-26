@@ -48,6 +48,8 @@
         reboot_timeout: 3600
   - name: Install the Nuget provider
     win_shell: Find-PackageProvider -Name "Nuget" | Install-PackageProvider -Verbose -Force
+    retries: 10
+    delay: 20
   - name: Install Package Manager Provider
     win_shell: Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
   - name: Install Docker
