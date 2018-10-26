@@ -46,6 +46,9 @@
   - name: Restart Windows Nodes (For rename)
     win_reboot:
         reboot_timeout: 3600
+  - name: Pause before Provider install
+    pause:
+       minutes: 1
   - name: Install the Nuget provider
     win_shell: Find-PackageProvider -Name "Nuget" | Install-PackageProvider -Verbose -Force
     retries: 10
