@@ -29,7 +29,7 @@
     shell: oc adm policy add-scc-to-user anyuid -z ovn
     ignore_errors: yes
   - name: Run the ovn-setup
-    shell: cd ~/ovn-kubernetes/dist/ansible/scripts; ./ovn-setup.sh
+    shell: cd ~/ovn-kubernetes/dist/ansible/scripts; ./ovn-setup.sh > ovn-setup.out
     ignore_errors: yes
   - name: Start the ovn-ovs daemonset
     shell: oc create -f /root/ovn-kubernetes/dist/yaml/sdn-ovs.yaml

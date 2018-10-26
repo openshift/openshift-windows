@@ -34,14 +34,25 @@
   - name: Disable Extra IP Stack
     win_shell: "{{ipv6cmd}}"
     ignore_errors: yes
+  - name: Make sure low level hyperv is disabled
+    win_shell: bcdedit /set hypervisorlaunchtype off
+    ignore_errors: yes
+  - name: Disable HyperV
+    win_shell: Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V 
+    ignore_errors: yes
   - name: Rename Computer
     win_shell: Rename-Computer -NewName "{{inventory_hostname_short}}" -Force
     ignore_errors: yes
   - name: Restart Windows Nodes (For rename)
     win_reboot:
         reboot_timeout: 3600
+  - name: Pause before Provider install
+    pause:
+       minutes: 1
   - name: Install the Nuget provider
     win_shell: Find-PackageProvider -Name "Nuget" | Install-PackageProvider -Verbose -Force
+    retries: 10
+    delay: 20
   - name: Install Package Manager Provider
     win_shell: Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
   - name: Install Docker
@@ -427,6 +438,11 @@
     win_shell: Set-Service ocpkubelet -StartupType Automatic
   - name: Start kubelet
     win_shell: Start-Service ocpkubelet
+  - name: Sleep a while to make sure kubelet is up
+    pause:
+       minutes: 1
   - name: Add windows node label (compute=true)
     shell: oc label node "{{inventory_hostname_short}}" node-role.kubernetes.io/compute=true
     delegate_to: localhost
+    retries: 10
+    delay: 20

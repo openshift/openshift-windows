@@ -40,30 +40,33 @@ Arguments Examples:
 
 Linux Host Name - node01 or openshift or linuxnode
 Windows Host Name: winnode01 or windows 
-Internal Domain: ncc9.com
-Openshift Public URL: openshift.ncc9.com
+Internal Domain: ncc9.com 
+Openshift Public URL: openshift.ncc9.com 
 App Public URL: example: app.openshift.ncc9.com
-Username:  example: openshift
-Password:  SuperSecret
-rhnusername: A Red Hat Network Username - For OpenShift and RHEL Subscription
-rhnpassword: A Red Hat Network Password
+Username:  example: openshift 
+Password:  SuperSecret 
+rhnusername: A Red Hat Network Username - For OpenShift and RHEL Subscription 
+rhnpassword: A Red Hat Network Password 
 
 
-9. cd ..
-10. Prepare Windows Machine
-    A. RDP To windows console (Or use vmware console)
-    B. From Command Prompt: (To Enable Ansible)
-         i. type: powershell 
-        ii. type: [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        iii. Invoke-WebRequest -Uri https://raw.githubusercontent.com/openshift/hybrid/master/bin/winansible.ps1 -OutFile "winansible.ps1" -UseDefaultCredentials
-        iv. .\winansible.ps1
-        v.   Rename-Computer -NewName "winnode01" -Restart -Force
-        vi.  Disconnect from windows.
-11. copy the group_vars/windows.example to group_vars/windows
-12. Add a user name and password to group_vars/windows
-13. ansible-playbook windows.yml
+9. cd .. 
+10. Prepare Windows Machine 
+    A. RDP To windows console (Or use vmware console) 
+    B. From Command Prompt: (To Enable Ansible) 
+         i. type: powershell  
+        ii. type: [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 
+        iii. Invoke-WebRequest -Uri https://raw.githubusercontent.com/openshift/hybrid/master/bin/winansible.ps1 -OutFile "winansible.ps1" -UseDefaultCredentials 
+        iv. .\winansible.ps1 
+        v.   Rename-Computer -NewName "winnode01" -Restart -Force 
+        vi.  Disconnect from windows. 
+11. copy the group_vars/windows.example to group_vars/windows 
+12. Add a user name and password to group_vars/windows 
+13. ansible-playbook windows.yml 
+
+## Azure
+openshift-windows 3.11 now supports Microsoft Azure Cloud. A full ARM template is now included, and has been shown to work. 
 
 ## Known Issues/ Changes:
-1.Azure testing is current in process. Azure will require a further update to fucntion. 
-2. The 3.11 branch requires 2 additional arguments, rhnusername and rhnpassword
-3. Nested Virt is no longer required
+1.Azure testing is current in process. Azure will require a further update to fucntion.  
+2. The 3.11 branch requires 2 additional arguments, rhnusername and rhnpassword 
+3. Nested Virt is no longer required 
