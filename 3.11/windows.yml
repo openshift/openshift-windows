@@ -435,6 +435,11 @@
     win_shell: Set-Service ocpkubelet -StartupType Automatic
   - name: Start kubelet
     win_shell: Start-Service ocpkubelet
+  - name: Sleep a while to make sure kubelet is up
+    pause:
+       minutes: 1
   - name: Add windows node label (compute=true)
     shell: oc label node "{{inventory_hostname_short}}" node-role.kubernetes.io/compute=true
     delegate_to: localhost
+    retries: 10
+    delay: 20
