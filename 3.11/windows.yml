@@ -174,17 +174,6 @@
   - name: Pause for sdn setup completion
     pause:
        minutes: 1
-# Main Windows Setup
-- hosts: masters
-  gather_facts: no
-  tasks:
-#  - name: Restart atomic-openshift-master-controllers.service
-#    shell: systemctl restart atomic-openshift-master-controllers.service
-#  - name: Restart atomic-openshift-master-api.service
-#    shell: systemctl restart atomic-openshift-master-api.service
-#  - name: Wait for clean restart
-#    pause:
-#       minutes: 2
 - hosts: windows
   gather_facts: no
   vars:
@@ -199,6 +188,29 @@
     shell: oc adm create-node-config --hostnames={{inventory_hostname}} --node={{inventory_hostname}} --node-dir=/etc/origin/generated-configs/{{inventory_hostname}}
     args:
         chdir: /etc/origin/
+    delegate_to: "{{ groups.masters | first }}"
+  - name: Create node definition
+    copy: 
+      dest: /etc/origin/generated-configs/{{inventory_hostname}}/{{inventory_hostname}}_definition.yaml
+      content: |
+               apiVersion: v1
+               kind: Node
+                 metadata:
+                 annotations:
+                 labels:
+                   beta.kubernetes.io/arch: amd64
+                   beta.kubernetes.io/os: windows
+                   kubernetes.io/hostname: {{inventory_hostname}}
+                 name: {{inventory_hostname}}
+                 selfLink: /api/v1/nodes/{{inventory_hostname}}
+               spec: {}
+
+    delegate_to: "{{ groups.masters | first }}"
+  - name: Define Node to Openshift
+    shell: oc create -f /etc/origin/generated-configs/{{inventory_hostname}}/{{inventory_hostname}}_definition.yaml
+    delegate_to: "{{ groups.masters | first }}"
+  - name: Get Node Subnet
+    shell: oc get node winnode01 --output=json | jq .metadata.annotations.ovn_host_subnet > /etc/origin/generated-configs/{{inventory_hostname}}/{{inventory_hostname}}.subnet
     delegate_to: "{{ groups.masters | first }}"
   - name: Create archives per host
     archive:
