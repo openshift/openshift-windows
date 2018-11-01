@@ -10,6 +10,15 @@ $INTERFACE_ALIAS= $roughname.Substring(7) -replace "`n|`r",""
 echo $INTERFACE_ALIAS
 echo $INTERFACE_ALIAS > C:\k\interface.txt
 # multinode
+$roughnet = Get-Content "C:\k\host.subnet" | Out-String
+$subnetq= $roughnet -replace "`n|`r",""
+$subnet = $subnetq.Trim('"')
+echo $subnet
+$netparts=$subnet.split('/');
+echo $netparts[0]
+$dotparts=$netparts[0].split('.');
+$gateway = $dotparts[0] + "." + $dotparts[1] + "." + $dotparts[2] + "." + "1"
+echo $gateway
 
 # Single node
-docker network create -d transparent --gateway 10.128.1.1 --subnet 10.128.1.0/24 -o com.docker.network.windowsshim.interface="${INTERFACE_ALIAS}"  external
+docker network create -d transparent --gateway $gateway --subnet $subnet -o com.docker.network.windowsshim.interface="${INTERFACE_ALIAS}"  external
