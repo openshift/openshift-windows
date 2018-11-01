@@ -195,14 +195,14 @@
       content: |
                apiVersion: v1
                kind: Node
-                 metadata:
-                 annotations:
-                 labels:
-                   beta.kubernetes.io/arch: amd64
-                   beta.kubernetes.io/os: windows
-                   kubernetes.io/hostname: {{inventory_hostname}}
-                 name: {{inventory_hostname}}
-                 selfLink: /api/v1/nodes/{{inventory_hostname}}
+               metadata:
+                   annotations:
+                   labels:
+                     beta.kubernetes.io/arch: amd64
+                     beta.kubernetes.io/os: windows
+                     kubernetes.io/hostname: {{inventory_hostname}}
+                   name: {{inventory_hostname}}
+                   selfLink: /api/v1/nodes/{{inventory_hostname}}
                spec: {}
 
     delegate_to: "{{ groups.masters | first }}"
@@ -210,7 +210,7 @@
     shell: oc create -f /etc/origin/generated-configs/{{inventory_hostname}}/{{inventory_hostname}}_definition.yaml
     delegate_to: "{{ groups.masters | first }}"
   - name: Get Node Subnet
-    shell: oc get node winnode01 --output=json | jq .metadata.annotations.ovn_host_subnet > /etc/origin/generated-configs/{{inventory_hostname}}/{{inventory_hostname}}.subnet
+    shell: oc get node {{inventory_hostname}}  --output=json | jq .metadata.annotations.ovn_host_subnet > /etc/origin/generated-configs/{{inventory_hostname}}/{{inventory_hostname}}.subnet
     delegate_to: "{{ groups.masters | first }}"
   - name: Create archives per host
     archive:
