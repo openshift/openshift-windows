@@ -133,6 +133,8 @@
 - hosts: windows
   gather_facts: no
   serial: 1
+  vars:
+     user: "{{lookup('env','USER')}}"
   tasks:
   - name: Pause for ovs start
     pause:
@@ -141,44 +143,6 @@
     win_shell: expanddisk.ps1
     args:
       chdir: c:\k\hybrid\3.11\bin
-  - name: Prepare to create docker network
-    win_scheduled_task:
-      name: docker-create
-      description: Create The Docker Network
-      executable: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
-      arguments: -ExecutionPolicy Unrestricted -NonInteractive c:\k\hybrid\3.11\bin\docker-create.ps1
-      frequency: once
-      enabled:   true
-      time:      "14:00:00"
-      user:      SYSTEM
-  - name: Execute the creation of the docker network
-    win_shell: Start-ScheduledTask -TaskName docker-create
-  - name: Pause for Docker Setup
-    pause:
-       minutes: 1
-  - name: Prepare to setup the windows sdn setup
-    win_scheduled_task:
-      name: setup-network
-      description: Create The Docker Network
-      executable: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
-      arguments: -ExecutionPolicy Unrestricted -NonInteractive c:\k\hybrid\3.11\bin\setup-network.ps1
-      frequency: once
-      enabled:   true
-      time:      "14:00:00"
-      user:      SYSTEM
-  - name: Pause for preparation of sdn setup
-    pause:
-       minutes: 1
-  - name: Execute the setup of the windows sdn
-    win_shell: Start-ScheduledTask -TaskName setup-network
-  - name: Pause for sdn setup completion
-    pause:
-       minutes: 1
-- hosts: windows
-  gather_facts: no
-  vars:
-     user: "{{lookup('env','USER')}}"
-  tasks:
   - name: set up environment
     shell: ln -f -s -n /etc/origin/ openshift.local.config
     args:
@@ -217,6 +181,39 @@
        path: /etc/origin/generated-configs/{{inventory_hostname}}/*
        dest: /etc/origin/generated-configs/{{inventory_hostname}}.tgz
     delegate_to: "{{ groups.masters | first }}"
+  - name: Prepare to create docker network
+    win_scheduled_task:
+      name: docker-create
+      description: Create The Docker Network
+      executable: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+      arguments: -ExecutionPolicy Unrestricted -NonInteractive c:\k\hybrid\3.11\bin\docker-create.ps1
+      frequency: once
+      enabled:   true
+      time:      "14:00:00"
+      user:      SYSTEM
+  - name: Execute the creation of the docker network
+    win_shell: Start-ScheduledTask -TaskName docker-create
+  - name: Pause for Docker Setup
+    pause:
+       minutes: 1
+  - name: Prepare to setup the windows sdn setup
+    win_scheduled_task:
+      name: setup-network
+      description: Create The Docker Network
+      executable: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+      arguments: -ExecutionPolicy Unrestricted -NonInteractive c:\k\hybrid\3.11\bin\setup-network.ps1
+      frequency: once
+      enabled:   true
+      time:      "14:00:00"
+      user:      SYSTEM
+  - name: Pause for preparation of sdn setup
+    pause:
+       minutes: 1
+  - name: Execute the setup of the windows sdn
+    win_shell: Start-ScheduledTask -TaskName setup-network
+  - name: Pause for sdn setup completion
+    pause:
+       minutes: 1
 - hosts: masters[0]
   become: yes
   become_user: root
