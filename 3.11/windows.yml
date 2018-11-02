@@ -316,11 +316,6 @@
   - name: Pause for sdn setup completion
     pause:
        minutes: 1
-  - name: Flush arp cache
-    shell: ip -s -s neigh flush all
-  - name: Pause for arp flush
-    pause:
-       minutes: 1
   - name: Docker | Start docker service
     win_service:
         name: docker
