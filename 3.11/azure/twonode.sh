@@ -162,7 +162,7 @@ subscription-manager attach --pool=$RHNPOOLID
 yum-config-manager --disable rhel-7-server-htb-rpms || true 
 yum -y install git
 cd /root
-git clone https://github.com/openshift/openshift-windows 
+git clone https://github.com/glennswest/openshift-windows 
 
 cat <<EOF > /root/openshift-windows/3.11/group_vars/windows.yml
 ansible_user: ${AUSERNAME}
