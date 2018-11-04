@@ -157,4 +157,4 @@ EOF
 
 
 chmod +x ~/openshift-install.sh
-# ~/openshift-install.sh | tee openshift-install.out
+~/openshift-install.sh | tee openshift-install.out
