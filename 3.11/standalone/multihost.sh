@@ -3,8 +3,11 @@ if [ $# -ne 9 ]
    then echo;echo "allinone.sh ----- HELP ------";echo "allinone arguments required";echo "allinone.sh LinuxHostName WindowsHostName InternalDomain OpenShiftPublicURL AppPublicURL UserName Password";echo "allinone.sh openshift winnode01 ncc9.com openshift.ncc9.com apps.openshift.com glennswest SuperLamb1 rhnusername rhnpassword";exit
 fi
 
-export LinuxHostName=$1
-export WindowsHostName=$2
+set -f                      # avoid globbing (expansion of *).
+echo $1
+echo $2
+LinuxHostNames=(${1//,/ })
+WindowsHostNames=(${2//,/ })
 export InternalDomain=$3
 export OpenShiftPublicURL=$4
 export AppPublicURL=$5
@@ -14,13 +17,11 @@ export rhnusername=$8
 export rhnpassword=$9
 export theRepo="https://github.com/glennswest/openshift-windows"
 export AUSERNAME=$theUserName
-export LinuxInternalIP=`nslookup $LinuxHostName | awk '/^Address: / { print $2 ; exit }'`
-export WindowsInternalIP=`nslookup $WindowsHostName | awk '/^Address: / { print $2 ; exit }'`
-export WindowsNicName="Ethernet0"
 
 echo $0 "Starting"
-echo "Linux Hostname:       " $LinuxHostName
-echo "Windows Hostname:     " $WindowsHostName
+echo "Linux HostNames:      " ${LinuxHostNames[@]} 
+echo "Master HostName:      " ${LinuxHostNames[0]}
+echo "Windows Hostnames:    " ${WindowsHostNames[@]}
 echo "Internal Domain:      " $InternalDomain
 echo "Openshift Public URL: " $OpenShiftPublicURL
 echo "App Public URL:       " $AppPublicURL
@@ -33,7 +34,6 @@ echo "AppPublicURL: " $AppPublicURL >> ./parameters.vars
 echo "theUserName: " $theUserName >> ./parameters.vars
 echo "thePassword: " $thePassword >> ./parameters.vars
 echo "theRepo: " $theRepo >> ./parameters.vars
-echo "WindowsNicName: " $WindowsNicName >> ./parameters.vars
 
 mkdir /etc/ansible
 cp -f ./parameters.vars /etc/ansible
@@ -118,21 +118,31 @@ openshift_master_cluster_public_hostname=$OpenShiftPublicURL
 osm_default_node_selector="node-role.kubernetes.io/compute=true"
 
 [masters]
-$LinuxHostName.$InternalDomain openshift_public_hostname=$OpenShiftPublicURL
+${LinuxHostNames[0]}.$InternalDomain openshift_public_hostname=$OpenShiftPublicURL
 
 [etcd]
-$LinuxHostName.$InternalDomain
+${LinuxHostNames[0]}.$InternalDomain
 
 [new_nodes]
 [new_masters]
 
 [nodes]
-$LinuxHostName.$InternalDomain openshift_public_hostname=$OpenShiftPublicURL openshift_node_group_name='node-config-all-in-one'
+${LinuxHostNames[0]}.$InternalDomain openshift_public_hostname=$OpenShiftPublicURL openshift_node_group_name='node-config-all-in-one'
+EOF
+
+for i in "${LinuxHostNames[@]:1}"; do
+    echo $i.$InternalDomain openshift_node_group_name='node-config-compute' >> /etc/ansible/hosts
+done
+
+cat <<EOF >> /etc/ansible/hosts
  
 [windows]
-$WindowsHostName.$InternalDomain
-
 EOF
+
+for i in "${WindowsHostNames[@]}"; do
+    echo $i.$InternalDomain openshift_node_group_name='node-config-compute' >> /etc/ansible/hosts
+done
+
 
 cat <<EOF > ~/postinstall.yml
 ---
@@ -161,4 +171,4 @@ EOF
 
 
 chmod +x ~/openshift-install.sh
-~/openshift-install.sh | tee openshift-install.out
+# ~/openshift-install.sh | tee openshift-install.out
