@@ -75,20 +75,6 @@ pip install pywinrm[kerberos]
 
 
 
-cat <<EOF > /home/${USER}/.ansible.cfg
-[defaults]
-remote_tmp     = ~/.ansible/tmp
-local_tmp      = ~/.ansible/tmp
-host_key_checking = False
-forks=30
-gather_timeout=60
-timeout=240
-library = /usr/share/ansible:/usr/share/ansible/openshift-ansible/library
-[ssh_connection]
-control_path = ~/.ansible/cp/ssh%%h-%%p-%%r
-ssh_args = -o ControlMaster=auto -o ControlPersist=600s -o ControlPath=~/.ansible/cp-%h-%p-%r
-EOF
-
 cat <<EOF > /etc/ansible/hosts
 [OSEv3:children]
 masters
@@ -140,7 +126,7 @@ cat <<EOF >> /etc/ansible/hosts
 EOF
 
 for i in "${WindowsHostNames[@]}"; do
-    echo $i.$InternalDomain openshift_node_group_name='node-config-compute' >> /etc/ansible/hosts
+    echo $i.$InternalDomain >> /etc/ansible/hosts
 done
 
 
