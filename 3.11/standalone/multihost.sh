@@ -51,7 +51,7 @@ subscription-manager repos --enable="rhel-7-server-rpms" \
     --enable="rhel-7-server-ose-3.11-rpms" \
     --enable="rhel-7-server-ansible-2.6-rpms"
 yum -y update
-yum -y install gcc wget git net-tools atomic-openshift-utils git net-tools bind-utils iptables-services bridge-utils bash-completion httpd-tools nodejs qemu-img kexec-tools sos psacct docker-1.13.1 ansible libffi-devel yum-utils
+yum -y install gcc wget git net-tools atomic-openshift-utils git net-tools bind-utils iptables-services bridge-utils bash-completion httpd-tools nodejs qemu-img kexec-tools sos psacct docker-1.13.1 ansible libffi-devel yum-utils atomic-openshift-clients
 #yum install -y openshift-ansible
 git clone https://github.com/openshift/openshift-ansible.git ~/openshift-ansible
 cd ~/openshift-ansible
@@ -148,7 +148,6 @@ ansible-playbook  ~/openshift-ansible/playbooks/prerequisites.yml < /dev/null
 ansible-playbook  ~/openshift-ansible/playbooks/deploy_cluster.yml < /dev/null || true
 ansible-playbook  ~/postinstall.yml
 
-yum -y install atomic-openshift-clients
 oc adm policy add-cluster-role-to-user cluster-admin ${theUserName}
 EOF
 
