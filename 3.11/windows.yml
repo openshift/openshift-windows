@@ -354,8 +354,24 @@
          address="tcp://{{lookup('dig',groups.masters | first )}}:6642"
 
     delegate_to: localhost
-- hosts: windows
+- hosts: masters[0]
   gather_facts: no
+  tasks:
+  - name: Make sure bastion has exe dir
+    file: path=/root/cni/bin state=directory
+  - name: copy ovn-k8s-cni-overlay.exe
+    fetch:
+       src: /root/ovn-kubernetes/go-controller/_output/go/windows/ovn-k8s-cni-overlay.exe
+       dest: /root/cni/bin/ovn-k8s-cni-overlay.exe
+       force: yes
+       flat: yes
+  - name: copy ovn ovnkube.exe
+    fetch:
+       src: /root/ovn-kubernetes/go-controller/_output/go/windows/ovnkube.exe
+       dest: /root/cni/bin/ovnkube.exe
+       force: yes
+       flat: yes
+- hosts: windows
   tasks:
   - name: Mkdir \cni
     win_file:
@@ -381,12 +397,12 @@
        force: yes
   - name: copy ovn-k8s-cni-overlay.exe
     win_copy:
-       src: /root/ovn-kubernetes/go-controller/_output/go/windows/ovn-k8s-cni-overlay.exe
+       src: /root/cni/bin/ovn-k8s-cni-overlay.exe
        dest: /bin/ovn-k8s-cni-overlay.exe
        force: yes
   - name: copy ovn ovnkube.exe
     win_copy:
-       src: /root/ovn-kubernetes/go-controller/_output/go/windows/ovnkube.exe
+       src: /root/cni/bin/ovnkube.exe
        dest: /bin/ovnkube.exe
        force: yes
 - hosts: windows
