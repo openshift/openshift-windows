@@ -33,8 +33,10 @@
 - hosts: masters[0]
   gather_facts: False
   tasks:
-  - name: Clone the ovn rpo
+  - name: Clone the ovn repo
     shell: git clone https://github.com/glennswest/ovn-kubernetes  /root/ovn-kubernetes
+  - name: Clone the openshift repo
+    shell: git clone https://github.com/glennswest/openshift-windows  /root/openshift-windows
   - name: Start background ovn install
     shell: nohup /root/openshift-windows/3.11/auto-install-ovn.sh > /root/auto-install-ovn.out &;sleep 1
     async: 360000
