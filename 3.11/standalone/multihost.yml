@@ -19,7 +19,7 @@
   - name: Update all nodes
     shell: yum -y update
   - name: Install needed tools
-i   yum -y install gcc wget git net-tools atomic-openshift-utils git net-tools bind-utils iptables-services bridge-utils bash-completion httpd-tools nodejs qemu-img kexec-tools sos psacct docker-1.13.1 ansible libffi-devel yum-utils
+    shell: yum -y install gcc wget git net-tools atomic-openshift-utils git net-tools bind-utils iptables-services bridge-utils bash-completion httpd-tools nodejs qemu-img kexec-tools sos psacct docker-1.13.1 ansible libffi-devel yum-utils
   - name: Install Docker
     shell: yum -y install docker-1.13.1
   - name: Enable Docker
