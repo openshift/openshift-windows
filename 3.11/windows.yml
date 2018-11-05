@@ -1,4 +1,4 @@
-- hosts: localhost
+- hosts: masters[0]
   become: yes
   become_user: root
   tasks:
@@ -8,7 +8,7 @@
   - local_action: copy content="{{ api_url.stdout }}" dest="{{playbook_dir}}/api_host.txt"
   - name: Patch openshift-node/sync to only be on linux nodes
     shell: oc patch namespace openshift-node -p '{"metadata":{"annotations":{"openshift.io/node-selector":"beta.kubernetes.io/os=linux"}}}'
-- hosts: localhost
+- hosts: masters[0]
   become: yes
   become_user: root
   tasks:
@@ -207,7 +207,7 @@
     shell: oc sa get-token ovn
     register: ovn_key
   - local_action: copy content={{ ovn_key.stdout }} dest="{{playbook_dir}}/ovn.token"
-- hosts: 127.0.0.1
+- hosts: masters[0]
   connection: local
   sudo: yes
   gather_facts: no
