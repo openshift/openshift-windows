@@ -132,7 +132,6 @@
 # Setup the network on windows machines
 - hosts: windows
   gather_facts: no
-  serial: 1
   vars:
      user: "{{lookup('env','USER')}}"
   tasks:
@@ -279,7 +278,6 @@
     win_shell: "[System.Environment]::SetEnvironmentVariable('KUBECONFIG', 'c:/k/config;c:/k/system-node-{{ groups.masters | first }}.kubeconfig')"
 - hosts: windows
   gather_facts: no
-  serial: 1
   vars:
      user: "{{lookup('env','USER')}}"
   tasks:
