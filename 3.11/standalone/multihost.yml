@@ -33,6 +33,12 @@
 - hosts: masters[0]
   gather_facts: False
   tasks:
+  - name: Add EPEL
+    shell: yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+  - name: EPEL Disabled by default 
+    shell: yum-config-manager --disable epel
+  - name: Install jq on master
+    shell: yum -y install --enablerepo="epel" jq
   - name: Remove old ovn repo
     shell: rm -r -f /root/ovn-kubernetes
     ignore_errors: yes
