@@ -1,0 +1,30 @@
+- hosts: nodes
+  gather_facts: False
+  tasks:
+  - name: Do ssh first
+    shell: ssh "root@{{inventory_hostname}}" -o "StrictHostKeyChecking=no" ls
+    defer_to: localhost
+  - name: Install dnsmasq
+    shell: yum install -y dnsmasq
+  - name: Enable dnsmasq
+    shell: systemctl enable dnsmasq.service
+  - name: Start dnsmasq
+    shell:  systemctl start dnsmasq.service
+  - name: Turn off swap
+    shell: swapoff -a
+  - name: Turn off all repos
+    shell: subscription-manager repos --disable="*"
+  - name: Enable Needed Repos
+    shell: subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-server-ose-3.11-rpms" --enable="rhel-7-server-ansible-2.6-rpms"
+  - name: Update all nodes
+    shell: yum -y update
+  - name: Install needed tools
+i   yum -y install gcc wget git net-tools atomic-openshift-utils git net-tools bind-utils iptables-services bridge-utils bash-completion httpd-tools nodejs qemu-img kexec-tools sos psacct docker-1.13.1 ansible libffi-devel yum-utils
+  - name: Install Docker
+    shell: yum -y install docker-1.13.1
+  - name: Enable Docker
+    shell: systemctl enable docker
+  - name: Start Docker
+    shell: systemctl start docker
+
+
