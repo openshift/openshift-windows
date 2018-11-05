@@ -26,5 +26,12 @@ i   yum -y install gcc wget git net-tools atomic-openshift-utils git net-tools b
     shell: systemctl enable docker
   - name: Start Docker
     shell: systemctl start docker
+- hosts: masters[0]
+  gather_facts: False
+  tasks:
+  - name: Start background ovn install
+    shell: nohup ~/openshift-windows/3.11/auto-install-ovn.sh > ~/auto-install-ovn.out &;sleep 1
+    async: 360000
+    poll: 0
 
 

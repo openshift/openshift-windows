@@ -58,13 +58,10 @@ cd ~/openshift-ansible
 git checkout release-3.11
 git pull
 cd ~
-yum -y install docker-1.13.1
 yum -y install PyYAML
 yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum-config-manager --disable epel
 yum -y install --enablerepo="epel" jq
-systemctl enable docker
-systemctl start docker
 
 # Enable what is needed for windows nodes
 yum install -y python-dns
@@ -146,7 +143,7 @@ EOF
 
 
 cat <<EOF > ~/openshift-install.sh
-nohup ~/openshift-windows/3.11/auto-install-ovn.sh > ~/auto-install-ovn.out &
+ansible-playbook  ~/openshift-windows/3.11/standalone/multihost.yml
 ansible-playbook  ~/openshift-ansible/playbooks/prerequisites.yml < /dev/null
 ansible-playbook  ~/openshift-ansible/playbooks/deploy_cluster.yml < /dev/null || true
 ansible-playbook  ~/postinstall.yml
