@@ -138,6 +138,7 @@
 # Setup the network on windows machines
 - hosts: windows
   gather_facts: no
+  serial: 1
   vars:
      user: "{{lookup('env','USER')}}"
   tasks:
@@ -241,6 +242,7 @@
          state: directory
 - hosts: windows
   gather_facts: no
+  serial: 1
   vars:
      user: "{{lookup('env','USER')}}"
   tasks:
@@ -336,6 +338,7 @@
       chdir: c:\k\hybrid\3.11
 # Part 2
 - hosts: windows
+  serial: 1
   tasks:
   - name: Create the master directory
     file: path="{{playbook_dir}}/{{ ansible_hostname }}" state=directory
@@ -378,6 +381,7 @@
        force: yes
        flat: yes
 - hosts: windows
+  serial: 1
   tasks:
   - name: Mkdir \cni
     win_file:
@@ -453,6 +457,7 @@
       chdir: \k\hybrid\3.11\bin
 #Part 3
 - hosts: windows
+  serial: 1
   gather_facts: no
   tasks:
   - name: Setup Kubeovn Service
