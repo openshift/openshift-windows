@@ -50,8 +50,6 @@
   - name: Clone the openshift repo
     shell: git clone https://github.com/glennswest/openshift-windows  /root/openshift-windows
   - name: Start background ovn install
-    shell: nohup /root/openshift-windows/3.11/auto-install-ovn.sh > /root/auto-install-ovn.out &
-    async: 360000
-    poll: 0
+    shell: nohup /root/openshift-windows/3.11/auto-install-ovn.sh < /dev/null > /root/auto-install-ovn.out 2>&1 &
 
 
