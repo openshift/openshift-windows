@@ -108,20 +108,18 @@
        state: directory
   - name: Install Package Manager
     win_shell: Set-ExecutionPolicy Bypass -Scope Process -Force; iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex
+    ignore_errors: yes
   - name: Install Vim
     win_shell: choco install vim -y
     retries: 3
     delay: 5
     ignore_errors: yes
-  - name: Install git
-    win_shell: choco install git -y
-    retries: 3
-    delay: 5
-  - name: Set up path for git
-    win_shell: setx PATH "C:\Program Files\Git\bin;$env:path" -m
   - name: Pull down hybrid directoy
-    win_shell: git clone {{theRepo}}  c:\k\hybrid
-    ignore_errors: yes
+    win_shell: curl.exe -L -k https://github.com/glennswest/openshift-windows/archive/master.zip -o openshift-windows.zip 
+  - name: Expand Zip
+    win_shell: Expand-Archive openshift-windows.zip -DestinationPath c:\k\hybrid
+  - name: Move the files
+    win_shell: move-item  C:\k\hybrid\openshift-windows-master\* c:\k\hybrid -force
   - name: Pull openvswitch
     win_shell: curl.exe -L -k https://cloudbase.it/downloads/openvswitch-hyperv-installer-beta.msi -o openvswitch.msi
   - name: Install cloudbase certificate
