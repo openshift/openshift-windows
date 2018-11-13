@@ -28,120 +28,256 @@
     shell: git clone https://github.com/glennswest/ovn-kubernetes  ~/ovn-kubernetes
   - name: Build The Controller (Windows)
     shell: cd ~/ovn-kubernetes;cd go-controller;make clean;make windows
-# Make sure basic components needed for Windows are Auto Installed and Updates Done
 - hosts: windows
+  remote_user: Administrator
+  become_method: runas
   gather_facts: no
-  vars:
-     user: "{{lookup('env','USER')}}"
-     ipv6cmd: !unsafe New-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters\' -Name  'DisabledComponents' -Value '0xffffffff' -PropertyType 'DWord'
-  tasks:
-  - name: Check Comm
-    win_ping:
-  - name: Disable Extra IP Stack
-    win_shell: "{{ipv6cmd}}"
-    ignore_errors: yes
-  - name: Make sure low level hyperv is disabled
-    win_shell: bcdedit /set hypervisorlaunchtype off
-    ignore_errors: yes
-  - name: Disable HyperV
-    win_shell: Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V 
-    ignore_errors: yes
-  - name: Rename Computer
-    win_shell: Rename-Computer -NewName "{{inventory_hostname_short}}" -Force
-    ignore_errors: yes
-  - name: Restart Windows Nodes (For rename)
-    win_reboot:
-        reboot_timeout: 3600
-  - name: Pause before Provider install
-    pause:
-       minutes: 1
-  - name: Install the Nuget provider
-    win_shell: Find-PackageProvider -Name "Nuget" | Install-PackageProvider -Verbose -Force
-    retries: 10
-    delay: 20
-  - name: Install Package Manager Provider
-    win_shell: Install-Module -Name DockerMsftProvider -Repository PSGallery -Force
-  - name: Install Docker
-    win_shell: Install-Package -Name docker -ProviderName DockerMsftProvider -Confirm:$False -Force -RequiredVersion 18.03.1-ee-3 
-  - name: Install Docker (To double-confirm)
-    win_shell: Install-Package -Name docker -ProviderName DockerMsftProvider -Confirm:$False -Force -RequiredVersion 18.03.1-ee-3 
-  - name: Install the Containers Feature
-    win_shell: install-windowsfeature -name containers
-  - name: Windows Update
-    win_shell: Install-Package PSWindowsUpdate -Force
-  - name: Do updates
-    win_shell: Get-WUInstall -AcceptAll
-  - name: Restart Windows Nodes
-    win_reboot:
-        reboot_timeout: 3600
-  - name: Sleep a while to make sure we are done with restart from update
-    pause:
-       minutes: 1
-- hosts: windows
-  gather_facts: no
-  vars:
-     user: "{{lookup('env','USER')}}"
   vars_files:
-   - /etc/ansible/parameters.vars
+    - /etc/ansible/parameters.vars
+  vars:
+    user: "{{lookup('env','USER')}}"
+    windows_docker_version: "18.03.1-ee-3"
+    bin_dir_path: C:\bin
+    k_dir_path: C:\k
+    openvswitch_installer_url: https://cloudbase.it/downloads/openvswitch-hyperv-installer-beta.msi
+    openshift_windows_git_url: https://github.com/glennswest/openshift-windows
+    ovs_subnet: "10.128.1.0/24"
+    ovs_gateway: "10.128.1.1"
   tasks:
-  - name:  Start docker service
-    win_shell: Start-Service docker
-  - name: Remove Old Bin if it exists
+  - name: Windows | Setup all the Windows machines prerequisites (this may take a while)
+    win_shell: |
+      $ErrorActionPreference = "Stop"
+      $reboot = $false
+      $regNamespace = 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters'
+      $key = Get-ItemProperty -Path $regNamespace -Name 'DisabledComponents' -ErrorAction SilentlyContinue
+      if(!$key -or ($key.DisabledComponents.GetType() -ne [UInt32] -or $key.DisabledComponents -ne [Uint32]'0xffffffff')) {
+          Remove-ItemProperty -Path $regNamespace -Name 'DisabledComponents' -ErrorAction SilentlyContinue
+          Write-Output "Disabling IPv6"
+          New-ItemProperty -Path $regNamespace -Name 'DisabledComponents' -Value '0xffffffff' -PropertyType 'DWord'
+          $reboot = $true
+      }
+      $status = Get-WindowsFeature -Name "Hyper-V"
+      if($status.InstallState -eq "Installed") {
+          Remove-WindowsFeature "Hyper-V"
+          bcdedit.exe /set hypervisorlaunchtype off
+          if($LASTEXITCODE) {
+              Throw "Failed to set bcd setting hypervisorlaunchtype to off"
+          }
+      }
+      if($env:COMPUTERNAME -ne "{{ inventory_hostname_short }}") {
+          Write-Output "Renaming the computer to {{ inventory_hostname_short }}"
+          Rename-Computer -NewName "{{ inventory_hostname_short }}" -Force -Confirm:$false
+          $reboot = $true
+      }
+      Write-Output "Installing the required Windows features"
+      $state = Install-WindowsFeature -Name "Containers" -Confirm:$false -ErrorAction Stop
+      if($state.Success -ne $true) {
+          Throw "Failed to install Containers Windows feature"
+      }
+      if($state.RestartNeeded -eq "Yes") {
+          $reboot = $true
+      }
+      Write-Output "Installing all the available Windows updates"
+      Install-Package PSWindowsUpdate -Force
+      $updates = Get-WUInstall -AcceptAll -IgnoreReboot
+      $updates | ForEach-Object {
+          if($_.RebootRequired) {
+              $reboot = $true
+          }
+      }
+      # Reboot if needed
+      if($reboot) {
+          Write-Output "Rebooting computer"
+          Restart-Computer -Force
+      }
+  - name: Windows | Wait for the Windows machines to be ready after prerequisites setup
+    wait_for_connection:
+      # We reboot via PowerShell one task above. Wait 30 seconds before checking for
+      # connection to make sure that node completely shuts down before starting again.
+      delay: 30
+      # 1 hour timeout (worst case scenario for all the Windows nodes)
+      timeout: 3600
+  - name: Windows | Install Docker {{ windows_docker_version }}
+    win_shell: |
+      $ErrorActionPreference = "Stop"
+      Write-Output "Installing Docker {{ windows_docker_version }}"
+      Find-PackageProvider -Name "Nuget" | Install-PackageProvider -Force
+      Install-Module -Name "DockerMsftProvider" -Repository "PSGallery" -Force
+      Install-Package -Name "Docker" -ProviderName "DockerMsftProvider" -Force -RequiredVersion "{{ windows_docker_version }}"
+  - name: Windows | Setup Docker service
+    win_shell: |
+      $ErrorActionPreference = "Stop"
+      $DOCKER_SERVICE_NAME = "Docker"
+      Set-Service $DOCKER_SERVICE_NAME -StartupType Disabled
+      Stop-Service $DOCKER_SERVICE_NAME
+      Get-HnsNetwork | Where-Object { $_.Name -eq "nat" } | Remove-HnsNetwork
+      $configFile = Join-Path $env:ProgramData "Docker\config\daemon.json"
+      $configDir = Split-Path -Path $configFile -Parent
+      if(!(Test-Path $configDir)) {
+          New-Item -ItemType "Directory" -Force -Path $configDir
+      }
+      Set-Content -Path $configFile -Value '{ "bridge" : "none" }' -Encoding Ascii
+      Set-Service $DOCKER_SERVICE_NAME -StartupType Automatic
+      sc.exe failure $DOCKER_SERVICE_NAME reset=40 actions=restart/0/restart/0/restart/30000
+      if($LASTEXITCODE) {
+          Throw "Failed to set failure actions"
+      }
+      sc.exe failureflag $DOCKER_SERVICE_NAME 1
+      if($LASTEXITCODE) {
+          Throw "Failed to set failure flags"
+      }
+      Start-Service $DOCKER_SERVICE_NAME
+  - name: Windows | Remove old Bin and K directories if it exists
     win_file:
-       path: c:\bin
-       state: absent
-  - name: Create Bin Directory
+      path: "{{ item }}"
+      state: absent
+    with_items:
+      - "{{ bin_dir_path }}"
+      - "{{ k_dir_path }}"
+  - name: Windows | Create Bin and K directories
     win_file:
-       path: c:\bin
-       state: directory
-  - name: Set Bin Path
-    win_shell: setx ChocolateyBinRoot "C:\bin" -m
-  - name: Set Path
-    win_shell: setx PATH "C:\ProgramData\chocolatey\bin;$env:path;c:\bin;c:\k\hybrid\3.11\bin" -m
-  - name: Cleanup old K Directory
-    win_file:
-       path: c:\k
-       state: absent
-  - name: Create K Directory
-    win_file:
-       path: c:\k
-       state: directory
-  - name: Install Package Manager
-    win_shell: Set-ExecutionPolicy Bypass -Scope Process -Force; iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex
-    ignore_errors: yes
-  - name: Pull down hybrid directoy
-    win_shell: curl.exe -L -k https://github.com/glennswest/openshift-windows/archive/master.zip -o openshift-windows.zip 
-  - name: Expand Zip
-    win_shell: Expand-Archive openshift-windows.zip -DestinationPath c:\k\hybrid
-  - name: Move the files
-    win_shell: move-item  C:\k\hybrid\openshift-windows-master\* c:\k\hybrid -force
-  - name: Pull openvswitch
-    win_shell: curl.exe -L -k https://cloudbase.it/downloads/openvswitch-hyperv-installer-beta.msi -o openvswitch.msi
-  - name: Install cloudbase certificate
-    win_shell:  certutil -addstore -f "TrustedPublisher" c:\k\hybrid\3.11\bin\cloudbase.sst
-  - name: Install open vswitch
-    win_shell: msiexec /i openvswitch.msi ADDLOCAL="OpenvSwitchCLI,OpenvSwitchDriver,OVNHost" /qn
-    ignore_errors: yes
-  - name: Turn off Advfireall profiles
-    win_shell: NetSh Advfirewall set allprofiles state off
-  - name: Set up path for ovn
-    win_shell: setx PATH "C:\Program Files\Cloudbase Solutions\Open vSwitch\bin;$env:path" -m
-  - name: Start ovs service
-    win_shell: Start-Service ovs-vswitchd
-# Setup the network on windows machines
+      path: "{{ item }}"
+      state: directory
+    with_items:
+      - "{{ bin_dir_path }}"
+      - "{{ k_dir_path }}"
+  - name: Windows | Set ChocolateyBinRoot
+    win_shell: setx -m ChocolateyBinRoot "{{ bin_dir_path }}"
+  - name: Windows | Install Chocolatey package manager
+    win_shell: |
+      $ErrorActionPreference = "Stop"
+      Set-ExecutionPolicy Bypass -Scope Process -Force
+      Invoke-WebRequest -Uri "https://chocolatey.org/install.ps1" -UseBasicParsing | Invoke-Expression
+    retries: 5
+    delay: 5
+  - name: Windows | Add Chocolatey and Bin to system path
+    win_shell: |
+      $ErrorActionPreference = "Stop"
+      $systemPath = [System.Environment]::GetEnvironmentVariable("PATH", "Machine") -split ';'
+      if("{{ item }}" -notin $systemPath) {
+          $systemPath += "{{ item }}"
+          [System.Environment]::SetEnvironmentVariable("PATH", ($systemPath -join ';'), "Machine")
+      }
+    with_items:
+      - '${env:ProgramData}\chocolatey\bin'
+      - "{{ bin_dir_path }}"
+  - name: Windows | Install 7-Zip Git and Curl
+    win_shell: choco install {{ item }} -y
+    with_items:
+      - "7zip.portable"
+      - "git"
+      - "curl"
+      - "nssm"
+    retries: 5
+    delay: 5
+  - name: Windows | Pull down Hybrid Git directory in zip format
+    win_shell: curl.exe -L -k {{ openshift_windows_git_url }}/archive/master.zip -o $env:TEMP\openshift-windows.zip
+    retries: 5
+    delay: 5
+  - name: Windows | Extract Hybrid zip
+    win_shell: |
+      $ErrorActionPreference = "Stop"
+      Expand-Archive $env:TEMP\openshift-windows.zip -DestinationPath $env:TEMP
+      Move-Item -Path ${env:TEMP}\openshift-windows-master\* -Destination {{ k_dir_path }}\hybrid\ -Force
+      Remove-Item -Force -Path $env:TEMP\openshift-windows.zip -ErrorAction SilentlyContinue
+      Remove-Item -Recurse -Force -Path ${env:TEMP}\openshift-windows-master -ErrorAction SilentlyContinue
+  - name: Expand System Disk
+    win_shell: '& "{{ k_dir_path }}\hybrid\3.11\bin\expand_disk.ps1"'
+  - name: Windows | Pull OpenvSwitch
+    win_shell: curl.exe -L {{ openvswitch_installer_url }} -o $env:TEMP\openvswitch.msi
+    retries: 5
+    delay: 5
+  - name: Windows | Install Cloudbase certificate
+    win_shell: certutil -addstore -f "TrustedPublisher" {{ k_dir_path }}\hybrid\3.11\bin\cloudbase.sst
+  - name: Windows | Install OpenvSwitch
+    win_shell: |
+      $ErrorActionPreference = "Stop"
+      $ovs = Get-CimInstance -ClassName Win32_Product -Filter "Name LIKE 'Cloudbase Open vSwitch%'"
+      if($ovs) {
+          Write-Output "OpenvSwitch is already installed. Installed version: $($ovs.Version)"
+          exit 0
+      }
+      $params = @("/i", "$env:TEMP\openvswitch.msi", 'ADDLOCAL="OpenvSwitchCLI,OpenvSwitchDriver,OVNHost"', "/qn")
+      $p = Start-Process -FilePath "msiexec.exe" -ArgumentList $params -NoNewWindow -Wait -PassThru
+      if($p.ExitCode) {
+          Throw "Failed to install OpenvSwitch"
+      }
+      Remove-Item -Force -Path "$env:TEMP\openvswitch.msi" -ErrorAction SilentlyContinue
+  - name: Windows | Add Hybrid and OVS to system path
+    win_shell: |
+      $ErrorActionPreference = "Stop"
+      $systemPath = [System.Environment]::GetEnvironmentVariable("PATH", "Machine") -split ';'
+      if("{{ item }}" -notin $systemPath) {
+          $systemPath += "{{ item }}"
+          [System.Environment]::SetEnvironmentVariable("PATH", ($systemPath -join ';'), "Machine")
+      }
+    with_items:
+      - '{{ k_dir_path }}\hybrid\3.11\bin'
+      - '${env:ProgramFiles}\Cloudbase Solutions\Open vSwitch\bin\'
+  - name: Windows | Start ovsdb-server Windows service
+    win_service:
+      name: ovsdb-server
+      state: started
+  - name: Windows | Prepare Windows scheduled tasks for the SDN setup
+    win_scheduled_task:
+      name: "setup_sdn"
+      executable: powershell.exe
+      arguments: >
+        -ExecutionPolicy Unrestricted -NonInteractive -Command
+        "& '{{ k_dir_path }}\hybrid\3.11\bin\setup_sdn.ps1' -OVSSubnet {{ ovs_subnet }} -OVSGateway {{ ovs_gateway }}
+        2>&1 > '{{ k_dir_path }}\hybrid\3.11\bin\setup_sdn.log';
+        Write-Output $LASTEXITCODE > {{ k_dir_path }}\hybrid\3.11\bin\setup_sdn.status"
+      frequency: once
+      enabled: true
+      time: "00:00:00"
+      user: SYSTEM
+  - name: Windows | Setup Windows SDN
+    win_shell: Start-ScheduledTask -TaskName "setup_sdn"
+  - name: Windows | Wait for Windows SDN setup
+    wait_for_connection:
+      # Allow 60 seconds for the setup_sdn task to finish. Connection will
+      # temporarily drop during this period of time.
+      delay: 60
+      # Maximum of 10 minutes allowed timeout.
+      timeout: 600
+  - name: Windows | Check Windows SDN setup task
+    win_shell: |
+      $ErrorActionPreference = "Stop"
+      $taskName = "setup_sdn"
+      if((Get-ScheduledTask -TaskName $taskName).State -ne 'Ready') {
+          Throw "The scheduled task $taskName is not ready"
+      }
+      Write-Output "The scheduled task is ready"
+      $statusFile = "{{ k_dir_path }}\hybrid\3.11\bin\${taskName}.status"
+      if(!(Test-Path $statusFile)) {
+          Write-Output "Status file doesn't exist. Skipping"
+          exit 0
+      }
+      $exitCode = Get-Content $statusFile
+      if($exitCode -ne 0) {
+          Throw "Scheduled task ${taskName} returned with error"
+      }
+      Write-Output "Scheduled task ${taskName} returned with success"
+  - name: Windows | Clean up Windows SDN setup task
+    win_scheduled_task:
+      name: "setup_sdn"
+      state: absent
+  - name: Pull down windowsservercore 1803 (Note this may take a long time)
+    win_shell: docker pull microsoft/windowsservercore:1803
+    async: 50000
+    poll: 5
+  - name: Tag The image
+    win_shell: docker tag microsoft/windowsservercore:1803 microsoft/windowsservercore:latest
+  - name: Build the pause windows container
+    win_shell: docker build . -t kubeletwin/pause
+    args:
+      chdir: '{{ k_dir_path }}\hybrid\3.11'
 - hosts: windows
   gather_facts: no
   serial: 1
   vars:
      user: "{{lookup('env','USER')}}"
   tasks:
-  - name: Pause for ovs start
-    pause:
-       minutes: 1
-  - name: Expand System Disk
-    win_shell: expanddisk.ps1
-    args:
-      chdir: c:\k\hybrid\3.11\bin
   - name: set up environment
     shell: ln -f -s -n /etc/origin/ openshift.local.config
     args:
@@ -213,7 +349,7 @@
   vars:
      user: "{{lookup('env','USER')}}"
   vars_files:
-   - /etc/ansible/parameters.vars
+  - /etc/ansible/parameters.vars
   tasks:
   - name: Setup local origin structure
     file:
@@ -277,58 +413,6 @@
     win_shell: "[System.Environment]::SetEnvironmentVariable('KUBECONFIG', 'c:/k/config;c:/k/system-node-1.masters | first }}.kubeconfig', [System.EnvironmentVariableTarget]::Machine)"
   - name: Set kubeconfig
     win_shell: "[System.Environment]::SetEnvironmentVariable('KUBECONFIG', 'c:/k/config;c:/k/system-node-{{ groups.masters | first }}.kubeconfig')"
-- hosts: windows
-  gather_facts: no
-  vars:
-     user: "{{lookup('env','USER')}}"
-  tasks:
-  - name: Prepare to create docker network
-    win_scheduled_task:
-      name: docker-create
-      description: Create The Docker Network
-      executable: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
-      arguments: -ExecutionPolicy Unrestricted -NonInteractive c:\k\hybrid\3.11\bin\docker-create.ps1
-      frequency: once
-      enabled:   true
-      time:      "14:00:00"
-      user:      SYSTEM
-  - name: Execute the creation of the docker network
-    win_shell: Start-ScheduledTask -TaskName docker-create
-  - name: Pause for Docker Setup
-    pause:
-       minutes: 1
-  - name: Prepare to setup the windows sdn setup
-    win_scheduled_task:
-      name: setup-network
-      description: Create The Docker Network
-      executable: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
-      arguments: -ExecutionPolicy Unrestricted -NonInteractive c:\k\hybrid\3.11\bin\setup-network.ps1
-      frequency: once
-      enabled:   true
-      time:      "14:00:00"
-      user:      SYSTEM
-  - name: Pause for preparation of sdn setup
-    pause:
-       minutes: 1
-  - name: Execute the setup of the windows sdn
-    win_shell: Start-ScheduledTask -TaskName setup-network
-  - name: Pause for sdn setup completion
-    pause:
-       minutes: 1
-  - name: Docker | Start docker service
-    win_service:
-        name: docker
-        state: started
-  - name: Pull down windowsservercore 1803 (Note this may take a long time)
-    win_shell: docker pull microsoft/windowsservercore:1803
-    async: 50000
-    poll: 5
-  - name: Tag The image
-    win_shell: docker tag microsoft/windowsservercore:1803 microsoft/windowsservercore:latest
-  - name: Build the pause windows container
-    win_shell: docker build . -t kubeletwin/pause
-    args:
-      chdir: c:\k\hybrid\3.11
 # Part 2
 - hosts: windows
   serial: 1
@@ -412,14 +496,28 @@
   gather_facts: no
   tasks:
   - name: Add port 10250 to windows firewall rules
-    win_shell: New-NetFirewallRule -Name kubelet -DisplayName 'Kubernetes Node' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 10250
-    ignore_errors: yes
+    win_shell: |
+      $ErrorActionPreference = "Stop"
+      $name = "kubelet"
+      $rule = Get-NetFirewallRule -Name $name -ErrorAction SilentlyContinue
+      if($rule) {
+          # Delete existing rule if found
+          Remove-NetFirewallRule -InputObject $rule
+      }
+      New-NetFirewallRule -Name $name -DisplayName 'Kubernetes Node' `
+                          -Enabled True -Direction Inbound `
+                          -Protocol TCP -Action Allow -LocalPort 10250
   - name: Add port 6081 to windows firewall rules
-    win_shell: New-NetFirewallRule -Name ovn.6081 -DisplayName 'ovn.6081' -Enabled True -Direction Inbound -Protocol UDP -Action Allow -LocalPort 6081
-    ignore_errors: yes
-  - name: Install NSSM
-    win_shell: choco install nssm -y
-    ignore_errors: yes
+    win_shell: |
+      $ErrorActionPreference = "Stop"
+      $name = "ovn.6081"
+      $rule = Get-NetFirewallRule -Name $name -ErrorAction SilentlyContinue
+      if($rule) {
+          # Delete existing rule if found
+          Remove-NetFirewallRule -InputObject $rule
+      }
+      New-NetFirewallRule -Name $name -DisplayName $name -Enabled True `
+                          -Direction Inbound -Protocol UDP -Action Allow -LocalPort 6081
 # Part 2
 - hosts: windows
   gather_facts: no
@@ -448,7 +546,7 @@
     win_shell: setup_kubelet_service.ps1
     args:
       chdir: \k\hybrid\3.11\bin
-#Part 3
+# Part 3
 - hosts: windows
   serial: 1
   gather_facts: no
