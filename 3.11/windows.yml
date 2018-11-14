@@ -43,6 +43,7 @@
     openshift_windows_git_url: https://github.com/glennswest/openshift-windows
     ovs_subnet: "10.128.1.0/24"
     ovs_gateway: "10.128.1.1"
+    ovs_network_name: "external"
   tasks:
   - name: Windows | Setup all the Windows machines prerequisites (this may take a while)
     win_shell: |
@@ -224,7 +225,8 @@
       executable: powershell.exe
       arguments: >
         -ExecutionPolicy Unrestricted -NonInteractive -Command
-        "& '{{ k_dir_path }}\hybrid\3.11\bin\setup_sdn.ps1' -OVSSubnet {{ ovs_subnet }} -OVSGateway {{ ovs_gateway }}
+        "& '{{ k_dir_path }}\hybrid\3.11\bin\setup_sdn.ps1' -OVSNetworkName {{ ovs_network_name }}
+        -OVSSubnet {{ ovs_subnet }} -OVSGateway {{ ovs_gateway }}
         2>&1 > '{{ k_dir_path }}\hybrid\3.11\bin\setup_sdn.log';
         Write-Output $LASTEXITCODE > {{ k_dir_path }}\hybrid\3.11\bin\setup_sdn.status"
       frequency: once
@@ -262,6 +264,20 @@
     win_scheduled_task:
       name: "setup_sdn"
       state: absent
+  - name: Windows | Restart the Docker service
+    win_service:
+      name: Docker
+      state: restarted
+  - name: Windows | Check if the HNS network for OVS is available in the Docker API
+    win_shell: |
+      $ErrorActionPreference = "Stop"
+      $net = docker.exe network ls --quiet --filter name={{ ovs_network_name }} --filter driver=transparent
+      if($LASTEXITCODE) {
+          Throw "Failed to list the Docker networks"
+      }
+      if(!$net) {
+          Throw "The HNS network for OVS is not available in the Docker API"
+      }
   - name: Pull down windowsservercore 1803 (Note this may take a long time)
     win_shell: docker pull microsoft/windowsservercore:1803
     async: 50000
