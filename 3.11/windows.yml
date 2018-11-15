@@ -159,15 +159,15 @@
     with_items:
       - '${env:ProgramData}\chocolatey\bin'
       - "{{ bin_dir_path }}"
-  - name: Windows | Install 7-Zip Git and Curl
-    win_shell: choco install {{ item }} -y
-    with_items:
-      - "7zip.portable"
-      - "git"
-      - "curl"
-      - "nssm"
+  - name: Windows | Install nssm
+    win_shell: choco install nssm -y
     retries: 5
     delay: 5
+  - name: Windows | Install Vim (potential failures will be ignored since this is non-critical)
+    win_shell: choco install vim -y
+    retries: 5
+    delay: 5
+    ignore_errors: yes
   - name: Windows | Pull down Hybrid Git directory in zip format
     win_shell: curl.exe -L -k {{ openshift_windows_git_url }}/archive/master.zip -o $env:TEMP\openshift-windows.zip
     retries: 5
