@@ -1,8 +1,6 @@
 Param(
     [Parameter(Mandatory=$true)]
-    [string]$OVSSubnet,
-    [Parameter(Mandatory=$true)]
-    [string]$OVSGateway,
+    [string]$SubnetFile,
     [Parameter(Mandatory=$false)]
     [string]$OVSNetworkName="external",
     [Parameter(Mandatory=$false)]
@@ -11,6 +9,26 @@ Param(
 
 $ErrorActionPreference = "Stop"
 
+
+function Get-NetworkInfo {
+    if(!(Test-Path $SubnetFile)) {
+        Throw "The subnet file $SubnetFile doesn't exist"
+    }
+    $subnet = Get-Content $SubnetFile -Raw | ConvertFrom-Json
+    if(!($subnet -is [string])) {
+        Throw "The content from file $SubnetFile is not a string: $subnet"
+    }
+    $splitSubnet = $subnet.Split('/')
+    if($splitSubnet.Count -ne 2) {
+        Throw "The subnet format from file is incorrect: $subnet"
+    }
+    $net = $splitSubnet[0].Split('.')
+    $gateway = "{0}.{1}.{2}.{3}" -f @($net[0], $net[1], $net[2], "1")
+    return @{
+        "subnet" = $subnet
+        "gateway" = $gateway
+    }
+}
 
 function New-OVSNetwork {
     $primaryIfIndex = (Get-NetRoute -DestinationPrefix "0.0.0.0/0").ifIndex
@@ -29,8 +47,9 @@ function New-OVSNetwork {
     } else {
         $adapterName = $mainInterface.InterfaceAlias
     }
+    $netInfo = Get-NetworkInfo
     $net = New-HnsNetwork -Name $OVSNetworkName -Type "Transparent" -AdapterName $adapterName `
-                          -AddressPrefix $OVSSubnet -Gateway $OVSGateway
+                          -AddressPrefix $netInfo["subnet"] -Gateway $netInfo["gateway"]
     # Check if the virtual adapter is present post HNS network creation
     $virtualAdapterName = "vEthernet ($($net.NetworkAdapterName))"
     $adapter = Get-NetAdapter -Name $virtualAdapterName -ErrorAction SilentlyContinue
