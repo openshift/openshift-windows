@@ -423,11 +423,13 @@
           Throw "The HNS network for OVS is not available in the Docker API"
       }
   - name: Pull down windowsservercore 1803 (Note this may take a long time)
-    win_shell: docker pull microsoft/windowsservercore:1803
+    win_shell: docker image pull mcr.microsoft.com/windows/servercore:1809
     async: 50000
     poll: 5
   - name: Tag The image
-    win_shell: docker tag microsoft/windowsservercore:1803 microsoft/windowsservercore:latest
+    win_shell: docker tag mcr.microsoft.com/windows/servercore:1809  microsoft/windowsservercore:latest
+  - name: Tag The image
+    win_shell: docker tag mcr.microsoft.com/windows/servercore:1809  microsoft/windowsservercore:1803
   - name: Build the pause windows container
     win_shell: docker build . -t kubeletwin/pause
     args:
