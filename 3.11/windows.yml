@@ -95,13 +95,13 @@
       delay: 30
       # 1 hour timeout (worst case scenario for all the Windows nodes)
       timeout: 3600
-  - name: Windows | Install Docker {{ windows_docker_version }}
+  - name: Windows | Install Docker 
     win_shell: |
       $ErrorActionPreference = "Stop"
       Write-Output "Installing Docker {{ windows_docker_version }}"
       Find-PackageProvider -Name "Nuget" | Install-PackageProvider -Force
       Install-Module -Name "DockerMsftProvider" -Repository "PSGallery" -Force
-      Install-Package -Name "Docker" -ProviderName "DockerMsftProvider" -Force -RequiredVersion "{{ windows_docker_version }}"
+      Install-Package -Name "Docker" -ProviderName "DockerMsftProvider" -Force 
   - name: Windows | Setup Docker service
     win_shell: |
       $ErrorActionPreference = "Stop"
