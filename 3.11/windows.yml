@@ -428,8 +428,6 @@
     poll: 5
   - name: Tag The image
     win_shell: docker tag mcr.microsoft.com/windows/servercore:1809  microsoft/windowsservercore:latest
-  - name: Tag The image
-    win_shell: docker tag mcr.microsoft.com/windows/servercore:1809  microsoft/windowsservercore:1803
   - name: Build the pause windows container
     win_shell: docker build . -t kubeletwin/pause
     args:
