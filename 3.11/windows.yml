@@ -359,6 +359,7 @@
     win_shell: "[System.Environment]::SetEnvironmentVariable('KUBECONFIG', 'c:/k/config;c:/k/system-node-{{ groups.masters | first }}.kubeconfig')"
 - hosts: windows
   gather_facts: no
+  serial: 1
   vars:
     user: "{{lookup('env','USER')}}"
     k_dir_path: C:\k
@@ -422,6 +423,13 @@
       if(!$net) {
           Throw "The HNS network for OVS is not available in the Docker API"
       }
+- hosts: windows
+  gather_facts: no
+  vars:
+    user: "{{lookup('env','USER')}}"
+    k_dir_path: C:\k
+    ovs_network_name: "external"
+  tasks:
   - name: Pull down windowsservercore 1809/Windows 2019 (Note this may take a long time)
     win_shell: docker image pull mcr.microsoft.com/windows/servercore:1809
     async: 50000
