@@ -422,7 +422,7 @@
       if(!$net) {
           Throw "The HNS network for OVS is not available in the Docker API"
       }
-  - name: Pull down windowsservercore 1803 (Note this may take a long time)
+  - name: Pull down windowsservercore 1809/Windows 2019 (Note this may take a long time)
     win_shell: docker image pull mcr.microsoft.com/windows/servercore:1809
     async: 50000
     poll: 5
