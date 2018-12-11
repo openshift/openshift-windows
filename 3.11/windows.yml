@@ -40,7 +40,7 @@
     bin_dir_path: C:\bin
     k_dir_path: C:\k
     openvswitch_installer_url: https://cloudbase.it/downloads/openvswitch-hyperv-installer-beta.msi
-    openshift_windows_git_url: https://github.com/glennswest/openshift-windows
+    openshift_windows_git_url: https://github.com/openshift/openshift-windows
   tasks:
   - name: Windows | Setup all the Windows machines prerequisites (this may take a while)
     win_shell: |

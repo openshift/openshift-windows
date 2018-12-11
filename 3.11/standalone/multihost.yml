@@ -48,7 +48,7 @@
   - name: Clone the ovn repo
     shell: git clone https://github.com/glennswest/ovn-kubernetes  /root/ovn-kubernetes
   - name: Clone the openshift repo
-    shell: git clone https://github.com/glennswest/openshift-windows  /root/openshift-windows
+    shell: git clone https://github.com/openshift/openshift-windows  /root/openshift-windows
   - name: Start background ovn install
     shell: nohup /root/openshift-windows/3.11/auto-install-ovn.sh < /dev/null > /root/auto-install-ovn.out 2>&1 &
 

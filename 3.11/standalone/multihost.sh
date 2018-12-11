@@ -15,7 +15,7 @@ export theUserName=$6
 export thePassword=$7
 export rhnusername=$8
 export rhnpassword=$9
-export theRepo="https://github.com/glennswest/openshift-windows"
+export theRepo="https://github.com/openshift/openshift-windows"
 export AUSERNAME=$theUserName
 
 echo $0 "Starting"
