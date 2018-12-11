@@ -1,0 +1,55 @@
+- hosts: nodes
+  gather_facts: False
+  tasks:
+  - name: Do ssh first
+    shell: ssh "root@{{inventory_hostname}}" -o "StrictHostKeyChecking=no" ls
+    delegate_to: localhost
+  - name: Install dnsmasq
+    shell: yum install -y dnsmasq
+    args:
+      warn: false
+  - name: Enable dnsmasq
+    shell: systemctl enable dnsmasq.service
+  - name: Start dnsmasq
+    shell:  systemctl start dnsmasq.service
+  - name: Turn off swap
+    shell: swapoff -a
+  - name: Turn off all repos
+    shell: subscription-manager repos --disable="*"
+  - name: Enable Needed Repos
+    shell: subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-server-ose-3.11-rpms" --enable="rhel-7-server-ansible-2.6-rpms"
+  - name: Update all nodes
+    shell: yum -y update
+    args: 
+      warn: False
+  - name: Install needed tools
+    shell: yum -y install gcc wget git net-tools atomic-openshift-utils git net-tools bind-utils iptables-services bridge-utils bash-completion httpd-tools nodejs qemu-img kexec-tools sos psacct docker-1.13.1 ansible libffi-devel yum-utils
+  - name: Install Docker
+    shell: yum -y install docker-1.13.1
+  - name: Enable Docker
+    shell: systemctl enable docker
+  - name: Start Docker
+    shell: systemctl start docker
+- hosts: masters[0]
+  gather_facts: False
+  tasks:
+  - name: Add EPEL
+    shell: yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+  - name: EPEL Disabled by default 
+    shell: yum-config-manager --disable epel
+  - name: Install jq on master
+    shell: yum -y install --enablerepo="epel" jq
+  - name: Remove old ovn repo
+    shell: rm -r -f /root/ovn-kubernetes
+    ignore_errors: yes
+  - name: Remove old openshift-windows repo
+    shell: rm -r -f /root/openshift-windows
+    ignore_errors: yes
+  - name: Clone the ovn repo
+    shell: git clone https://github.com/glennswest/ovn-kubernetes  /root/ovn-kubernetes
+  - name: Clone the openshift repo
+    shell: git clone https://github.com/openshift/openshift-windows  /root/openshift-windows
+  - name: Start background ovn install
+    shell: nohup /root/openshift-windows/3.11/auto-install-ovn.sh < /dev/null > /root/auto-install-ovn.out 2>&1 &
+
+

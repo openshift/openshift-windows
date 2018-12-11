@@ -4,7 +4,7 @@ Windows Nodes in OpenShift
 This current is tested on Vmware, with two machines, one running OpenShift 3.11 on RHEL 7.5.
 A full openshift subscription is required.
 
-The Windows Node is Windows Server Core 1803.
+The Windows Node is Windows Server Core 2019/Windows Datacenter Edition 2019.
 The Windows node requires it to be enabled for Ansible.
 bin/winansible.ps1 set's up the windows node for ansible.
 
@@ -19,7 +19,7 @@ http://github.com/glennswest/openshift-windows
 
 Requirements:
 1. Linux node with host name set, and static ip, and a proper search domain
-2. Windows node with a hostname set, and dhcp that returns same ip all the time, matching hostname.
+2. Windows node with a hostname set, and dhcp that returns same ip all the time, matching hostname. (Windows 2019 Datacenter Edition)
 3. The windows node must have the correct host name, make sure you rename it.
 
 Overview:
