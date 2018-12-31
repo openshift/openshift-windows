@@ -1,12 +1,14 @@
-# openshift-windows
-Windows Nodes in OpenShift
+# OpenShift environment with Windows and Linux nodes
 
-This current is tested on Vmware, with two machines, one running OpenShift 3.11 on RHEL 7.5.
-A full openshift subscription is required.
+This current is tested on VMware, with two machines, one running OpenShift 3.11 on RHEL 7.5, and one running OpenShift with Windows.
+An OpenShift entitlement is required.
 
 The Windows Node is Windows Server Core 2019/Windows Datacenter Edition 2019.
 The Windows node requires it to be enabled for Ansible.
 bin/winansible.ps1 set's up the windows node for ansible.
+
+## Azure
+The openshift-windows repository code for 3.11 now supports Microsoft Azure Cloud. A full ARM template is now included and has been tested. 
 
 How to Use:
 
@@ -65,9 +67,6 @@ rhnpassword: A Red Hat Network Password
 11. copy the group_vars/windows.example to group_vars/windows 
 12. Add a user name and password to group_vars/windows 
 13. ansible-playbook windows.yml 
-
-## Azure
-openshift-windows 3.11 now supports Microsoft Azure Cloud. A full ARM template is now included, and has been shown to work. 
 
 ## Known Issues/ Changes:
 1.Azure testing is current in process. Azure will require a further update to fucntion.  
