@@ -14,11 +14,11 @@ How to Use:
 
 Supported
 
-http:/github.com/openshift/openshift-windows
+https://github.com/openshift/openshift-windows
 
 Upstream:
 
-http://github.com/glennswest/openshift-windows
+https://github.com/glennswest/openshift-windows
 
 Requirements:
 1. Linux node with host name set, and static ip, and a proper search domain
