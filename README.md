@@ -52,10 +52,10 @@ rhnpassword: A Red Hat Network Password
 9. cd .. 
 10. Prepare Windows Machine 
     A. RDP To windows console (Or use vmware console) 
-    B. From Command Prompt: (To Enable Ansible) 
+    B. From Command Prompt: (To Enable Ansible) be sure to specify the version of OpenShift to be installed. The command below assumes 3.11 specify a different version if required
          i. type: powershell  
         ii. type: [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 
-        iii. Invoke-WebRequest -Uri https://raw.githubusercontent.com/openshift/hybrid/master/bin/winansible.ps1 -OutFile "winansible.ps1" -UseDefaultCredentials 
+        iii. Invoke-WebRequest -Uri https://raw.githubusercontent.com/openshift/openshift-windows/master/3.11/bin/winansible.ps1 -OutFile "winansible.ps1" -UseDefaultCredentials 
         iv. .\winansible.ps1 
         v.   Rename-Computer -NewName "winnode01" -Restart -Force 
         vi.  Disconnect from windows. 
