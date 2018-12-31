@@ -10,11 +10,14 @@ bin/winansible.ps1 set's up the windows node for ansible.
 
 How to Use:
 
-##Repos for Openshift Windows:
+## Repos for Openshift Windows:
 
 Supported
+
 http:/github.com/openshift/openshift-windows
+
 Upstream:
+
 http://github.com/glennswest/openshift-windows
 
 Requirements:
